@@ -1,73 +1,52 @@
 // app/manage-rules/page.tsx
 'use client'
-import { useState } from 'react'
-import Layout from '../../components/Layout'
+import { useState } from 'react';
+import Layout from '../../components/Layout';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 
 export default function ManageRules() {
   const [rules, setRules] = useState([
     { code: 'CS101', name: 'Introduction to Programming', type: 'Standard' },
     { code: 'MATH201', name: 'Advanced Calculus', type: 'Custom' },
-  ])
+  ]);
 
   return (
     <Layout>
-      <h2 className="mb-4 text-2xl font-bold">Manage Course Rules</h2>
-      <form className="mb-8">
-        <select className="mb-4 w-full rounded border p-2" defaultValue="">
-          <option value="" disabled>
-            Select Course Type
-          </option>
-          <option value="standard">Standard</option>
-          <option value="custom">Custom</option>
-        </select>
-        <input type="text" placeholder="Course Code" className="mb-4 w-full rounded border p-2" />
-        <input type="text" placeholder="Course Name" className="mb-4 w-full rounded border p-2" />
-        <textarea
-          placeholder="Course Description"
-          className="mb-4 w-full rounded border p-2"
-          rows={3}
-        ></textarea>
-        <textarea
-          placeholder="Enter course rules..."
-          className="mb-4 w-full rounded border p-2"
-          rows={5}
-        ></textarea>
-        <button
-          type="submit"
-          className="w-full rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
-        >
-          Save Rules
-        </button>
+      <h2 className="text-2xl font-bold mb-4">Manage Course Rules</h2>
+      <form className="space-y-4 mb-8">
+        <Select label="Select Course Type" placeholder="Select course type">
+          <SelectItem key="standard" value="standard">Standard</SelectItem>
+          <SelectItem key="custom" value="custom">Custom</SelectItem>
+        </Select>
+        <Input label="Course Code" placeholder="Enter course code" />
+        <Input label="Course Name" placeholder="Enter course name" />
+        <Textarea label="Course Description" placeholder="Enter course description" />
+        <Textarea label="Course Rules" placeholder="Enter course rules" />
+        <Button color="primary" type="submit">Save Rules</Button>
       </form>
 
-      <h3 className="mb-4 text-xl font-bold">Existing Rules</h3>
-      <table className="w-full">
-        <thead className="bg-blue-500 text-white">
-          <tr>
-            <th className="p-2 text-left">Course Code</th>
-            <th className="p-2 text-left">Course Name</th>
-            <th className="p-2 text-left">Type</th>
-            <th className="p-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <h3 className="text-xl font-bold mb-4">Existing Rules</h3>
+      <Table aria-label="Example table with dynamic content">
+        <TableHeader>
+          <TableColumn>COURSE CODE</TableColumn>
+          <TableColumn>COURSE NAME</TableColumn>
+          <TableColumn>TYPE</TableColumn>
+          <TableColumn>ACTIONS</TableColumn>
+        </TableHeader>
+        <TableBody>
           {rules.map((rule, index) => (
-            <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : ''}>
-              <td className="p-2">{rule.code}</td>
-              <td className="p-2">{rule.name}</td>
-              <td className="p-2">{rule.type}</td>
-              <td className="p-2">
-                <button className="mr-2 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600">
-                  Edit
-                </button>
-                <button className="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600">
-                  Delete
-                </button>
-              </td>
-            </tr>
+            <TableRow key={index}>
+              <TableCell>{rule.code}</TableCell>
+              <TableCell>{rule.name}</TableCell>
+              <TableCell>{rule.type}</TableCell>
+              <TableCell>
+                <Button size="sm" color="primary" className="mr-2">Edit</Button>
+                <Button size="sm" color="danger">Delete</Button>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </Layout>
-  )
+  );
 }

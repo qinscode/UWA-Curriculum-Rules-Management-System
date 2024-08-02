@@ -1,60 +1,43 @@
 // app/settings/page.tsx
-import Layout from '../../components/Layout'
+import Layout from '../../components/Layout';
+import { Input, Select, SelectItem, Button } from "@nextui-org/react";
 
 export default function Settings() {
   return (
     <Layout>
-      <h2 className="mb-4 text-2xl font-bold">System Settings</h2>
-      <form>
-        <h3 className="mb-2 text-xl font-bold">General Settings</h3>
-        <div className="mb-4">
-          <label className="mb-1 block">University Name:</label>
-          <input
-            type="text"
-            className="w-full rounded border p-2"
-            defaultValue="The University of Western Australia"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="mb-1 block">Current Academic Year:</label>
-          <input type="text" className="w-full rounded border p-2" defaultValue="2023-2024" />
+      <h2 className="text-2xl font-bold mb-4">System Settings</h2>
+      <form className="space-y-8">
+        <div>
+          <h3 className="text-xl font-bold mb-2">General Settings</h3>
+          <Input label="University Name" defaultValue="The University of Western Australia" className="mb-4" />
+          <Input label="Current Academic Year" defaultValue="2023-2024" />
         </div>
 
-        <h3 className="mb-2 text-xl font-bold">Document Generation</h3>
-        <div className="mb-4">
-          <label className="mb-1 block">PDF Template:</label>
-          <select className="w-full rounded border p-2">
-            <option>Template 1</option>
-            <option selected>Template 2</option>
-            <option>Template 3</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="mb-1 block">Handbook Format:</label>
-          <select className="w-full rounded border p-2">
-            <option selected>PDF</option>
-            <option>HTML</option>
-            <option>DOCX</option>
-          </select>
+        <div>
+          <h3 className="text-xl font-bold mb-2">Document Generation</h3>
+          <Select label="PDF Template" defaultSelectedKeys={["template2"]} className="mb-4">
+            <SelectItem key="template1" value="template1">Template 1</SelectItem>
+            <SelectItem key="template2" value="template2">Template 2</SelectItem>
+            <SelectItem key="template3" value="template3">Template 3</SelectItem>
+          </Select>
+          <Select label="Handbook Format" defaultSelectedKeys={["pdf"]}>
+            <SelectItem key="pdf" value="pdf">PDF</SelectItem>
+            <SelectItem key="html" value="html">HTML</SelectItem>
+            <SelectItem key="docx" value="docx">DOCX</SelectItem>
+          </Select>
         </div>
 
-        <h3 className="mb-2 text-xl font-bold">User Management</h3>
-        <div className="mb-4">
-          <label className="mb-1 block">Default User Role:</label>
-          <select className="w-full rounded border p-2">
-            <option>Admin</option>
-            <option selected>Editor</option>
-            <option>Viewer</option>
-          </select>
+        <div>
+          <h3 className="text-xl font-bold mb-2">User Management</h3>
+          <Select label="Default User Role" defaultSelectedKeys={["editor"]}>
+            <SelectItem key="admin" value="admin">Admin</SelectItem>
+            <SelectItem key="editor" value="editor">Editor</SelectItem>
+            <SelectItem key="viewer" value="viewer">Viewer</SelectItem>
+          </Select>
         </div>
 
-        <button
-          type="submit"
-          className="w-full rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
-        >
-          Save Settings
-        </button>
+        <Button color="primary" type="submit">Save Settings</Button>
       </form>
     </Layout>
-  )
+  );
 }
