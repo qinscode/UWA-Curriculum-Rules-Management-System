@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Course Rules Management System (Demo)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        header {
+            background: #3c3c3c;
+            color: #ffffff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #0779e4 3px solid;
+        }
+        header h1 {
+            margin: 0;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        nav {
+            background: #0779e4;
+            color: #ffffff;
+            padding: 10px 0;
+        }
+        nav ul {
+            padding: 0;
+            list-style: none;
+            text-align: center;
+        }
+        nav li {
+            display: inline;
+            margin: 0 10px;
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        main {
+            padding: 20px 0;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input, select, textarea {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            background: #0779e4;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #0779e4;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Course Rules Management System (Demo)</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="manage-rules.html">Manage Rules</a></li>
+            <li><a href="generate-docs.html">Generate Documents</a></li>
+            <li><a href="settings.html">Settings</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <section class="card">
+            <h2>System Settings</h2>
+            <form id="settings-form">
+                <h3>General Settings</h3>
+                <label for="university-name">University Name:</label>
+                <input type="text" id="university-name" name="university-name" required>
+                
+                <label for="academic-year">Current Academic Year:</label>
+                <input type="text" id="academic-year" name="academic-year" required>
+                
+                <h3>Document Generation</h3>
+                <label for="pdf-template">PDF Template:</label>
+                <select id="pdf-template" name="pdf-template">
+                    <option value="template1">Template 1</option>
+                    <option value="template2">Template 2</option>
+                    <option value="template3">Template 3</option>
+                </select>
+                
+                <label for="handbook-format">Handbook Format:</label>
+                <select id="handbook-format" name="handbook-format">
+                    <option value="pdf">PDF</option>
+                    <option value="html">HTML</option>
+                    <option value="docx">DOCX</option>
+                </select>
+                
+                <h3>User Management</h3>
+                <label for="user-roles">Default User Role:</label>
+                <select id="user-roles" name="user-roles">
+                    <option value="admin">Admin</option>
+                    <option value="editor">Editor</option>
+                    <option value="viewer">Viewer</option>
+                </select>
+                
+                <h3>System Preferences</h3>
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="auto-save" name="auto-save">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="auto-save">Enable Auto-Save</label>
+                </div>
+                
+                <div>
+                    <label class="switch">
+                        <input type="checkbox" id="email-notifications" name="email-notifications">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="email-notifications">Enable Email Notifications</label>
+                </div>
+                
+                <button type="submit">Save Settings</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        document.getElementById('settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Here you would typically send the form data to your backend
+            const formData = new FormData(this);
+            let settings = {};
+            for (let [key, value] of formData.entries()) {
+                settings[key] = value;
+            }
+            console.log('Settings to be saved:', settings);
+            alert('Settings saved successfully!');
+        });
+
+        // This function would typically fetch current settings from your backend
+        function loadCurrentSettings() {
+            // This is just example data. In a real application, you'd fetch this from your server
+            const exampleSettings = {
+                'university-name': 'The University of Western Australia',
+                'academic-year': '2023-2024',
+                'pdf-template': 'template2',
+                'handbook-format': 'pdf',
+                'user-roles': 'editor',
+                'auto-save': true,
+                'email-notifications': false
+            };
+
+            for (let [key, value] of Object.entries(exampleSettings)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = value;
+                    } else {
+                        element.value = value;
+                    }
+                }
+            }
+        }
+
+        // Load current settings when the page loads
+        window.onload = loadCurrentSettings;
+    </script>
+</body>
+</html>
