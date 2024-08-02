@@ -35,4 +35,4 @@ yarn-error.log*
 .tsbuildinfo
 next-env.d.ts
 node_modules
-frontend/.next/cache/webpack/client-development/1.pack.gz
+frontend/yarn.lock
