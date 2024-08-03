@@ -1,3 +1,4 @@
+'use client'
 // app/settings/page.tsx
 import Layout from '../../components/Layout';
 import { Input, Select, SelectItem, Button } from "@nextui-org/react";
