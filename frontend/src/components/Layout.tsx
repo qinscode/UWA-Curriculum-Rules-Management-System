@@ -71,7 +71,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   index === 2 ? 'primary' : index === menuItems.length - 1 ? 'danger' : 'foreground'
                 }
                 className="w-full"
-                href="#"
+                href="/"
                 size="lg"
               >
                 {item}
