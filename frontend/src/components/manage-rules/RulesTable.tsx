@@ -8,17 +8,19 @@ import {
   Button,
 } from '@nextui-org/react'
 
-type Rule = {
+interface Rule {
+  id: number
   code: string
   name: string
   type: string
 }
 
-type RulesTableProps = {
+interface RulesTableProps {
   rules: Rule[]
+  onDelete: (id: number) => void
 }
 
-export function RulesTable({ rules }: RulesTableProps) {
+export function RulesTable({ rules, onDelete }: RulesTableProps) {
   return (
     <Table aria-label="Example table with dynamic content">
       <TableHeader>
@@ -28,8 +30,8 @@ export function RulesTable({ rules }: RulesTableProps) {
         <TableColumn>ACTIONS</TableColumn>
       </TableHeader>
       <TableBody>
-        {rules.map((rule, index) => (
-          <TableRow key={index}>
+        {rules.map((rule) => (
+          <TableRow key={rule.id}>
             <TableCell>{rule.code}</TableCell>
             <TableCell>{rule.name}</TableCell>
             <TableCell>{rule.type}</TableCell>
@@ -37,7 +39,7 @@ export function RulesTable({ rules }: RulesTableProps) {
               <Button size="sm" color="primary" className="mr-2">
                 Edit
               </Button>
-              <Button size="sm" color="danger">
+              <Button size="sm" color="danger" onPress={() => onDelete(rule.id)}>
                 Delete
               </Button>
             </TableCell>

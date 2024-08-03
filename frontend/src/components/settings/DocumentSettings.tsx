@@ -1,6 +1,12 @@
 import { Select, SelectItem } from '@nextui-org/react'
+import { Settings } from '../../types/settings'
 
-export function DocumentSettings() {
+interface DocumentSettingsProps {
+  settings: Pick<Settings, 'pdfTemplate' | 'handbookFormat'>
+  onChange: (newSettings: Partial<Pick<Settings, 'pdfTemplate' | 'handbookFormat'>>) => void
+}
+
+export function DocumentSettings({ settings, onChange }: DocumentSettingsProps) {
   return (
     <div>
       <h3 className="mb-2 text-xl font-bold">Document Generation</h3>

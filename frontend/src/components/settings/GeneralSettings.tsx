@@ -1,6 +1,15 @@
+import { Settings } from '@/types/settings'
 import { Input } from '@nextui-org/react'
 
-export function GeneralSettings() {
+interface GeneralSettingsProps {
+  settings: {
+    universityName: string
+    academicYear: string
+  }
+  onChange: (newSettings: Partial<Settings>) => void
+}
+
+export function GeneralSettings({ settings, onChange }: GeneralSettingsProps) {
   return (
     <div>
       <h3 className="mb-2 text-xl font-bold">General Settings</h3>

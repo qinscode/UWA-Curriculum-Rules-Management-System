@@ -1,10 +1,17 @@
 import { Button } from '@nextui-org/react'
 
-export function RulesExporter() {
+interface RulesExporterProps {
+  onExport: () => Promise<void>
+  isGenerating: boolean
+}
+
+export function RulesExporter({ onExport, isGenerating }: RulesExporterProps) {
   return (
     <div>
       <h3 className="mb-2 text-xl font-bold">Export All Rules</h3>
-      <Button color="primary">Export Rules as JSON</Button>
+      <Button color="primary" onClick={onExport} disabled={isGenerating}>
+        Export Rules as JSON
+      </Button>
     </div>
   )
 }

@@ -1,6 +1,13 @@
 import { Select, SelectItem } from '@nextui-org/react'
 
-export function UserManagementSettings() {
+import { Settings } from '../../types/settings'
+
+interface UserManagementSettingsProps {
+  settings: Pick<Settings, 'defaultUserRole'>
+  onChange: (newSettings: Partial<Pick<Settings, 'defaultUserRole'>>) => void
+}
+
+export function UserManagementSettings({ settings, onChange }: UserManagementSettingsProps) {
   return (
     <div>
       <h3 className="mb-2 text-xl font-bold">User Management</h3>
