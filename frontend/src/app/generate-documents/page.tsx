@@ -1,31 +1,20 @@
-// app/generate-documents/page.tsx
-"use client";
+
+
+'use client'
 import Layout from '../../components/Layout';
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { PageHeader } from '../../components/PageHeader';
+import { CoursePDFGenerator } from '../../components/generate-documents/CoursePDFGenerator';
+import { HandbookGenerator } from '../../components/generate-documents/HandbookGenerator';
+import { RulesExporter } from '../../components/generate-documents/RulesExporter';
 
 export default function GenerateDocuments() {
   return (
     <Layout>
-      <h2 className="text-2xl font-bold mb-4">Generate Documentation</h2>
+      <PageHeader title="Generate Documentation" />
       <div className="space-y-8">
-        <div>
-          <h3 className="text-xl font-bold mb-2">Generate PDF for Specific Course</h3>
-          <div className="flex space-x-2">
-            <Select label="Select a course" className="flex-grow">
-              <SelectItem key="CS101" value="CS101">CS101 - Introduction to Programming</SelectItem>
-              <SelectItem key="MATH201" value="MATH201">MATH201 - Advanced Calculus</SelectItem>
-            </Select>
-            <Button color="primary">Generate Course PDF</Button>
-          </div>
-        </div>
-        <div>
-          <h3 className="text-xl font-bold mb-2">Generate Complete Handbook</h3>
-          <Button color="primary">Generate Full Handbook PDF</Button>
-        </div>
-        <div>
-          <h3 className="text-xl font-bold mb-2">Export All Rules</h3>
-          <Button color="primary">Export Rules as JSON</Button>
-        </div>
+        <CoursePDFGenerator />
+        <HandbookGenerator />
+        <RulesExporter />
       </div>
     </Layout>
   );
