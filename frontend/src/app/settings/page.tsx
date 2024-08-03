@@ -1,12 +1,11 @@
 'use client'
 
-
-import Layout from '../../components/Layout';
-import { PageHeader } from '../../components/PageHeader';
-import { GeneralSettings } from '../../components/settings/GeneralSettings';
-import { DocumentSettings } from '../../components/settings/DocumentSettings';
-import { UserManagementSettings } from '../../components/settings/UserManagementSettings';
-import { Button } from "@nextui-org/react";
+import Layout from '../../components/Layout'
+import { PageHeader } from '../../components/PageHeader'
+import { GeneralSettings } from '../../components/settings/GeneralSettings'
+import { DocumentSettings } from '../../components/settings/DocumentSettings'
+import { UserManagementSettings } from '../../components/settings/UserManagementSettings'
+import { Button } from '@nextui-org/react'
 
 export default function Settings() {
   return (
@@ -16,8 +15,10 @@ export default function Settings() {
         <GeneralSettings />
         <DocumentSettings />
         <UserManagementSettings />
-        <Button color="primary" type="submit">Save Settings</Button>
+        <Button color="primary" type="submit">
+          Save Settings
+        </Button>
       </form>
     </Layout>
-  );
+  )
 }

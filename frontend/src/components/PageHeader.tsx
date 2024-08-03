@@ -1,7 +1,7 @@
 type PageHeaderProps = {
-    title: string;
-};
+  title: string
+}
 
 export function PageHeader({ title }: PageHeaderProps) {
-    return <h2 className="text-2xl font-bold mb-4">{title}</h2>;
+  return <h2 className="mb-4 text-2xl font-bold">{title}</h2>
 }

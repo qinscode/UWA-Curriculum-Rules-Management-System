@@ -1,15 +1,14 @@
 // components/Layout.tsx
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from "@nextui-org/react";
-
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link } from '@nextui-org/react'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Navbar isBordered>
         <NavbarBrand>
           <p className="font-bold text-inherit">Course Rules Management System (Demo)</p>
         </NavbarBrand>
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
           <NavbarItem>
             <Link color="foreground" href="/">
               Home
@@ -33,10 +32,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </NavbarContent>
       </Navbar>
       <main className="flex-grow p-8">
-        <div className="max-w-4xl mx-auto">
-          {children}
-        </div>
+        <div className="mx-auto max-w-4xl">{children}</div>
       </main>
     </div>
-  );
+  )
 }
