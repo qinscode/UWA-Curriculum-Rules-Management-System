@@ -1,0 +1,67 @@
+import { useState, useEffect, useCallback } from 'react';
+import { apiClient } from '../lib/api-client';
+
+interface Rule {
+  id: number;
+  code: string;
+  name: string;
+  type: string;
+  description: string;
+}
+
+export function useRules() {
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchRules = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await apiClient.get<Rule[]>('/rules');
+      setRules(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch rules');
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRules();
+  }, [fetchRules]);
+
+  const addRule = useCallback(async (rule: Omit<Rule, 'id'>) => {
+    try {
+      const newRule = await apiClient.post<Rule>('/rules', rule);
+      setRules(prevRules => [...prevRules, newRule]);
+      return newRule;
+    } catch (err) {
+      setError('Failed to add rule');
+      throw err;
+    }
+  }, []);
+
+  const updateRule = useCallback(async (id: number, rule: Partial<Rule>) => {
+    try {
+      const updatedRule = await apiClient.put<Rule>(`/rules/${id}`, rule);
+      setRules(prevRules => prevRules.map(r => r.id === id ? updatedRule : r));
+      return updatedRule;
+    } catch (err) {
+      setError('Failed to update rule');
+      throw err;
+    }
+  }, []);
+
+  const deleteRule = useCallback(async (id: number) => {
+    try {
+      await apiClient.delete(`/rules/${id}`);
+      setRules(prevRules => prevRules.filter(rule => rule.id !== id));
+    } catch (err) {
+      setError('Failed to delete rule');
+      throw err;
+    }
+  }, []);
+
+  return { rules, isLoading, error, fetchRules, addRule, updateRule, deleteRule };
+}
