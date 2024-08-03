@@ -3,7 +3,11 @@ import { Rule, Settings, CreateRuleDTO, UpdateRuleDTO, UpdateSettingsDTO } from 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://cab.fudong.dev/api'
 
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${url}`, {
+  // 使用 URL 对象来正确处理路径
+  const fullUrl = new URL(url, API_BASE_URL).toString();
+  console.log('Requesting URL:', fullUrl); // 添加日志
+
+  const response = await fetch(fullUrl, {
     ...options,
     headers: {
       ...options.headers,
@@ -12,6 +16,7 @@ async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> 
   })
 
   if (!response.ok) {
+    console.error('API Error:', response.status, response.statusText); // 添加错误日志
     throw new Error(`HTTP error! status: ${response.status}`)
   }
 
