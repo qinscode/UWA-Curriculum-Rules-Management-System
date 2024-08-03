@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
 
-export default nextConfig;
+import { config } from 'dotenv'
+config()
+
+const nextConfig = {}
+
+export default nextConfig
