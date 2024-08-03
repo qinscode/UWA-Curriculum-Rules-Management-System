@@ -5,21 +5,21 @@ export class Setting {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'university_name' })
-  universityName: string;
+  @Column()
+  university_name: string;
 
-  @Column({ name: 'academic_year', length: 9 })
-  academicYear: string;
+  @Column({ length: 9 })
+  academic_year: string;
 
-  @Column({ name: 'pdf_template' })
-  pdfTemplate: string;
+  @Column()
+  pdf_template: string;
 
-  @Column({ name: 'handbook_format', type: 'enum', enum: ['pdf', 'html', 'docx'] })
-  handbookFormat: string;
+  @Column({ type: 'enum', enum: ['pdf', 'html', 'docx'] })
+  handbook_format: string;
 
-  @Column({ name: 'default_user_role', type: 'enum', enum: ['admin', 'editor', 'viewer'] })
-  defaultUserRole: string;
+  @Column({ type: 'enum', enum: ['admin', 'editor', 'viewer'] })
+  default_user_role: string;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 }
