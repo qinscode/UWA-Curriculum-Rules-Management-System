@@ -17,7 +17,7 @@ export function useRules() {
   const fetchRules = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await apiClient.get<Rule[]>('/rules');
+      const data = await apiClient.getRules();
       setRules(data);
       setError(null);
     } catch (err) {
@@ -33,7 +33,7 @@ export function useRules() {
 
   const addRule = useCallback(async (rule: Omit<Rule, 'id'>) => {
     try {
-      const newRule = await apiClient.post<Rule>('/rules', rule);
+      const newRule = await apiClient.addRule(rule);
       setRules(prevRules => [...prevRules, newRule]);
       return newRule;
     } catch (err) {
@@ -44,7 +44,7 @@ export function useRules() {
 
   const updateRule = useCallback(async (id: number, rule: Partial<Rule>) => {
     try {
-      const updatedRule = await apiClient.put<Rule>(`/rules/${id}`, rule);
+      const updatedRule = await apiClient.updateRule(id, rule);
       setRules(prevRules => prevRules.map(r => r.id === id ? updatedRule : r));
       return updatedRule;
     } catch (err) {
@@ -55,7 +55,7 @@ export function useRules() {
 
   const deleteRule = useCallback(async (id: number) => {
     try {
-      await apiClient.delete(`/rules/${id}`);
+      await apiClient.deleteRule(id);
       setRules(prevRules => prevRules.filter(rule => rule.id !== id));
     } catch (err) {
       setError('Failed to delete rule');

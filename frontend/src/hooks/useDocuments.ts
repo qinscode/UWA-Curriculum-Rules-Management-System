@@ -8,7 +8,7 @@ export function useDocuments() {
   const generateCoursePDF = useCallback(async (courseId: string) => {
     try {
       setIsGenerating(true);
-      const response = await apiClient.get<{ url: string }>(`/documents/course-pdf/${courseId}`);
+      const response = await apiClient.generateCoursePDF(courseId);
       window.open(response.url, '_blank');
     } catch (err) {
       setError('Failed to generate course PDF');
@@ -21,7 +21,7 @@ export function useDocuments() {
   const generateHandbook = useCallback(async () => {
     try {
       setIsGenerating(true);
-      const response = await apiClient.get<{ url: string }>('/documents/handbook');
+      const response = await apiClient.generateHandbook();
       window.open(response.url, '_blank');
     } catch (err) {
       setError('Failed to generate handbook');
@@ -34,7 +34,7 @@ export function useDocuments() {
   const exportRules = useCallback(async () => {
     try {
       setIsGenerating(true);
-      const response = await apiClient.get<{ url: string }>('/documents/export-rules');
+      const response = await apiClient.exportRules();
       window.open(response.url, '_blank');
     } catch (err) {
       setError('Failed to export rules');

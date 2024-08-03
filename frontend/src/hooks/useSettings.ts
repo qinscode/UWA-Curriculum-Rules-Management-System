@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '../lib/api-client';
 import { Settings } from '../types/settings';
 
-
 export function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +10,7 @@ export function useSettings() {
   const fetchSettings = useCallback(async () => {
     try {
       setIsLoading(true);
-      const data = await apiClient.get<Settings>('/settings');
+      const data = await apiClient.getSettings();
       setSettings(data);
       setError(null);
     } catch (err) {
@@ -25,9 +24,9 @@ export function useSettings() {
     fetchSettings();
   }, [fetchSettings]);
 
-  const updateSettings = useCallback(async (newSettings: Settings) => {
+  const updateSettings = useCallback(async (newSettings: Partial<Settings>) => {
     try {
-      const updatedSettings = await apiClient.put<Settings>('/settings', newSettings);
+      const updatedSettings = await apiClient.updateSettings(newSettings);
       setSettings(updatedSettings);
       return updatedSettings;
     } catch (err) {
