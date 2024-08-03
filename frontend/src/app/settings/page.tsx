@@ -6,7 +6,7 @@ import { DocumentSettings } from '../../components/settings/DocumentSettings'
 import { UserManagementSettings } from '../../components/settings/UserManagementSettings'
 import { Button } from '@nextui-org/react'
 import { useSettings } from '../../hooks/useSettings'
-import { Settings } from '../../types/settings'
+import { Settings } from '../../types'
 import { useState } from 'react'
 
 export default function Settings() {
