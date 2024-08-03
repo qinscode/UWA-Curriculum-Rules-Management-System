@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Select, SelectItem, Button } from '@nextui-org/react'
+import { apiClient } from '@/lib/api-client'
+import { Rule } from '@/types'
 
 interface CoursePDFGeneratorProps {
   onGenerate: (courseId: string) => Promise<void>
@@ -8,6 +10,20 @@ interface CoursePDFGeneratorProps {
 
 export function CoursePDFGenerator({ onGenerate, isGenerating }: CoursePDFGeneratorProps) {
   const [selectedCourse, setSelectedCourse] = useState('')
+  const [rules, setRules] = useState<Rule[]>([])
+
+  useEffect(() => {
+    const fetchRules = async () => {
+      try {
+        const data = await apiClient.getRules()
+        setRules(data)
+      } catch (error) {
+        console.error('Failed to fetch rules:', error)
+      }
+    }
+
+    fetchRules()
+  }, [])
 
   const handleGenerate = () => {
     if (selectedCourse) {
@@ -26,13 +42,11 @@ export function CoursePDFGenerator({ onGenerate, isGenerating }: CoursePDFGenera
           onChange={(e) => setSelectedCourse(e.target.value)}
           className="flex-grow"
         >
-          <SelectItem key="CS101" value="CS101">
-            CS101 - Introduction to Programming
-          </SelectItem>
-          <SelectItem key="MATH201" value="MATH201">
-            MATH201 - Advanced Calculus
-          </SelectItem>
-          {/* Add more courses as needed */}
+          {rules.map((rule) => (
+            <SelectItem key={rule.id} value={rule.id.toString()}>
+              {rule.code} - {rule.name}
+            </SelectItem>
+          ))}
         </Select>
         <Button color="primary" onClick={handleGenerate} disabled={isGenerating || !selectedCourse}>
           Generate Course PDF
