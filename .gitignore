@@ -38,6 +38,10 @@ node_modules
 frontend/yarn.lock
 .vscode
 
+############################################
+############ NESTJS .gitignore ############
+############################################
+
 # compiled output
 /dist
 /node_modules
@@ -94,4 +98,3 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-yarn.lock
