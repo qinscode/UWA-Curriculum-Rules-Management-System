@@ -11,7 +11,7 @@ export class Rule {
   @Column()
   name: string;
 
-  @Column({ type: 'enum', enum: ['Standard', 'Custom'] })
+  @Column({ type: 'enum', enum: ['conversion','core','option'] })
   type: string;
 
   @Column('text')
