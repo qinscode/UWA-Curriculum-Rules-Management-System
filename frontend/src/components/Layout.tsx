@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             className="sm:hidden"
           />
           <NavbarBrand>
-            <p className="font-bold text-inherit">ACME</p>
+            <p className="font-bold text-inherit">CRMS</p>
           </NavbarBrand>
         </NavbarContent>
 
