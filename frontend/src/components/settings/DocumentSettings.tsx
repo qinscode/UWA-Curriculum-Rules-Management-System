@@ -1,5 +1,5 @@
 import { Select, SelectItem } from '@nextui-org/react'
-import { Settings } from '../../types/settings'
+import { Settings } from '../../types'
 
 interface DocumentSettingsProps {
   settings: Pick<Settings, 'pdfTemplate' | 'handbookFormat'>

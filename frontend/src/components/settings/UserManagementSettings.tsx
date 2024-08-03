@@ -1,6 +1,6 @@
 import { Select, SelectItem } from '@nextui-org/react'
 
-import { Settings } from '../../types/settings'
+import { Settings } from '../../types'
 
 interface UserManagementSettingsProps {
   settings: Pick<Settings, 'defaultUserRole'>

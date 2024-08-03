@@ -1,4 +1,4 @@
-import { Settings } from '@/types/settings'
+import { Settings } from '@/types'
 import { Input } from '@nextui-org/react'
 
 interface GeneralSettingsProps {
