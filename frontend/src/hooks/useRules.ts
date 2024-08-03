@@ -1,13 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '../lib/api-client';
-
-interface Rule {
-  id: number;
-  code: string;
-  name: string;
-  type: string;
-  description: string;
-}
+import { Rule, CreateRuleDTO, UpdateRuleDTO } from '../types';
 
 export function useRules() {
   const [rules, setRules] = useState<Rule[]>([]);
@@ -31,7 +24,7 @@ export function useRules() {
     fetchRules();
   }, [fetchRules]);
 
-  const addRule = useCallback(async (rule: Omit<Rule, 'id'>) => {
+  const addRule = useCallback(async (rule: CreateRuleDTO) => {
     try {
       const newRule = await apiClient.addRule(rule);
       setRules(prevRules => [...prevRules, newRule]);
@@ -42,7 +35,7 @@ export function useRules() {
     }
   }, []);
 
-  const updateRule = useCallback(async (id: number, rule: Partial<Rule>) => {
+  const updateRule = useCallback(async (id: number, rule: UpdateRuleDTO) => {
     try {
       const updatedRule = await apiClient.updateRule(id, rule);
       setRules(prevRules => prevRules.map(r => r.id === id ? updatedRule : r));

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '../lib/api-client';
-import { Settings } from '../types/settings';
+import { Settings, UpdateSettingsDTO } from '../types';
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -24,7 +24,7 @@ export function useSettings() {
     fetchSettings();
   }, [fetchSettings]);
 
-  const updateSettings = useCallback(async (newSettings: Partial<Settings>) => {
+  const updateSettings = useCallback(async (newSettings: UpdateSettingsDTO) => {
     try {
       const updatedSettings = await apiClient.updateSettings(newSettings);
       setSettings(updatedSettings);
