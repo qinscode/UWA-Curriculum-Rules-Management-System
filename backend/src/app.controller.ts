@@ -1,18 +1,17 @@
-import { Controller, Get, Put, Body } from '@nestjs/common';
-import { SettingsService } from './settings.service';
-import { UpdateSettingsDto } from './dto/settings.dto';
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
 
-@Controller('settings')
-export class SettingsController {
-  constructor(private readonly settingsService: SettingsService) {}
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
 
   @Get()
-  getSettings() {
-    return this.settingsService.getSettings();
+  getHello(): string {
+    return this.appService.getHello();
   }
 
-  @Put()
-  updateSettings(@Body() updateSettingsDto: UpdateSettingsDto) {
-    return this.settingsService.updateSettings(updateSettingsDto);
+  @Get('health')
+  checkHealth(): { status: string; timestamp: number } {
+    return this.appService.checkHealth();
   }
 }
