@@ -1,5 +1,12 @@
 # Course Rules Management System
 
+<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
+<img alt="Static Badge" src="https://img.shields.io/badge/Next.js-v14.2-blue">
+<img alt="Static Badge" src="https://img.shields.io/badge/Nest.js-v10.0-red">
+<img alt="Static Badge" src="https://img.shields.io/badge/TailwindCSS-v3.4-0ca5e9">
+<img alt="Static Badge" src="https://img.shields.io/badge/React.js-v18.0-077ea4">
+
+
 This document provides a comprehensive overview of the Course Rules Management System, detailing its requirements, frontend and backend implementations, and database structure.
 
 ## Table of Contents
