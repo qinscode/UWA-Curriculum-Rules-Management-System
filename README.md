@@ -18,6 +18,8 @@ This document provides a comprehensive overview of the Course Rules Management S
 
 The Course Rules Management System is a web-based application designed to streamline the process of managing and updating course rules across various university courses. It provides an intuitive interface for administrators to handle course rules, generate documentation, and manage system settings.
 
+The application uses Next.js with Tailwind CSS, Tailwind UI, and Headless UI for the frontend, while the backend is built with NestJS and utilizes MySQL for database management.
+
 ## Requirements
 
 ### Functional Requirements
