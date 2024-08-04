@@ -33,7 +33,7 @@ export default function GenerateDocuments(): JSX.Element {
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Generate Documentation</h2>
       {docError && <div className="mb-4 text-red-500">{docError}</div>}
       {rulesError && <div className="mb-4 text-red-500">{rulesError}</div>}
-      <div className="mb-8 space-y-4 bg-white p-6 shadow sm:rounded-lg">
+      <div className="-mx-6 mb-8 space-y-4 bg-white p-6 shadow sm:-mx-6 sm:rounded-lg lg:-mx-8">
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
             <h3 className="text-base font-semibold leading-7 text-gray-900">

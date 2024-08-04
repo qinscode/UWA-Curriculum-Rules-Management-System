@@ -30,7 +30,6 @@ export default function SettingsPage(): JSX.Element {
     }
   }
 
-  if (isLoading) return <div className="py-4 text-center">Loading settings...</div>
   if (error) return <div className="py-4 text-red-600">Error: {error}</div>
   if (!localSettings) return <div className="py-4 text-center">No settings available.</div>
 

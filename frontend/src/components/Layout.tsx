@@ -1,4 +1,3 @@
-// components/Layout.tsx
 'use client'
 import React, { ReactNode } from 'react'
 import Link from 'next/link'
@@ -93,9 +92,12 @@ export default function Layout({ children }: LayoutProps): JSX.Element {
         )}
       </Disclosure>
 
-      <div className="py-10">
+      <div>
+        {/* DO NOT DELETE THIS DIV!!!!!!! */}
+        <div className="py-6"></div>
+
         <main>
-          <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </div>
