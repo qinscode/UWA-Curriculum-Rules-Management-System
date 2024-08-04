@@ -1,7 +1,12 @@
-import { FeatureCard } from '../FeatureCard'
+import FeatureCard from '../FeatureCard'
 
-export function FeatureGrid() {
-  const features = [
+interface Feature {
+  title: string
+  description: string
+}
+
+export default function FeatureGrid(): JSX.Element {
+  const features: Feature[] = [
     {
       title: 'Manage Rules',
       description: 'Create, edit, and delete course rules for your institution.',
@@ -21,7 +26,7 @@ export function FeatureGrid() {
   ]
 
   return (
-    <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
       {features.map((feature, index) => (
         <FeatureCard key={index} title={feature.title} description={feature.description} />
       ))}

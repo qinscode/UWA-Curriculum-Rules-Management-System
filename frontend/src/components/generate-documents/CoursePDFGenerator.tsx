@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react'
-import { Select, SelectItem, Button } from '@nextui-org/react'
-import { apiClient } from '@/lib/api-client'
+import { useState, useEffect } from 'react'
 import { Rule } from '@/types'
+import { apiClient } from '@/lib/api-client'
 
 interface CoursePDFGeneratorProps {
   onGenerate: (courseId: string) => Promise<void>
   isGenerating: boolean
 }
 
-export function CoursePDFGenerator({ onGenerate, isGenerating }: CoursePDFGeneratorProps) {
-  const [selectedCourse, setSelectedCourse] = useState('')
+export function CoursePDFGenerator({
+  onGenerate,
+  isGenerating,
+}: CoursePDFGeneratorProps): JSX.Element {
+  const [selectedCourse, setSelectedCourse] = useState<string>('')
   const [rules, setRules] = useState<Rule[]>([])
 
   useEffect(() => {
@@ -35,22 +37,25 @@ export function CoursePDFGenerator({ onGenerate, isGenerating }: CoursePDFGenera
     <div>
       <h3 className="mb-2 text-xl font-bold">Generate PDF for Specific Course</h3>
       <div className="flex space-x-2">
-        <Select
-          label="Select a course"
-          placeholder="Choose a course"
+        <select
           value={selectedCourse}
           onChange={(e) => setSelectedCourse(e.target.value)}
-          className="flex-grow"
+          className="mt-1 block w-full flex-grow rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
         >
+          <option value="">Choose a course</option>
           {rules.map((rule) => (
-            <SelectItem key={rule.id} value={rule.id.toString()}>
+            <option key={rule.id} value={rule.id.toString()}>
               {rule.code} - {rule.name}
-            </SelectItem>
+            </option>
           ))}
-        </Select>
-        <Button color="primary" onClick={handleGenerate} disabled={isGenerating || !selectedCourse}>
+        </select>
+        <button
+          onClick={handleGenerate}
+          disabled={isGenerating || !selectedCourse}
+          className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+        >
           Generate Course PDF
-        </Button>
+        </button>
       </div>
     </div>
   )

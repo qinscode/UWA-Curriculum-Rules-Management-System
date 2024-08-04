@@ -1,17 +1,15 @@
-import { Card, CardBody } from '@nextui-org/react'
-
-type FeatureCardProps = {
+interface FeatureCardProps {
   title: string
   description: string
 }
 
-export function FeatureCard({ title, description }: FeatureCardProps) {
+export default function FeatureCard({ title, description }: FeatureCardProps): JSX.Element {
   return (
-    <Card>
-      <CardBody>
-        <h3 className="mb-2 text-xl font-bold">{title}</h3>
-        <p>{description}</p>
-      </CardBody>
-    </Card>
+    <div className="overflow-hidden rounded-lg bg-white shadow">
+      <div className="px-4 py-5 sm:p-6">
+        <h3 className="mb-2 text-lg font-medium text-gray-900">{title}</h3>
+        <p className="text-sm text-gray-500">{description}</p>
+      </div>
+    </div>
   )
 }
