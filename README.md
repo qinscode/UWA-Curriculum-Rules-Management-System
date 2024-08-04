@@ -139,14 +139,4 @@ The system follows a client-server architecture:
 - **Backend:** Deployed on a VPS using PM2 for process management
 - **Database:** Hosted MySQL instance
 
-## Future Enhancements
 
-1. Implement user authentication and authorization
-2. Add version control for course rules
-3. Integrate with university's existing systems (e.g., student management system)
-4. Implement real-time collaboration features
-5. Add analytics dashboard for rule usage and modifications
-
----
-
-This README provides a high-level overview of the Course Rules Management System. For detailed implementation instructions, please refer to the individual component documentation and codebase comments.
