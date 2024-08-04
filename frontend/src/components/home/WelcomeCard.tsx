@@ -1,4 +1,6 @@
-export default function WelcomeCard(): JSX.Element {
+import { FC } from 'react'
+
+const WelcomeCard: FC = () => {
   return (
     <div className="overflow-hidden rounded-lg bg-white shadow">
       <div className="px-4 py-5 sm:p-6">
@@ -13,3 +15,5 @@ export default function WelcomeCard(): JSX.Element {
     </div>
   )
 }
+
+export default WelcomeCard

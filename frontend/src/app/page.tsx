@@ -1,8 +1,9 @@
 import Layout from '../components/Layout'
 import WelcomeCard from '../components/home/WelcomeCard'
 import FeatureGrid from '../components/home/FeatureGrid'
+import { FC } from 'react'
 
-export default function Home(): JSX.Element {
+const Home: FC = () => {
   return (
     <Layout>
       <div className="space-y-8">
@@ -12,3 +13,5 @@ export default function Home(): JSX.Element {
     </Layout>
   )
 }
+
+export default Home

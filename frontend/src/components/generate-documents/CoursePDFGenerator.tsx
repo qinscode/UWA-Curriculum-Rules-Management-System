@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, FC } from 'react'
 import { Rule } from '@/types'
 import { apiClient } from '@/lib/api-client'
 
@@ -7,10 +7,7 @@ interface CoursePDFGeneratorProps {
   isGenerating: boolean
 }
 
-export function CoursePDFGenerator({
-  onGenerate,
-  isGenerating,
-}: CoursePDFGeneratorProps): JSX.Element {
+const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({ onGenerate, isGenerating }) => {
   const [selectedCourse, setSelectedCourse] = useState<string>('')
   const [rules, setRules] = useState<Rule[]>([])
 
@@ -60,3 +57,5 @@ export function CoursePDFGenerator({
     </div>
   )
 }
+
+export default CoursePDFGenerator

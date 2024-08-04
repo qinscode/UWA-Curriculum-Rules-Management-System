@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, FC } from 'react'
 import Layout from '@/components/Layout'
 import SelectMenu from '@/components/SelectMenu'
 import { useDocuments } from '@/hooks/useDocuments'
@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/solid'
 import { useRules } from '@/hooks/useRules'
 
-export default function GenerateDocuments(): JSX.Element {
+const GenerateDocuments: FC = () => {
   const {
     isGenerating,
     error: docError,
@@ -116,10 +116,11 @@ export default function GenerateDocuments(): JSX.Element {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
           <div className="rounded-lg bg-white p-6 shadow-xl">
             <p className="text-lg font-semibold">Generating document...</p>
-            {/* You could add a loading spinner here */}
           </div>
         </div>
       )}
     </Layout>
   )
 }
+
+export default GenerateDocuments

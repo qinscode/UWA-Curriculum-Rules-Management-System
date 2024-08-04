@@ -1,12 +1,11 @@
+import { FC } from 'react'
+
 interface HandbookGeneratorProps {
   onGenerate: () => Promise<void>
   isGenerating: boolean
 }
 
-export function HandbookGenerator({
-  onGenerate,
-  isGenerating,
-}: HandbookGeneratorProps): JSX.Element {
+const HandbookGenerator: FC<HandbookGeneratorProps> = ({ onGenerate, isGenerating }) => {
   return (
     <div>
       <h3 className="mb-2 text-xl font-bold">Generate Complete Handbook</h3>
@@ -20,3 +19,5 @@ export function HandbookGenerator({
     </div>
   )
 }
+
+export default HandbookGenerator

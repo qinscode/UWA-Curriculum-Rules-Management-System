@@ -1,11 +1,12 @@
 import FeatureCard from '../FeatureCard'
+import { FC } from 'react'
 
 interface Feature {
   title: string
   description: string
 }
 
-export default function FeatureGrid(): JSX.Element {
+const FeatureGrid: FC = () => {
   const features: Feature[] = [
     {
       title: 'Manage Rules',
@@ -33,3 +34,5 @@ export default function FeatureGrid(): JSX.Element {
     </div>
   )
 }
+
+export default FeatureGrid

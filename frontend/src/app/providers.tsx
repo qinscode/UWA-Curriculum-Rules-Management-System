@@ -1,7 +1,10 @@
 'use client'
 
 import { NextUIProvider } from '@nextui-org/react'
+import { FC } from 'react'
 
-export function Providers({ children }: { children: React.ReactNode }) {
+const Providers: FC<{ children: React.ReactNode }> = ({ children }) => {
   return <NextUIProvider>{children}</NextUIProvider>
 }
+
+export default Providers

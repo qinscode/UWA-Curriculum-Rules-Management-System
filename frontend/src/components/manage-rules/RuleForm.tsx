@@ -1,13 +1,12 @@
-import { useState } from 'react'
+import { useState, FC } from 'react'
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-
 import { Rule } from '../../types'
 
 interface RuleFormProps {
   onSave: (rule: Omit<Rule, 'id'>) => void
 }
 
-export default function RuleForm({ onSave }: RuleFormProps): JSX.Element {
+const RuleForm: FC<RuleFormProps> = ({ onSave }) => {
   const [rule, setRule] = useState<Omit<Rule, 'id'>>({
     code: '',
     name: '',
@@ -23,53 +22,78 @@ export default function RuleForm({ onSave }: RuleFormProps): JSX.Element {
 
   return (
     <>
-      <form className="mb-8 space-y-4 bg-white p-4 shadow sm:rounded-lg">
+      <form onSubmit={handleSubmit} className="mb-8 space-y-4 bg-white p-4 shadow sm:rounded-lg">
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12">
             <div className="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-4">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
+                <label htmlFor="type" className="block text-sm font-medium leading-6 text-gray-900">
                   Course Type
                 </label>
                 <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                    {/* <span className="flex select-none items-center pl-3 text-gray-500 sm:text-sm">
-                      workcation.com/
-                    </span> */}
-                    {/* <input
-                      id="username"
-                      name="username"
-                      type="text"
-                      placeholder="janesmith"
-                      autoComplete="username"
-                      className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    /> */}
-                  </div>
+                  <select
+                    id="type"
+                    name="type"
+                    value={rule.type}
+                    onChange={(e) => setRule({ ...rule, type: e.target.value })}
+                    className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                  >
+                    <option value="">Select course type</option>
+                    <option value="standard">Standard</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-span-full">
+                <label htmlFor="code" className="block text-sm font-medium leading-6 text-gray-900">
+                  Course Code
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    name="code"
+                    id="code"
+                    value={rule.code}
+                    onChange={(e) => setRule({ ...rule, code: e.target.value })}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="col-span-full">
+                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+                  Course Name
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={rule.name}
+                    onChange={(e) => setRule({ ...rule, name: e.target.value })}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  />
                 </div>
               </div>
 
               <div className="col-span-full">
                 <label
-                  htmlFor="about"
+                  htmlFor="description"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  About
+                  Course Description
                 </label>
                 <div className="mt-2">
                   <textarea
-                    id="about"
-                    name="about"
+                    id="description"
+                    name="description"
                     rows={3}
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    defaultValue={''}
+                    value={rule.description}
+                    onChange={(e) => setRule({ ...rule, description: e.target.value })}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   />
                 </div>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
-                  Write a few sentences about yourself.
-                </p>
               </div>
 
               <div className="col-span-full">
@@ -135,70 +159,8 @@ export default function RuleForm({ onSave }: RuleFormProps): JSX.Element {
           </button>
         </div>
       </form>
-
-      <form onSubmit={handleSubmit} className="mb-8 space-y-4 bg-white p-4 shadow sm:rounded-lg">
-        <div>
-          <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-            Course Type
-          </label>
-          <select
-            id="type"
-            name="type"
-            value={rule.type}
-            onChange={(e) => setRule({ ...rule, type: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-          >
-            <option value="">Select course type</option>
-            <option value="standard">Standard</option>
-            <option value="custom">Custom</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="code" className="block text-sm font-medium text-gray-700">
-            Course Code
-          </label>
-          <input
-            type="text"
-            name="code"
-            id="code"
-            value={rule.code}
-            onChange={(e) => setRule({ ...rule, code: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Course Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            value={rule.name}
-            onChange={(e) => setRule({ ...rule, name: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Course Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            rows={3}
-            value={rule.description}
-            onChange={(e) => setRule({ ...rule, description: e.target.value })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          />
-        </div>
-        <button
-          type="submit"
-          className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        >
-          Save Rule
-        </button>
-      </form>
     </>
   )
 }
+
+export default RuleForm

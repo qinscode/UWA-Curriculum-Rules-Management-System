@@ -1,9 +1,11 @@
+import { FC } from 'react'
+
 interface RulesExporterProps {
   onExport: () => Promise<void>
   isGenerating: boolean
 }
 
-export function RulesExporter({ onExport, isGenerating }: RulesExporterProps): JSX.Element {
+const RulesExporter: FC<RulesExporterProps> = ({ onExport, isGenerating }) => {
   return (
     <div>
       <h3 className="mb-2 text-xl font-bold">Export All Rules</h3>
@@ -17,3 +19,5 @@ export function RulesExporter({ onExport, isGenerating }: RulesExporterProps): J
     </div>
   )
 }
+
+export default RulesExporter

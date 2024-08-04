@@ -1,9 +1,11 @@
+import { FC } from 'react'
+
 interface FeatureCardProps {
   title: string
   description: string
 }
 
-export default function FeatureCard({ title, description }: FeatureCardProps): JSX.Element {
+const FeatureCard: FC<FeatureCardProps> = ({ title, description }) => {
   return (
     <div className="overflow-hidden rounded-lg bg-white shadow">
       <div className="px-4 py-5 sm:p-6">
@@ -13,3 +15,5 @@ export default function FeatureCard({ title, description }: FeatureCardProps): J
     </div>
   )
 }
+
+export default FeatureCard

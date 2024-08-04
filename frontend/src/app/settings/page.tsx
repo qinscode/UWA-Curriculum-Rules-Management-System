@@ -1,11 +1,12 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import Layout from '@/components/Layout'
 import { useSettings } from '@/hooks/useSettings'
 import { Settings, UpdateSettingsDTO } from '@/types'
 import SelectMenu from '@/components/SelectMenu'
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-export default function SettingsPage(): JSX.Element {
+
+const SettingsPage: FC = () => {
   const { settings, isLoading, error, updateSettings } = useSettings()
   const [localSettings, setLocalSettings] = useState<Settings | null>(null)
 
@@ -88,3 +89,5 @@ export default function SettingsPage(): JSX.Element {
     </Layout>
   )
 }
+
+export default SettingsPage

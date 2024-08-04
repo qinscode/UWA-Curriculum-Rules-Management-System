@@ -1,5 +1,5 @@
 'use client'
-import React, { ReactNode } from 'react'
+import React, { FC, ReactNode } from 'react'
 import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -25,11 +25,11 @@ interface LayoutProps {
   children: ReactNode
 }
 
-export default function Layout({ children }: LayoutProps): JSX.Element {
+const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Disclosure as="nav" className="bg-white shadow-sm">
-        {({ open }: { open: boolean }) => (
+        {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 justify-between">
@@ -103,3 +103,5 @@ export default function Layout({ children }: LayoutProps): JSX.Element {
     </div>
   )
 }
+
+export default Layout

@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import { Rule } from '../../types'
 
 interface RulesTableProps {
@@ -5,7 +6,7 @@ interface RulesTableProps {
   onDelete: (id: number) => void
 }
 
-export default function RulesTable({ rules, onDelete }: RulesTableProps): JSX.Element {
+const RulesTable: FC<RulesTableProps> = ({ rules, onDelete }) => {
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -70,3 +71,5 @@ export default function RulesTable({ rules, onDelete }: RulesTableProps): JSX.El
     </div>
   )
 }
+
+export default RulesTable

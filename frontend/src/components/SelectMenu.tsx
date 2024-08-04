@@ -15,17 +15,15 @@ interface SelectMenuProps {
   placeholder?: string
 }
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
+const classNames = (...classes: string[]) => classes.filter(Boolean).join(' ')
 
-export default function SelectMenu({
+const SelectMenu: React.FC<SelectMenuProps> = ({
   value,
   onChange,
   options,
   label,
   placeholder = 'Select an option',
-}: SelectMenuProps) {
+}) => {
   const selectedOption = options.find((option) => option.value === value)
 
   return (
@@ -39,9 +37,7 @@ export default function SelectMenu({
           )}
           <div className="relative mt-2">
             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-              <span className="block truncate">
-                {selectedOption ? selectedOption.label : placeholder}
-              </span>
+              <span className="block truncate">{selectedOption?.label || placeholder}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
@@ -77,7 +73,7 @@ export default function SelectMenu({
                           {option.label}
                         </span>
 
-                        {selected ? (
+                        {selected && (
                           <span
                             className={classNames(
                               active ? 'text-white' : 'text-indigo-600',
@@ -86,7 +82,7 @@ export default function SelectMenu({
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>
-                        ) : null}
+                        )}
                       </>
                     )}
                   </Listbox.Option>
@@ -99,3 +95,5 @@ export default function SelectMenu({
     </Listbox>
   )
 }
+
+export default SelectMenu

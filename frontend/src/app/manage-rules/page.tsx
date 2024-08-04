@@ -1,12 +1,12 @@
 'use client'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import Layout from '@/components/Layout'
 import SelectMenu from '@/components/SelectMenu'
 import { useRules } from '@/hooks/useRules'
 import { CreateRuleDTO, Rule } from '@/types'
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
-export default function ManageRules(): JSX.Element {
+const ManageRules: FC = () => {
   const { rules, isLoading, error, addRule, deleteRule } = useRules()
   const [newRule, setNewRule] = useState<CreateRuleDTO>({
     code: '',
@@ -183,3 +183,5 @@ export default function ManageRules(): JSX.Element {
     </Layout>
   )
 }
+
+export default ManageRules
