@@ -27,7 +27,7 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white">
       <Disclosure as="nav" className="bg-white shadow-sm">
         {({ open }) => (
           <>
@@ -97,7 +97,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         <div className="py-6"></div>
 
         <main>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
+          <div className="mx-auto mb-7 max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </div>

@@ -49,7 +49,7 @@ const ManageRules: FC = () => {
   return (
     <Layout>
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
-      <div className="bg-white shadow sm:rounded-lg">
+      <div className="bg-white shadow-lg sm:rounded-lg">
         <form onSubmit={handleAddRule} className="space-y-4 p-6">
           <div className="space-y-6">
             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
