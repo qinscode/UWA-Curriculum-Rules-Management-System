@@ -1,7 +1,7 @@
 'use client'
 import React, { ReactNode } from 'react'
 import Link from 'next/link'
-import { Disclosure } from '@headlessui/react'
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 interface NavigationItem {
@@ -68,10 +68,10 @@ export default function Layout({ children }: LayoutProps): JSX.Element {
               </div>
             </div>
 
-            <Disclosure.Panel className="sm:hidden">
+            <DisclosurePanel className="sm:hidden">
               <div className="space-y-1 pb-3 pt-2">
                 {navigation.map((item) => (
-                  <Disclosure.Button
+                  <DisclosureButton
                     key={item.name}
                     as="a"
                     href={item.href}
@@ -84,10 +84,10 @@ export default function Layout({ children }: LayoutProps): JSX.Element {
                     aria-current={item.current ? 'page' : undefined}
                   >
                     {item.name}
-                  </Disclosure.Button>
+                  </DisclosureButton>
                 ))}
               </div>
-            </Disclosure.Panel>
+            </DisclosurePanel>
           </>
         )}
       </Disclosure>
