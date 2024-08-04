@@ -1,88 +1,103 @@
 // components/Layout.tsx
 'use client'
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-  Link,
-  Button,
-} from '@nextui-org/react'
-import React from 'react'
+import React, { ReactNode } from 'react'
+import Link from 'next/link'
+import { Disclosure } from '@headlessui/react'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+interface NavigationItem {
+  name: string
+  href: string
+  current?: boolean
+}
 
-  const menuItems = ['Home', 'Manage Rules', 'Generate Documents', 'Settings']
+const navigation: NavigationItem[] = [
+  { name: 'Home', href: '/' },
+  { name: 'Manage Rules', href: '/manage-rules' },
+  { name: 'Generate Documents', href: '/generate-documents' },
+  { name: 'Settings', href: '/settings' },
+]
 
+function classNames(...classes: string[]): string {
+  return classes.filter(Boolean).join(' ')
+}
+
+interface LayoutProps {
+  children: ReactNode
+}
+
+export default function Layout({ children }: LayoutProps): JSX.Element {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar onMenuOpenChange={setIsMenuOpen}>
-        <NavbarContent>
-          <NavbarMenuToggle
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            className="sm:hidden"
-          />
-          <NavbarBrand>
-            <p className="font-bold text-inherit">CRMS</p>
-          </NavbarBrand>
-        </NavbarContent>
+    <div className="min-h-screen bg-gray-100">
+      <Disclosure as="nav" className="bg-white shadow-sm">
+        {({ open }: { open: boolean }) => (
+          <>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="flex h-16 justify-between">
+                <div className="flex">
+                  <div className="flex flex-shrink-0 items-center">
+                    <span className="text-2xl font-bold text-indigo-600">CRMS</span>
+                  </div>
+                  <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
+                    {navigation.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={classNames(
+                          item.current
+                            ? 'border-indigo-500 text-gray-900'
+                            : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                          'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'
+                        )}
+                        aria-current={item.current ? 'page' : undefined}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+                <div className="-mr-2 flex items-center sm:hidden">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </Disclosure.Button>
+                </div>
+              </div>
+            </div>
 
-        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-          <NavbarItem>
-            <Link color="foreground" href="/">
-              Home
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link href="/manage-rules" aria-current="page">
-              Manage Rules
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="/generate-documents">
-              Generate Documents
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="/settings">
-              Settings
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-        {/* <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>
-      </NavbarContent> */}
-        <NavbarMenu>
-          {menuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2 ? 'primary' : index === menuItems.length - 1 ? 'danger' : 'foreground'
-                }
-                className="w-full"
-                href="/"
-                size="lg"
-              >
-                {item}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </NavbarMenu>
-      </Navbar>
-      <main className="flex-grow p-8">
-        <div className="mx-auto max-w-4xl">{children}</div>
-      </main>
+            <Disclosure.Panel className="sm:hidden">
+              <div className="space-y-1 pb-3 pt-2">
+                {navigation.map((item) => (
+                  <Disclosure.Button
+                    key={item.name}
+                    as="a"
+                    href={item.href}
+                    className={classNames(
+                      item.current
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                        : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800',
+                      'block border-l-4 py-2 pl-3 pr-4 text-base font-medium'
+                    )}
+                    aria-current={item.current ? 'page' : undefined}
+                  >
+                    {item.name}
+                  </Disclosure.Button>
+                ))}
+              </div>
+            </Disclosure.Panel>
+          </>
+        )}
+      </Disclosure>
+
+      <div className="py-10">
+        <main>
+          <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">{children}</div>
+        </main>
+      </div>
     </div>
   )
 }

@@ -7,12 +7,16 @@ export interface Rule {
 }
 
 export interface Settings {
+  courseType: string
+  description: string
   id: number
   universityName: string
   academicYear: string
   pdfTemplate: string
   handbookFormat: 'pdf' | 'html' | 'docx'
   defaultUserRole: 'admin' | 'editor' | 'viewer'
+  theme: string;
+  language: string;
 }
 
 export type CreateRuleDTO = Omit<Rule, 'id'>

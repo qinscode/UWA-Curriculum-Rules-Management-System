@@ -1,27 +1,19 @@
-import { Select, SelectItem } from '@nextui-org/react'
-
 import { Settings } from '../../types'
 
 interface UserManagementSettingsProps {
-  settings: Pick<Settings, 'defaultUserRole'>
-  onChange: (newSettings: Partial<Pick<Settings, 'defaultUserRole'>>) => void
+  settings: Settings
+  onChange: (newSettings: Partial<Settings>) => void
 }
 
-export function UserManagementSettings({ settings, onChange }: UserManagementSettingsProps) {
+export function UserManagementSettings({
+  settings,
+  onChange,
+}: UserManagementSettingsProps): JSX.Element {
+  // Add user management settings here
   return (
     <div>
-      <h3 className="mb-2 text-xl font-bold">User Management</h3>
-      <Select label="Default User Role" defaultSelectedKeys={['editor']}>
-        <SelectItem key="admin" value="admin">
-          Admin
-        </SelectItem>
-        <SelectItem key="editor" value="editor">
-          Editor
-        </SelectItem>
-        <SelectItem key="viewer" value="viewer">
-          Viewer
-        </SelectItem>
-      </Select>
+      <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">User Management Settings</h3>
+      {/* Add user management settings fields here */}
     </div>
   )
 }
