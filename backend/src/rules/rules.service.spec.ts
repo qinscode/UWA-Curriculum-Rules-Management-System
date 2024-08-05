@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { RulesController } from './rules.controller';
-import { RulesService } from './rules.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { RulesController } from './rules.controller'
+import { RulesService } from './rules.service'
 
 describe('RulesController', () => {
-  let controller: RulesController;
-  let service: RulesService;
+  let controller: RulesController
+  let service: RulesService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -13,27 +13,26 @@ describe('RulesController', () => {
         {
           provide: RulesService,
           useValue: {
-            findAll: jest.fn().mockResolvedValue([
-              { id: 1, code: 'CS101', name: 'Intro to CS', type: 'Standard' },
-            ]),
+            findAll: jest
+              .fn()
+              .mockResolvedValue([{ id: 1, code: 'CS101', name: 'Intro to CS', type: 'Standard' }]),
           },
         },
       ],
-    }).compile();
+    }).compile()
 
-    controller = module.get<RulesController>(RulesController);
-    service = module.get<RulesService>(RulesService);
-  });
+    controller = module.get<RulesController>(RulesController)
+    service = module.get<RulesService>(RulesService)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    expect(controller).toBeDefined()
+  })
 
   it('should return all rules', async () => {
     expect(await controller.findAll()).toEqual([
       { id: 1, code: 'CS101', name: 'Intro to CS', type: 'Standard' },
-    ]);
-    expect(service.findAll).toHaveBeenCalled();
-  });
-
-});
+    ])
+    expect(service.findAll).toHaveBeenCalled()
+  })
+})

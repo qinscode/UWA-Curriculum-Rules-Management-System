@@ -1,6 +1,6 @@
-import { Controller, Get, Put, Body } from '@nestjs/common';
-import { SettingsService } from './settings.service';
-import { UpdateSettingsDto } from './dto/settings.dto';
+import { Controller, Get, Put, Body } from '@nestjs/common'
+import { SettingsService } from './settings.service'
+import { UpdateSettingsDto } from './dto/settings.dto'
 
 @Controller('settings')
 export class SettingsController {
@@ -8,11 +8,11 @@ export class SettingsController {
 
   @Get()
   getSettings() {
-    return this.settingsService.getSettings();
+    return this.settingsService.getSettings()
   }
 
   @Put()
   updateSettings(@Body() updateSettingsDto: UpdateSettingsDto) {
-    return this.settingsService.updateSettings(updateSettingsDto);
+    return this.settingsService.updateSettings(updateSettingsDto)
   }
 }

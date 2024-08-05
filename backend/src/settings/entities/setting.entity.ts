@@ -1,25 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn } from 'typeorm'
 
 @Entity('settings')
 export class Setting {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column()
-  universityName: string;
+  universityName: string
 
   @Column({ length: 9 })
-  academicYear: string;
+  academicYear: string
 
   @Column()
-  pdfTemplate: string;
+  pdfTemplate: string
 
   @Column({ type: 'enum', enum: ['pdf', 'html', 'docx'] })
-  handbookFormat: string;
+  handbookFormat: string
 
   @Column({ type: 'enum', enum: ['admin', 'editor', 'viewer'] })
-  defaultUserRole: string;
+  defaultUserRole: string
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at: Date
 }
