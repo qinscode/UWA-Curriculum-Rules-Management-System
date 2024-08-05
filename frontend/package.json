@@ -17,14 +17,12 @@
     "dotenv": "^16.4.5",
     "framer-motion": "^11.3.21",
     "next": "14.2.5",
-    "prismjs": "^1.29.0",
     "react": "^18",
     "react-dom": "^18",
     "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/prismjs": "^1.26.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
