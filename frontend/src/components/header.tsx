@@ -12,12 +12,14 @@ import { FC } from 'react'
 const cards = [
   {
     name: 'Manage Rules',
-    description: 'Create, edit, and delete course rules for your institution.',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin placerat hendrerit lacus sed semper. Nullam aliquam faucibus ipsum, sit amet elementum nunc gravida a',
     icon: DocumentDuplicateIcon,
   },
   {
     name: 'Generate Documents',
-    description: 'Generate PDFs for specific courses or create a complete handbook.',
+    description:
+      'Phasellus maximus turpis vitae odio mollis, vel pellentesque felis vestibulum. Donec ante metus, efficitur a massa in, feugiat iaculis justo.',
     icon: PaperClipIcon,
   },
   {
@@ -29,7 +31,7 @@ const cards = [
   {
     name: 'Data Export',
     description:
-      'Ratione et porro eligendi est sed ratione rerum itaque. Placeat accusantium impedit eum odit.',
+      'Quisque ac bibendum augue, eu tincidunt lorem. Quisque porta erat suscipit odio efficitur, nec iaculis metus ultricies. Sed vel vestibulum diam, quis suscipit dui. Integer eleifend non nunc a placerat.',
     icon: ArrowDownTrayIcon,
   },
 ]

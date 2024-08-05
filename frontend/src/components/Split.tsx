@@ -49,7 +49,13 @@ const Split: FC = () => {
             Manage Rules
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Create, edit, and delete course rules for your institution.
+            Proin mattis metus ut odio cursus, in mollis ipsum lobortis. Etiam sollicitudin purus
+            sollicitudin libero facilisis, laoreet tempor nibh cursus. In at enim quam. Duis non
+            eros nec urna tempus vulputate. Duis porttitor, ex a pretium interdum, justo urna
+            malesuada quam, eget pellentesque leo dui ut mauris. Donec non est maximus, eleifend
+            neque quis, congue augue. Pellentesque porttitor eleifend tellus quis euismod.
+            Pellentesque id dui vitae ante sollicitudin sodales. Proin vel mattis risus. Donec
+            sodales risus vel nisi consequat, id tempus diam hendrerit.{' '}
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <a

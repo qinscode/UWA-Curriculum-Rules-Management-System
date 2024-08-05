@@ -5,6 +5,8 @@ import { FC } from 'react'
 import Example from '@/components/header'
 import Footer from '@/components/Footer'
 import Split from '@/components/Split'
+import TimeLine from '@/components/Timeline'
+import CodePanel from '@/components/CodePanel'
 
 const Home: FC = () => {
   return (
@@ -15,6 +17,9 @@ const Home: FC = () => {
         </div>
       </Layout>
       <Split />
+      <CodePanel />
+
+      <TimeLine />
       <Footer />
     </>
   )
