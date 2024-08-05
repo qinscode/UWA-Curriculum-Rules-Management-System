@@ -32,7 +32,7 @@ const SettingsPage: FC = () => {
   }
 
   if (error) return <div className="py-4 text-red-600">Error: {error}</div>
-  if (!localSettings) return <div className="py-4 text-center">No settings available.</div>
+  if (!localSettings) return <></>
 
   return (
     <Layout>
