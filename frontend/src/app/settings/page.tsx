@@ -68,8 +68,6 @@ const SettingsPage: FC = () => {
                   ]}
                 />
               </div>
-
-              {/* Add more settings fields based on your Settings type */}
             </div>
           </div>
         </div>
