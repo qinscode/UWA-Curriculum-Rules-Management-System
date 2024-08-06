@@ -11,6 +11,7 @@ import RuleHistory from '@/components/manage-rules/RuleHistory'
 import { apiClient } from '@/lib/api-client'
 import { debounce } from 'lodash'
 import SearchInput from '@/components/manage-rules/SearchInput'
+import Footer from '@/components/Footer'
 
 const ManageRules: React.FC = () => {
   const queryClient = useQueryClient()
@@ -132,43 +133,46 @@ const ManageRules: React.FC = () => {
   const totalPages = Math.ceil(total / pageSize)
 
   return (
-    <Layout>
-      <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
+    <>
+      <Layout>
+        <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
 
-      <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
-        <RuleForm
-          rule={editingRule || { code: '', name: '', type: 'standard', description: '' }}
-          setRule={(rule: Rule | CreateRuleDTO) => setEditingRule(rule as Rule)}
-          handleSubmit={handleSubmitRule}
-          isEditing={!!editingRule && 'id' in editingRule}
-          cancelEdit={() => setEditingRule(null)}
-        />
-      </div>
+        <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
+          <RuleForm
+            rule={editingRule || { code: '', name: '', type: 'standard', description: '' }}
+            setRule={(rule: Rule | CreateRuleDTO) => setEditingRule(rule as Rule)}
+            handleSubmit={handleSubmitRule}
+            isEditing={!!editingRule && 'id' in editingRule}
+            cancelEdit={() => setEditingRule(null)}
+          />
+        </div>
 
-      <SearchInput value={searchTerm} onChange={handleSearchChange} />
+        <SearchInput value={searchTerm} onChange={handleSearchChange} />
 
-      <div className="mt-8 overflow-hidden bg-white shadow sm:rounded-lg">
-        <RuleTable
-          rules={rules}
-          onEdit={setEditingRule}
-          onDelete={handleDeleteRule}
-          onShowHistory={handleShowHistory}
-        />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      </div>
+        <div className="mt-8 overflow-hidden bg-white shadow sm:rounded-lg">
+          <RuleTable
+            rules={rules}
+            onEdit={setEditingRule}
+            onDelete={handleDeleteRule}
+            onShowHistory={handleShowHistory}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
 
-      {showHistory !== null && (
-        <RuleHistory
-          history={ruleHistory}
-          onClose={() => setShowHistory(null)}
-          onRestore={handleRestoreVersion}
-        />
-      )}
-    </Layout>
+        {showHistory !== null && (
+          <RuleHistory
+            history={ruleHistory}
+            onClose={() => setShowHistory(null)}
+            onRestore={handleRestoreVersion}
+          />
+        )}
+      </Layout>
+      <Footer />
+    </>
   )
 }
 

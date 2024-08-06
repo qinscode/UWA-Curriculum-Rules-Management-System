@@ -103,7 +103,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
           </main>
         </div>
       </div>
-      <Footer />
     </>
   )
 }

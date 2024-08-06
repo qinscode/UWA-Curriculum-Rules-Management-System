@@ -14,7 +14,6 @@ const Home: FC = () => {
         </div>
       </Layout>
       <Split />
-
       <TimeLine />
       <Footer />
     </>
