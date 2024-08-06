@@ -28,6 +28,8 @@ export class RulesService {
       query.where('rule.code LIKE :search', { search: `%${search}%` })
     }
 
+    query.orderBy('rule.code', 'ASC')
+
     const [rules, total] = await query
       .skip((page - 1) * limit)
       .take(limit)
@@ -90,6 +92,7 @@ export class RulesService {
         return null
       }
 
+      // 只更新规则，不创建新的历史记录
       Object.assign(rule, {
         code: historicalRule.code,
         name: historicalRule.name,
@@ -100,8 +103,8 @@ export class RulesService {
       const restoredRule = await this.rulesRepository.save(rule)
       console.log(`Rule ${id} restored to version ${version}`)
 
-      await this.createRuleHistory(restoredRule)
-      console.log(`New history entry created for restored rule ${id}`)
+      // 移除这行，不再创建新的历史记录
+      // await this.createRuleHistory(restoredRule);
 
       return this.toRuleDto(restoredRule)
     } catch (error) {
