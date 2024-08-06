@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Layout from '@/components/Layout'
 import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
@@ -9,6 +9,7 @@ import RuleTable from '@/components/manage-rules/RuleTable'
 import Pagination from '@/components/manage-rules/Pagination'
 import RuleHistory from '@/components/manage-rules/RuleHistory'
 import { apiClient } from '@/lib/api-client'
+import { debounce } from 'lodash'
 
 const ManageRules: React.FC = () => {
   const queryClient = useQueryClient()
@@ -27,6 +28,21 @@ const ManageRules: React.FC = () => {
       staleTime: 5000,
     }
   )
+
+  const debouncedSearch = debounce((value: string) => {
+    setSearchTerm(value)
+    setCurrentPage(1)
+  }, 300)
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel()
+    }
+  }, [])
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    debouncedSearch(e.target.value)
+  }
 
   const addRuleMutation = useMutation((newRule: CreateRuleDTO) => apiClient.addRule(newRule), {
     onSuccess: () => {
@@ -117,11 +133,7 @@ const ManageRules: React.FC = () => {
     <Layout>
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
 
-      <SearchForm
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        handleSearch={handleSearch}
-      />
+      {/* <SearchForm searchTerm={searchTerm} onChange={handleSearchChange} /> */}
 
       <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
         <RuleForm

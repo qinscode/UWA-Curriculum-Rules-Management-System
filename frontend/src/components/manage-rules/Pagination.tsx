@@ -10,13 +10,6 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const paginationRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    // Smooth scroll to the pagination component when the page changes
-    if (paginationRef.current) {
-      paginationRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }
-  }, [currentPage])
-
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       onPageChange(newPage)
