@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+} from 'typeorm'
+import { RuleHistory } from './rule-history.entity'
 
 @Entity('rules')
 export class Rule {
@@ -22,4 +30,7 @@ export class Rule {
 
   @UpdateDateColumn()
   updated_at: Date
+
+  @OneToMany(() => RuleHistory, (history) => history.rule)
+  history: RuleHistory[]
 }
