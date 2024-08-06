@@ -6,6 +6,11 @@ export interface Rule {
   description: string
 }
 
+export interface RuleHistory extends Rule {
+  version: number
+  timestamp: string
+}
+
 export interface Settings {
   courseType: string
   description: string
@@ -17,6 +22,17 @@ export interface Settings {
   defaultUserRole: 'admin' | 'editor' | 'viewer'
   theme: string
   language: string
+}
+
+export interface RuleHistoryDto {
+  id: number
+  ruleId: number
+  code: string
+  name: string
+  type: string
+  description: string
+  version: number
+  timestamp: string
 }
 
 export type CreateRuleDTO = Omit<Rule, 'id'>
