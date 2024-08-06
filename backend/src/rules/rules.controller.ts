@@ -23,11 +23,18 @@ export class RulesController {
 
   @Get()
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('search') search = ''
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+    @Query('search') search: string = ''
   ): Promise<{ rules: Rule[]; total: number }> {
-    return this.rulesService.findAll(page, limit, search)
+    const parsedPage = parseInt(page, 10)
+    const parsedLimit = parseInt(limit, 10)
+
+    if (isNaN(parsedPage) || isNaN(parsedLimit)) {
+      throw new HttpException('Invalid page or limit parameter', HttpStatus.BAD_REQUEST)
+    }
+
+    return this.rulesService.findAll(parsedPage, parsedLimit, search)
   }
 
   @Get(':id')
