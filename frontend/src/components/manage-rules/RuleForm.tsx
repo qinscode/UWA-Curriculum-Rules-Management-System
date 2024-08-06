@@ -5,7 +5,7 @@ import { CreateRuleDTO, Rule } from '@/types'
 interface RuleFormProps {
   rule: CreateRuleDTO | Rule
   setRule: (rule: CreateRuleDTO | Rule) => void
-  handleSubmit: (e: React.FormEvent) => void
+  handleSubmit: (e: React.FormEvent) => Promise<void>
   isEditing: boolean
   cancelEdit?: () => void
 }
@@ -20,6 +20,7 @@ const RuleForm: React.FC<RuleFormProps> = ({
   const updateRule = (field: keyof (CreateRuleDTO & Rule), value: string) => {
     setRule({ ...rule, [field]: value })
   }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-6">
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -48,7 +49,7 @@ const RuleForm: React.FC<RuleFormProps> = ({
               name="name"
               id="name"
               value={rule.name}
-              onChange={(e) => setRule({ ...rule, name: e.target.value })}
+              onChange={(e) => updateRule('name', e.target.value)}
               className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -57,7 +58,7 @@ const RuleForm: React.FC<RuleFormProps> = ({
           <SelectMenu
             label="Course Type"
             value={rule.type}
-            onChange={(value) => setRule({ ...rule, type: value })}
+            onChange={(value) => updateRule('type', value)}
             options={[
               { value: 'standard', label: 'Standard' },
               { value: 'custom', label: 'Custom' },
@@ -77,14 +78,14 @@ const RuleForm: React.FC<RuleFormProps> = ({
               name="description"
               rows={3}
               value={rule.description}
-              onChange={(e) => setRule({ ...rule, description: e.target.value })}
+              onChange={(e) => updateRule('description', e.target.value)}
               className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
         </div>
       </div>
       <div className="mt-6 flex items-center justify-end gap-x-6">
-        {isEditing && (
+        {isEditing && cancelEdit && (
           <button
             type="button"
             onClick={cancelEdit}

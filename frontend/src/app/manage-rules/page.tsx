@@ -1,91 +1,77 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Layout from '@/components/Layout'
-import { useRules } from '@/hooks/useRules'
 import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
 import SearchForm from '@/components/manage-rules/SearchForm'
 import RuleForm from '@/components/manage-rules/RuleForm'
 import RuleTable from '@/components/manage-rules/RuleTable'
 import Pagination from '@/components/manage-rules/Pagination'
 import RuleHistory from '@/components/manage-rules/RuleHistory'
+import { apiClient } from '@/lib/api-client'
 
 const ManageRules: React.FC = () => {
-  const {
-    rules,
-    isLoading,
-    error,
-    addRule,
-    updateRule,
-    deleteRule,
-    fetchRuleHistory,
-    restoreRuleVersion,
-    totalRules,
-    currentPage,
-    changePage,
-    searchTerm,
-    setSearchTerm,
-    pageSize,
-    fetchRules,
-  } = useRules()
-
-  const [newRule, setNewRule] = useState<CreateRuleDTO>({
-    code: '',
-    name: '',
-    type: 'standard',
-    description: '',
-  })
+  const queryClient = useQueryClient()
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchTerm, setSearchTerm] = useState('')
   const [editingRule, setEditingRule] = useState<Rule | null>(null)
   const [showHistory, setShowHistory] = useState<number | null>(null)
   const [ruleHistory, setRuleHistory] = useState<RuleHistoryDto[]>([])
-  const historyRef = useRef<HTMLDivElement>(null)
+  const pageSize = 10
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    changePage(1) // Reset to first page when searching
-    fetchRules()
-  }
-
-  const handleAddRule = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      await addRule(newRule)
-      setNewRule({ code: '', name: '', type: 'standard', description: '' })
-      fetchRules()
-    } catch (err) {
-      console.error('Failed to add rule:', err)
+  const { data, isLoading, error } = useQuery(
+    ['rules', currentPage, searchTerm],
+    () => apiClient.getRules(currentPage, pageSize, searchTerm),
+    {
+      keepPreviousData: true,
+      staleTime: 5000,
     }
-  }
+  )
 
-  const handleUpdateRule = async (e: React.FormEvent) => {
+  const addRuleMutation = useMutation((newRule: CreateRuleDTO) => apiClient.addRule(newRule), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('rules')
+      setEditingRule(null)
+    },
+  })
+
+  const updateRuleMutation = useMutation(
+    ({ id, rule }: { id: number; rule: UpdateRuleDTO }) => apiClient.updateRule(id, rule),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('rules')
+        setEditingRule(null)
+      },
+    }
+  )
+
+  const deleteRuleMutation = useMutation((id: number) => apiClient.deleteRule(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries('rules')
+    },
+  })
+
+  const handleSubmitRule = async (e: React.FormEvent) => {
     e.preventDefault()
     if (editingRule) {
-      try {
-        await updateRule(editingRule.id, editingRule)
-        setEditingRule(null)
-        fetchRules()
-      } catch (err) {
-        console.error('Failed to update rule:', err)
+      if ('id' in editingRule) {
+        const { id, ...updateData } = editingRule
+        updateRuleMutation.mutate({ id, rule: updateData })
+      } else {
+        addRuleMutation.mutate(editingRule as CreateRuleDTO)
       }
     }
   }
 
-  const handleDeleteRule = async (id: number) => {
-    try {
-      await deleteRule(id)
-      fetchRules()
-    } catch (err) {
-      console.error('Failed to delete rule:', err)
-    }
+  const handleDeleteRule = (id: number) => {
+    deleteRuleMutation.mutate(id)
   }
 
   const handleShowHistory = async (id: number) => {
     try {
-      const history = await fetchRuleHistory(id)
+      const history = await apiClient.getRuleHistory(id)
       setRuleHistory(history)
       setShowHistory(id)
-      setTimeout(() => {
-        historyRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 100)
     } catch (err) {
       console.error('Failed to fetch rule history:', err)
     }
@@ -93,21 +79,23 @@ const ManageRules: React.FC = () => {
 
   const handleRestoreVersion = async (ruleId: number, version: number) => {
     try {
-      const restoredRule = await restoreRuleVersion(ruleId, version)
+      const restoredRule = await apiClient.restoreRuleVersion(ruleId, version)
       setEditingRule(restoredRule)
       setShowHistory(null)
-      fetchRules()
+      queryClient.invalidateQueries('rules')
     } catch (err) {
       console.error('Failed to restore rule version:', err)
     }
   }
 
   const handlePageChange = (newPage: number) => {
-    changePage(newPage)
-    fetchRules()
+    setCurrentPage(newPage)
   }
 
-  const totalPages = Math.ceil(totalRules / pageSize)
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    setCurrentPage(1)
+  }
 
   if (isLoading)
     return (
@@ -118,9 +106,12 @@ const ManageRules: React.FC = () => {
   if (error)
     return (
       <Layout>
-        <div className="py-4 text-red-600">Error: {error}</div>
+        <div className="py-4 text-red-600">Error: {(error as Error).message}</div>
       </Layout>
     )
+
+  const { rules, total } = data || { rules: [], total: 0 }
+  const totalPages = Math.ceil(total / pageSize)
 
   return (
     <Layout>
@@ -134,12 +125,10 @@ const ManageRules: React.FC = () => {
 
       <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
         <RuleForm
-          rule={editingRule || newRule}
-          setRule={
-            (editingRule ? setEditingRule : setNewRule) as (rule: Rule | CreateRuleDTO) => void
-          }
-          handleSubmit={editingRule ? handleUpdateRule : handleAddRule}
-          isEditing={!!editingRule}
+          rule={editingRule || { code: '', name: '', type: 'standard', description: '' }}
+          setRule={(rule: Rule | CreateRuleDTO) => setEditingRule(rule as Rule)}
+          handleSubmit={handleSubmitRule}
+          isEditing={!!editingRule && 'id' in editingRule}
           cancelEdit={() => setEditingRule(null)}
         />
       </div>
@@ -159,13 +148,11 @@ const ManageRules: React.FC = () => {
       </div>
 
       {showHistory !== null && (
-        <div ref={historyRef}>
-          <RuleHistory
-            history={ruleHistory}
-            onClose={() => setShowHistory(null)}
-            onRestore={handleRestoreVersion}
-          />
-        </div>
+        <RuleHistory
+          history={ruleHistory}
+          onClose={() => setShowHistory(null)}
+          onRestore={handleRestoreVersion}
+        />
       )}
     </Layout>
   )
