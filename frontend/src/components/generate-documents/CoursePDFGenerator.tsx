@@ -11,18 +11,18 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({ onGenerate, isGenerat
   const [selectedCourse, setSelectedCourse] = useState<string>('')
   const [rules, setRules] = useState<Rule[]>([])
 
-  useEffect(() => {
-    const fetchRules = async () => {
-      try {
-        const data = await apiClient.getRules()
-        setRules(data)
-      } catch (error) {
-        console.error('Failed to fetch rules:', error)
-      }
-    }
+  // useEffect(() => {
+  //   const fetchRules = async () => {
+  //     try {
+  //       const data = await apiClient.getRules()
+  //       setRules(data)
+  //     } catch (error) {
+  //       console.error('Failed to fetch rules:', error)
+  //     }
+  //   }
 
-    fetchRules()
-  }, [])
+  //   fetchRules()
+  // }, [])
 
   const handleGenerate = () => {
     if (selectedCourse) {
