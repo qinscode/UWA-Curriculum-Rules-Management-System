@@ -1,7 +1,14 @@
-import { Rule, Settings, CreateRuleDTO, UpdateRuleDTO, UpdateSettingsDTO } from '../types'
+import {
+  Rule,
+  CreateRuleDTO,
+  UpdateRuleDTO,
+  RuleHistoryDto,
+  Settings,
+  UpdateSettingsDTO,
+} from '../types'
 import urljoin from 'url-join'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://cab.fudong.dev/api/'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6015/api/'
 
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
   const fullUrl = urljoin(API_BASE_URL, url)
@@ -28,12 +35,25 @@ async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> 
 }
 
 export const apiClient = {
-  getRules: () => fetchJson<Rule[]>('rules'),
+  getRules: async (page: number, limit: number, search: string = '') => {
+    try {
+      const data = await fetchJson<{ rules: Rule[]; total: number }>(
+        `rules?page=${page}&limit=${limit}&search=${search}`
+      )
+      return { rules: data.rules || [], total: data.total || 0 }
+    } catch (error) {
+      console.error('Error fetching rules:', error)
+      return { rules: [], total: 0 }
+    }
+  },
   addRule: (rule: CreateRuleDTO) =>
     fetchJson<Rule>('rules', { method: 'POST', body: JSON.stringify(rule) }),
   updateRule: (id: number, rule: UpdateRuleDTO) =>
     fetchJson<Rule>(`rules/${id}`, { method: 'PUT', body: JSON.stringify(rule) }),
   deleteRule: (id: number) => fetchJson<void>(`rules/${id}`, { method: 'DELETE' }),
+  getRuleHistory: (id: number) => fetchJson<RuleHistoryDto[]>(`rules/${id}/history`),
+  restoreRuleVersion: (id: number, version: number) =>
+    fetchJson<Rule>(`rules/${id}/restore/${version}`, { method: 'PUT' }),
 
   getSettings: () => fetchJson<Settings>('settings'),
   updateSettings: (settings: UpdateSettingsDTO) =>

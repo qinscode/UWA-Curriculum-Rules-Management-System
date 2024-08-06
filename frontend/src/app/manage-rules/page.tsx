@@ -1,37 +1,113 @@
 'use client'
-import React, { FC, useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import Layout from '@/components/Layout'
-import SelectMenu from '@/components/SelectMenu'
 import { useRules } from '@/hooks/useRules'
-import { CreateRuleDTO, Rule } from '@/types'
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
+import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
+import SearchForm from '@/components/manage-rules/SearchForm'
+import RuleForm from '@/components/manage-rules/RuleForm'
+import RuleTable from '@/components/manage-rules/RuleTable'
+import Pagination from '@/components/manage-rules/Pagination'
+import RuleHistory from '@/components/manage-rules/RuleHistory'
 
-const ManageRules: FC = () => {
-  const { rules, isLoading, error, addRule, deleteRule } = useRules()
+const ManageRules: React.FC = () => {
+  const {
+    rules,
+    isLoading,
+    error,
+    addRule,
+    updateRule,
+    deleteRule,
+    fetchRuleHistory,
+    restoreRuleVersion,
+    totalRules,
+    currentPage,
+    changePage,
+    searchTerm,
+    setSearchTerm,
+    pageSize,
+    fetchRules,
+  } = useRules()
+
   const [newRule, setNewRule] = useState<CreateRuleDTO>({
     code: '',
     name: '',
     type: 'standard',
     description: '',
   })
+  const [editingRule, setEditingRule] = useState<Rule | null>(null)
+  const [showHistory, setShowHistory] = useState<number | null>(null)
+  const [ruleHistory, setRuleHistory] = useState<RuleHistoryDto[]>([])
+  const historyRef = useRef<HTMLDivElement>(null)
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    changePage(1) // Reset to first page when searching
+    fetchRules()
+  }
 
   const handleAddRule = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
       await addRule(newRule)
       setNewRule({ code: '', name: '', type: 'standard', description: '' })
+      fetchRules()
     } catch (err) {
       console.error('Failed to add rule:', err)
+    }
+  }
+
+  const handleUpdateRule = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (editingRule) {
+      try {
+        await updateRule(editingRule.id, editingRule)
+        setEditingRule(null)
+        fetchRules()
+      } catch (err) {
+        console.error('Failed to update rule:', err)
+      }
     }
   }
 
   const handleDeleteRule = async (id: number) => {
     try {
       await deleteRule(id)
+      fetchRules()
     } catch (err) {
       console.error('Failed to delete rule:', err)
     }
   }
+
+  const handleShowHistory = async (id: number) => {
+    try {
+      const history = await fetchRuleHistory(id)
+      setRuleHistory(history)
+      setShowHistory(id)
+      setTimeout(() => {
+        historyRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
+    } catch (err) {
+      console.error('Failed to fetch rule history:', err)
+    }
+  }
+
+  const handleRestoreVersion = async (ruleId: number, version: number) => {
+    try {
+      const restoredRule = await restoreRuleVersion(ruleId, version)
+      setEditingRule(restoredRule)
+      setShowHistory(null)
+      fetchRules()
+    } catch (err) {
+      console.error('Failed to restore rule version:', err)
+    }
+  }
+
+  const handlePageChange = (newPage: number) => {
+    changePage(newPage)
+    fetchRules()
+  }
+
+  const totalPages = Math.ceil(totalRules / pageSize)
 
   if (isLoading)
     return (
@@ -49,137 +125,48 @@ const ManageRules: FC = () => {
   return (
     <Layout>
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
-      <div className="bg-white shadow-lg sm:rounded-lg">
-        <form onSubmit={handleAddRule} className="space-y-4 p-6">
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div className="sm:col-span-3">
-                <label htmlFor="code" className="block text-sm font-medium leading-6 text-gray-900">
-                  Course Code
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="code"
-                    id="code"
-                    value={newRule.code}
-                    onChange={(e) => setNewRule({ ...newRule, code: e.target.value })}
-                    className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
 
-              <div className="sm:col-span-3">
-                <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                  Course Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={newRule.name}
-                    onChange={(e) => setNewRule({ ...newRule, name: e.target.value })}
-                    className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
+      <SearchForm
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        handleSearch={handleSearch}
+      />
 
-              <div className="sm:col-span-3">
-                <SelectMenu
-                  label="Course Type"
-                  value={newRule.type}
-                  onChange={(value) => setNewRule({ ...newRule, type: value })}
-                  options={[
-                    { value: 'standard', label: 'Standard' },
-                    { value: 'custom', label: 'Custom' },
-                  ]}
-                />
-              </div>
-
-              <div className="col-span-full">
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Description
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows={3}
-                    value={newRule.description}
-                    onChange={(e) => setNewRule({ ...newRule, description: e.target.value })}
-                    className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 flex items-center justify-end">
-            <button
-              type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Add Rule
-            </button>
-          </div>
-        </form>
+      <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
+        <RuleForm
+          rule={editingRule || newRule}
+          setRule={
+            (editingRule ? setEditingRule : setNewRule) as (rule: Rule | CreateRuleDTO) => void
+          }
+          handleSubmit={editingRule ? handleUpdateRule : handleAddRule}
+          isEditing={!!editingRule}
+          cancelEdit={() => setEditingRule(null)}
+        />
       </div>
 
       <div className="mt-8 overflow-hidden bg-white shadow sm:rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                Code
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                Name
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                Type
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 bg-white">
-            {rules.map((rule) => (
-              <tr key={rule.id}>
-                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                  {rule.code}
-                </td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{rule.name}</td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{rule.type}</td>
-                <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                  <button
-                    onClick={() => handleDeleteRule(rule.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <RuleTable
+          rules={rules}
+          onEdit={setEditingRule}
+          onDelete={handleDeleteRule}
+          onShowHistory={handleShowHistory}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
+
+      {showHistory !== null && (
+        <div ref={historyRef}>
+          <RuleHistory
+            history={ruleHistory}
+            onClose={() => setShowHistory(null)}
+            onRestore={handleRestoreVersion}
+          />
+        </div>
+      )}
     </Layout>
   )
 }
