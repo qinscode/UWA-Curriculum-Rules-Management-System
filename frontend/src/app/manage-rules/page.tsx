@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Layout from '@/components/Layout'
 import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
-import SearchForm from '@/components/manage-rules/SearchForm'
+import SearchForm from '@/components/manage-rules/SearchInput'
 import RuleForm from '@/components/manage-rules/RuleForm'
 import RuleTable from '@/components/manage-rules/RuleTable'
 import Pagination from '@/components/manage-rules/Pagination'
 import RuleHistory from '@/components/manage-rules/RuleHistory'
 import { apiClient } from '@/lib/api-client'
 import { debounce } from 'lodash'
+import SearchInput from '@/components/manage-rules/SearchInput'
 
 const ManageRules: React.FC = () => {
   const queryClient = useQueryClient()
@@ -19,6 +20,11 @@ const ManageRules: React.FC = () => {
   const [showHistory, setShowHistory] = useState<number | null>(null)
   const [ruleHistory, setRuleHistory] = useState<RuleHistoryDto[]>([])
   const pageSize = 10
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value)
+    setCurrentPage(1)
+  }
 
   const { data, isLoading, error } = useQuery(
     ['rules', currentPage, searchTerm],
@@ -39,10 +45,6 @@ const ManageRules: React.FC = () => {
       debouncedSearch.cancel()
     }
   }, [])
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debouncedSearch(e.target.value)
-  }
 
   const addRuleMutation = useMutation((newRule: CreateRuleDTO) => apiClient.addRule(newRule), {
     onSuccess: () => {
@@ -133,8 +135,6 @@ const ManageRules: React.FC = () => {
     <Layout>
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
 
-      {/* <SearchForm searchTerm={searchTerm} onChange={handleSearchChange} /> */}
-
       <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
         <RuleForm
           rule={editingRule || { code: '', name: '', type: 'standard', description: '' }}
@@ -144,6 +144,8 @@ const ManageRules: React.FC = () => {
           cancelEdit={() => setEditingRule(null)}
         />
       </div>
+
+      <SearchInput value={searchTerm} onChange={handleSearchChange} />
 
       <div className="mt-8 overflow-hidden bg-white shadow sm:rounded-lg">
         <RuleTable

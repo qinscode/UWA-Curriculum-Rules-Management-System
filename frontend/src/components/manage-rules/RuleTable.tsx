@@ -35,6 +35,12 @@ const RuleTable: React.FC<RuleTableProps> = ({ rules, onEdit, onDelete, onShowHi
           scope="col"
           className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
         >
+          description
+        </th>
+        <th
+          scope="col"
+          className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+        >
           Actions
         </th>
       </tr>
@@ -47,6 +53,8 @@ const RuleTable: React.FC<RuleTableProps> = ({ rules, onEdit, onDelete, onShowHi
           </td>
           <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{rule.name}</td>
           <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{rule.type}</td>
+          <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{rule.description}</td>
+
           <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
             <button
               onClick={() => onEdit(rule)}
