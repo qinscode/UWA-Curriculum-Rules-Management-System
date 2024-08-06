@@ -4,7 +4,6 @@ import Layout from '@/components/Layout'
 import { useSettings } from '@/hooks/useSettings'
 import { Settings, UpdateSettingsDTO } from '@/types'
 import SelectMenu from '@/components/SelectMenu'
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import Footer from '@/components/Footer'
 
 const SettingsPage: FC = () => {

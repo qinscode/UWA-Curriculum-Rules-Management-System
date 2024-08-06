@@ -1,15 +1,13 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Layout from '@/components/Layout'
 import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
-import SearchForm from '@/components/manage-rules/SearchInput'
 import RuleForm from '@/components/manage-rules/RuleForm'
 import RuleTable from '@/components/manage-rules/RuleTable'
 import Pagination from '@/components/manage-rules/Pagination'
 import RuleHistory from '@/components/manage-rules/RuleHistory'
 import { apiClient } from '@/lib/api-client'
-import { debounce } from 'lodash'
 import SearchInput from '@/components/manage-rules/SearchInput'
 import Footer from '@/components/Footer'
 
@@ -35,17 +33,6 @@ const ManageRules: React.FC = () => {
       staleTime: 5000,
     }
   )
-
-  const debouncedSearch = debounce((value: string) => {
-    setSearchTerm(value)
-    setCurrentPage(1)
-  }, 300)
-
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel()
-    }
-  }, [])
 
   const addRuleMutation = useMutation((newRule: CreateRuleDTO) => apiClient.addRule(newRule), {
     onSuccess: () => {
