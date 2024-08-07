@@ -50,14 +50,11 @@ frontend/yarn.lock
 # Logs
 logs
 *.log
-npm-debug.log*
 pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
 lerna-debug.log*
 
-# OS
-.DS_Store
+
 
 # Tests
 /coverage
@@ -101,3 +98,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 backend/yarn.lock
 pdf
 pdfs
+
+#idea
+*/.idea/*
+*/.idea
