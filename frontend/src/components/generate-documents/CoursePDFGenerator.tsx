@@ -32,6 +32,7 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({ onGenerate, isGenerat
     if (selectedCourse) {
       try {
         const { url } = await apiClient.generateCoursePDF(selectedCourse)
+        console.log('PDF URL:', url)
         setPdfUrl(url)
       } catch (error) {
         console.error('Failed to generate PDF:', error)
