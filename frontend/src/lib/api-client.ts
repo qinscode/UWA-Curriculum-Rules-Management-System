@@ -62,5 +62,5 @@ export const apiClient = {
   exportRules: () => fetchJson<{ url: string }>('rules/export'),
   generateHandbook: () => fetchJson<{ url: string }>('handbook/generate'),
   generateCoursePDF: (courseId: string) =>
-    fetchJson<{ url: string }>(`courses/${courseId}/generate-pdf`),
+    fetchJson<{ url: string }>(`/documents/course/${courseId}/pdf`, { method: 'POST' }),
 }
