@@ -58,17 +58,24 @@ const SearchInput: React.FC<SearchInputProps> = ({ value, onChange }) => {
       {isOpen && filteredRules.length > 0 && (
         <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
           {filteredRules.map((rule) => (
-            <li
-              key={rule.id}
-              onClick={() => handleSelectRule(rule)}
-              className="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 hover:bg-indigo-600 hover:text-white"
-            >
-              <div className="flex flex-col">
-                <span className="font-semibold">
-                  {rule.code} - {rule.name}
-                </span>
-                <span className="text-sm text-gray-500">{rule.type}</span>
-              </div>
+            <li key={rule.id}>
+              <button
+                onClick={() => handleSelectRule(rule)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSelectRule(rule)
+                  }
+                }}
+                className="relative w-full cursor-default select-none py-2 pl-3 pr-9 text-left text-gray-900 hover:bg-indigo-600 hover:text-white"
+                type="button"
+              >
+                <div className="flex flex-col">
+                  <span className="font-semibold">
+                    {rule.code} - {rule.name}
+                  </span>
+                  <span className="text-sm text-gray-500">{rule.type}</span>
+                </div>
+              </button>
             </li>
           ))}
         </ul>

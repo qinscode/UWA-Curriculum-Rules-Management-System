@@ -1,11 +1,6 @@
 import React from 'react'
-import { PlusCircle } from 'lucide-react'
 import SelectMenu from '@/components/SelectMenu'
 import { CreateRuleDTO, Rule } from '@/types'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface RuleFormProps {
   rule: CreateRuleDTO | Rule
@@ -26,55 +21,38 @@ const RuleForm: React.FC<RuleFormProps> = ({
     setRule({ ...rule, [field]: value })
   }
 
-  const RuleSection = ({ number }: { number: number }) => (
-    <Card className="mt-4">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Rule {number}</CardTitle>
-        <Button variant="outline" size="sm">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Import Base Rule
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <Textarea
-          id={`rule${number}`}
-          value={rule.description}
-          onChange={(e) => updateRule('description', e.target.value)}
-          className="mt-2"
-          rows={3}
-        />
-      </CardContent>
-    </Card>
-  )
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-6">
       <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div className="sm:col-span-3">
-          <label htmlFor="code" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="code" className="block text-sm font-medium leading-6 text-gray-900">
             Course Code
           </label>
-          <Input
-            type="text"
-            name="code"
-            id="code"
-            value={rule.code}
-            onChange={(e) => updateRule('code', e.target.value)}
-            className="mt-1"
-          />
+          <div className="mt-2">
+            <input
+              type="text"
+              name="code"
+              id="code"
+              value={rule.code}
+              onChange={(e) => updateRule('code', e.target.value)}
+              className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
         </div>
         <div className="sm:col-span-3">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
             Course Name
           </label>
-          <Input
-            type="text"
-            name="name"
-            id="name"
-            value={rule.name}
-            onChange={(e) => updateRule('name', e.target.value)}
-            className="mt-1"
-          />
+          <div className="mt-2">
+            <input
+              type="text"
+              name="name"
+              id="name"
+              value={rule.name}
+              onChange={(e) => updateRule('name', e.target.value)}
+              className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
         </div>
         <div className="sm:col-span-3">
           <SelectMenu
@@ -82,33 +60,98 @@ const RuleForm: React.FC<RuleFormProps> = ({
             value={rule.type}
             onChange={(value) => updateRule('type', value)}
             options={[
-              { value: 'option', label: 'Option' },
-              { value: 'conversion', label: 'Conversion' },
-              { value: 'core', label: 'Core' },
+              { value: 'option', label: 'option' },
+              { value: 'conversion', label: 'conversion' },
+              { value: 'core', label: 'core' },
             ]}
           />
         </div>
         <div className="sm:col-span-3">
-          <label htmlFor="version" className="block text-sm font-medium text-gray-700">
-            Version Information
+          <label htmlFor="version" className="block text-sm font-medium leading-6 text-gray-900">
+            Version
           </label>
-          <Input type="text" name="version" id="version" className="mt-1" />
+          <div className="mt-2">
+            <input
+              type="text"
+              name="version"
+              id="version"
+              // value={rule.version}
+              // onChange={(e) => updateRule('version', e.target.value)}
+              className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div className="col-span-full">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Description
+          </label>
+          <div className="mt-2">
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              value={rule.description}
+              onChange={(e) => updateRule('description', e.target.value)}
+              className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div className="col-span-full">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Rule1
+          </label>
+          <div className="mt-2">
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              value={rule.description}
+              onChange={(e) => updateRule('description', e.target.value)}
+              className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div className="col-span-full">
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium leading-6 text-gray-900"
+          >
+            Rule1
+          </label>
+          <div className="mt-2">
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              value={rule.description}
+              onChange={(e) => updateRule('description', e.target.value)}
+              className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
         </div>
       </div>
-
-      <RuleSection number={1} />
-      <RuleSection number={2} />
-      <RuleSection number={3} />
-
       <div className="mt-6 flex items-center justify-end gap-x-6">
         {isEditing && cancelEdit && (
-          <Button variant="ghost" onClick={cancelEdit}>
+          <button
+            type="button"
+            onClick={cancelEdit}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Cancel
-          </Button>
+          </button>
         )}
-        <Button type="submit" variant="default">
+        <button
+          type="submit"
+          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
           {isEditing ? 'Update Rule' : 'Add Rule'}
-        </Button>
+        </button>
       </div>
     </form>
   )
