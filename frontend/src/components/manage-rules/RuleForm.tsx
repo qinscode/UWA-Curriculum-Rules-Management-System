@@ -60,9 +60,9 @@ const RuleForm: React.FC<RuleFormProps> = ({
             value={rule.type}
             onChange={(value) => updateRule('type', value)}
             options={[
-              { value: 'option', label: 'option' },
-              { value: 'conversion', label: 'conversion' },
-              { value: 'core', label: 'core' },
+              { value: 'Coursework', label: 'Coursework' },
+              { value: 'Master of Research', label: 'MasterResearch' },
+              { value: 'PhD', label: 'PhD' },
             ]}
           />
         </div>
