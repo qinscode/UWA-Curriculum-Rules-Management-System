@@ -9,31 +9,9 @@ import {
 import urljoin from 'url-join'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6015/api/'
-const PDF_URL_PREFIX = process.env.PDF_URL_PREFIX || 'http://localhost:6015/public/pdf/'
 
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
   const fullUrl = urljoin(API_BASE_URL, url)
-
-  const response = await fetch(fullUrl, {
-    ...options,
-    headers: {
-      ...options.headers,
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (!response.ok) {
-    console.error('API Error:', response.status, response.statusText)
-    throw new Error(`HTTP error! status: ${response.status}`)
-  }
-
-  const data = await response.json()
-  console.log('Response Data:', data)
-  return data
-}
-
-async function fetchPDF<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const fullUrl = urljoin(PDF_URL_PREFIX, url)
 
   const response = await fetch(fullUrl, {
     ...options,
@@ -81,5 +59,5 @@ export const apiClient = {
   exportRules: () => fetchJson<{ url: string }>('rules/export'),
   generateHandbook: () => fetchJson<{ url: string }>('handbook/generate'),
   generateCoursePDF: (courseId: string) =>
-    fetchPDF<{ url: string }>(`/course_1_rules.pdf`, { method: 'POST' }),
+    fetchJson<{ url: string }>(`/documents/course/1/pdf`, { method: 'GET' }),
 }

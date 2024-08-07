@@ -111,7 +111,7 @@ config()
 
 @Injectable()
 export class DocumentsService {
-  private readonly pdfDirectory = 'public/pdfs'
+  private readonly pdfDirectory = 'public/pdf'
 
   private readonly PDF_URL_PREFIX: string
 

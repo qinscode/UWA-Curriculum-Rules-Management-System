@@ -9,14 +9,4 @@ export class DocumentsController {
   generateCoursePDF(@Param('id') id: string) {
     return this.documentsService.generateCoursePDF(id)
   }
-
-  // @Get('handbook')
-  // generateHandbook() {
-  //   return this.documentsService.generateHandbook()
-  // }
-
-  // @Get('rules/export')
-  // exportRules() {
-  //   return this.documentsService.exportRules()
-  // }
 }
