@@ -24,7 +24,7 @@ export function useDocuments() {
       const response = await apiClient.generateHandbook()
       window.open(response.url, '_blank')
     } catch (err) {
-      setError('Failed to generate handbook')
+      setError('This function is not implemented yet')
       throw err
     } finally {
       setIsGenerating(false)
@@ -37,7 +37,7 @@ export function useDocuments() {
       const response = await apiClient.exportRules()
       window.open(response.url, '_blank')
     } catch (err) {
-      setError('Failed to export rules')
+      setError('This function is not implemented yet')
       throw err
     } finally {
       setIsGenerating(false)
