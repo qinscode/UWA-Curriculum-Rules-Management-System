@@ -5,18 +5,18 @@ import { DocumentsService } from './documents.service'
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
-  @Get('course-pdf/:courseId')
-  generateCoursePDF(@Param('courseId') courseId: string) {
-    return this.documentsService.generateCoursePDF(courseId)
+  @Get('course/:id/pdf')
+  generateCoursePDF(@Param('id') id: string) {
+    return this.documentsService.generateCoursePDF(id)
   }
 
-  @Get('handbook')
-  generateHandbook() {
-    return this.documentsService.generateHandbook()
-  }
+  // @Get('handbook')
+  // generateHandbook() {
+  //   return this.documentsService.generateHandbook()
+  // }
 
-  @Get('export-rules')
-  exportRules() {
-    return this.documentsService.exportRules()
-  }
+  // @Get('rules/export')
+  // exportRules() {
+  //   return this.documentsService.exportRules()
+  // }
 }
