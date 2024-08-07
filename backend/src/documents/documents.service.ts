@@ -4,6 +4,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { courseRulesTemplate } from './courseRulesTemplate'
 import { Rule } from 'src/types'
+import { config } from 'dotenv'
 
 const rules_list: Rule[] = [
   {
@@ -106,13 +107,22 @@ const rules_list: Rule[] = [
   },
 ]
 
+config()
+
 @Injectable()
 export class DocumentsService {
   private readonly pdfDirectory = 'public/pdfs'
 
+  private readonly PDF_URL_PREFIX: string
+
   constructor() {
     if (!fs.existsSync(this.pdfDirectory)) {
       fs.mkdirSync(this.pdfDirectory, { recursive: true })
+    }
+    this.PDF_URL_PREFIX = process.env.PDF_URL_PREFIX
+
+    if (!this.PDF_URL_PREFIX) {
+      throw new Error('PDF_URL_PREFIX is not defined in the environment variables')
     }
   }
 
@@ -136,6 +146,6 @@ export class DocumentsService {
 
     await browser.close()
 
-    return { url: `http://example.com/${fileName}` }
+    return { url: `${this.PDF_URL_PREFIX}/${fileName}` }
   }
 }
