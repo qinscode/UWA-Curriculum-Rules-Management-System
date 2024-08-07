@@ -1,3 +1,4 @@
+// RuleTable.tsx
 import React, { FC } from 'react'
 import { PencilIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/solid'
 

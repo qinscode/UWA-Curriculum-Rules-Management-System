@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Layout from '@/components/Layout'
 import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
@@ -19,6 +19,7 @@ const ManageRules: React.FC = () => {
   const [showHistory, setShowHistory] = useState<number | null>(null)
   const [ruleHistory, setRuleHistory] = useState<RuleHistoryDto[]>([])
   const pageSize = 10
+  const ruleHistoryRef = useRef<HTMLDivElement>(null)
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value)
@@ -83,6 +84,17 @@ const ManageRules: React.FC = () => {
     }
   }
 
+  // This effect handles the scrolling behavior when the `showHistory` state changes.
+  // When `showHistory` is not null, it waits for the DOM to update, then scrolls smoothly
+  // to the element referenced by `ruleHistoryRef` after a short delay.
+  useEffect(() => {
+    if (showHistory !== null) {
+      setTimeout(() => {
+        ruleHistoryRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 50)
+    }
+  }, [showHistory])
+
   const handleRestoreVersion = async (ruleId: number, version: number) => {
     try {
       const restoredRule = await apiClient.restoreRuleVersion(ruleId, version)
@@ -96,11 +108,6 @@ const ManageRules: React.FC = () => {
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    setCurrentPage(1)
   }
 
   if (isLoading)
@@ -151,11 +158,13 @@ const ManageRules: React.FC = () => {
         </div>
 
         {showHistory !== null && (
-          <RuleHistory
-            history={ruleHistory}
-            onClose={() => setShowHistory(null)}
-            onRestore={handleRestoreVersion}
-          />
+          <div ref={ruleHistoryRef}>
+            <RuleHistory
+              history={ruleHistory}
+              onClose={() => setShowHistory(null)}
+              onRestore={handleRestoreVersion}
+            />
+          </div>
         )}
       </Layout>
       <Footer />
