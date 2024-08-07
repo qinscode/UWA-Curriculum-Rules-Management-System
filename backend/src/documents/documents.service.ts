@@ -114,13 +114,15 @@ export class DocumentsService {
   private readonly pdfDirectory = 'public/pdf'
 
   private readonly PDF_URL_PREFIX: string
+  private readonly executablePath: string
+
 
   constructor() {
     if (!fs.existsSync(this.pdfDirectory)) {
       fs.mkdirSync(this.pdfDirectory, { recursive: true })
     }
     this.PDF_URL_PREFIX = process.env.PDF_URL_PREFIX
-
+    this.executablePath = process.env.executablePath
     if (!this.PDF_URL_PREFIX) {
       throw new Error('PDF_URL_PREFIX is not defined in the environment variables')
     }
@@ -130,8 +132,12 @@ export class DocumentsService {
     const fileName = `course_${courseId}_rules.pdf`
     const filePath = path.join(this.pdfDirectory, fileName)
 
-    const browser = await puppeteer.launch()
-    const page = await browser.newPage()
+    const browser = await puppeteer.launch({
+      headless:true,
+      args: ["--no-sandbox"],
+      ...(this.executablePath ? { executablePath: this.executablePath } : {})
+  });    
+  const page = await browser.newPage()
 
     // Use the template function to generate the HTML content
     const htmlContent = courseRulesTemplate(rules_list)
