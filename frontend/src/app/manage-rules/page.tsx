@@ -136,7 +136,7 @@ const ManageRules: React.FC = () => {
 
         <SearchInput value={searchTerm} onChange={handleSearchChange} />
 
-        <div className="mt-8 overflow-hidden bg-white shadow sm:rounded-lg">
+        <div className="mt-8 overflow-hidden bg-white shadow-lg sm:rounded-lg">
           <RuleTable
             rules={rules}
             onEdit={setEditingRule}
