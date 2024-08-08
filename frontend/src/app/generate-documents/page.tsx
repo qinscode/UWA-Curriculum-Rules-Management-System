@@ -22,10 +22,24 @@ const GenerateDocuments: FC = () => {
   } = useDocuments()
   const { rules, isLoading: rulesLoading, error: rulesError } = useRules()
   const [selectedCourse, setSelectedCourse] = useState('')
+  const [isPdfReady, setIsPdfReady] = useState(false)
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
 
-  const handleGenerateCoursePDF = () => {
+  const handleGenerateCoursePDF = async () => {
     if (selectedCourse) {
-      generateCoursePDF(selectedCourse)
+      try {
+        const url = await generateCoursePDF(selectedCourse)
+        setPdfUrl(url)
+        setIsPdfReady(true)
+      } catch (error) {
+        console.error('Failed to generate PDF:', error)
+      }
+    }
+  }
+
+  const handleDownloadPDF = () => {
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank')
     }
   }
 
@@ -72,6 +86,15 @@ const GenerateDocuments: FC = () => {
                     <DocumentTextIcon className="mr-2 h-5 w-5" />
                     Generate Course PDF
                   </button>
+                  {isPdfReady && (
+                    <button
+                      onClick={handleDownloadPDF}
+                      className="mt-2 flex w-full items-center justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                    >
+                      <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
+                      Download PDF
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
