@@ -3,12 +3,7 @@ import React, { useState, FC } from 'react'
 import Layout from '@/components/Layout'
 import SelectMenu from '@/components/SelectMenu'
 import { useDocuments } from '@/hooks/useDocuments'
-import {
-  PhotoIcon,
-  DocumentTextIcon,
-  ArrowDownTrayIcon,
-  BookOpenIcon,
-} from '@heroicons/react/24/solid'
+import { DocumentTextIcon, ArrowDownTrayIcon, BookOpenIcon } from '@heroicons/react/24/solid'
 import { useRules } from '@/hooks/useRules'
 import Footer from '@/components/Footer'
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { apiClient } from '../lib/api-client'
+import { apiClient } from '@/lib/api-client'
 
 export function useDocuments() {
   const [isGenerating, setIsGenerating] = useState(false)
