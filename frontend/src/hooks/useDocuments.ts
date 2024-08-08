@@ -5,11 +5,11 @@ export function useDocuments() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const generateCoursePDF = useCallback(async (courseId: string) => {
+  const generateCoursePDF = useCallback(async (courseId: string): Promise<string> => {
     try {
       setIsGenerating(true)
       const response = await apiClient.generateCoursePDF(courseId)
-      window.open(response.url, '_blank')
+      return response.url // Return the URL instead of opening it
     } catch (err) {
       setError('Failed to generate course PDF')
       throw err
