@@ -1,171 +1,105 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import React, { useState } from 'react'
 import Layout from '@/components/Layout'
-import { CreateRuleDTO, Rule, UpdateRuleDTO, RuleHistoryDto } from '@/types'
-import RuleForm from '@/components/manage-rules/RuleForm'
-import RuleTable from '@/components/manage-rules/RuleTable'
-import Pagination from '@/components/manage-rules/Pagination'
-import RuleHistory from '@/components/manage-rules/RuleHistory'
-import { apiClient } from '@/lib/api-client'
-import SearchInput from '@/components/manage-rules/SearchInput'
+import SchoolEndorsement from '@/components/manage-rules/SchoolEndorsement'
+import AvailabilityRescission from '@/components/manage-rules/AvailabilityRescission'
+import Administration from '@/components/manage-rules/Administration'
+import Details from '@/components/manage-rules/Details'
+import VolumeOfLearning from '@/components/manage-rules/VolumeOfLearning'
+import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
 import Footer from '@/components/Footer'
 
+import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
+import ArticulationAgreement from '@/components/manage-rules/ArticulationAgreement'
+import FieldOfEducation from '@/components/manage-rules/FieldOfEducation'
+import ExampleCom from '@/components/ExampleCom'
+import ExampleCom2 from '@/components/ExampleCom2'
+
 const ManageRules: React.FC = () => {
-  const queryClient = useQueryClient()
-  const [currentPage, setCurrentPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [editingRule, setEditingRule] = useState<Rule | null>(null)
-  const [showHistory, setShowHistory] = useState<number | null>(null)
-  const [ruleHistory, setRuleHistory] = useState<RuleHistoryDto[]>([])
-  const pageSize = 10
-  const ruleHistoryRef = useRef<HTMLDivElement>(null)
+  const [formData, setFormData] = useState({
+    schoolEndorsement: {},
+    availabilityRescission: {},
+    administration: {},
+    details: {},
+    volumeOfLearning: {},
+    admissionSelection: {},
+    fieldOfEducation: {},
+    articulationAgreement: {},
+    outcomesAQF: {},
+  })
 
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value)
-    setCurrentPage(1)
+  const updateFormData = (section: string, data: never) => {
+    // setFormData((prevData) => ({
+    //   ...prevData,
+    //   [section]: { ...prevData[section], ...data },
+    // }))
   }
 
-  const { data, isLoading, error } = useQuery(
-    ['rules', currentPage, searchTerm],
-    () => apiClient.getRules(currentPage, pageSize, searchTerm),
-    {
-      keepPreviousData: true,
-      staleTime: 5000,
-    }
-  )
-
-  const addRuleMutation = useMutation((newRule: CreateRuleDTO) => apiClient.addRule(newRule), {
-    onSuccess: () => {
-      queryClient.invalidateQueries('rules')
-      setEditingRule(null)
-    },
-  })
-
-  const updateRuleMutation = useMutation(
-    ({ id, rule }: { id: number; rule: UpdateRuleDTO }) => apiClient.updateRule(id, rule),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries('rules')
-        setEditingRule(null)
-      },
-    }
-  )
-
-  const deleteRuleMutation = useMutation((id: number) => apiClient.deleteRule(id), {
-    onSuccess: () => {
-      queryClient.invalidateQueries('rules')
-    },
-  })
-
-  const handleSubmitRule = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (editingRule) {
-      if ('id' in editingRule) {
-        const { id, ...updateData } = editingRule
-        updateRuleMutation.mutate({ id, rule: updateData })
-      } else {
-        addRuleMutation.mutate(editingRule as CreateRuleDTO)
-      }
-    }
+    console.log('Form data submitted:', formData)
+    // Here you would typically send the data to your backend
   }
-
-  const handleDeleteRule = (id: number) => {
-    deleteRuleMutation.mutate(id)
-  }
-
-  const handleShowHistory = async (id: number) => {
-    try {
-      const history = await apiClient.getRuleHistory(id)
-      setRuleHistory(history)
-      setShowHistory(id)
-    } catch (err) {
-      console.error('Failed to fetch rule history:', err)
-    }
-  }
-
-  // This effect handles the scrolling behavior when the `showHistory` state changes.
-  // When `showHistory` is not null, it waits for the DOM to update, then scrolls smoothly
-  // to the element referenced by `ruleHistoryRef` after a short delay.
-  useEffect(() => {
-    if (showHistory !== null) {
-      setTimeout(() => {
-        ruleHistoryRef.current?.scrollIntoView({ behavior: 'smooth' })
-      }, 50)
-    }
-  }, [showHistory])
-
-  const handleRestoreVersion = async (ruleId: number, version: number) => {
-    try {
-      const restoredRule = await apiClient.restoreRuleVersion(ruleId, version)
-      setEditingRule(restoredRule)
-      setShowHistory(null)
-      queryClient.invalidateQueries('rules')
-    } catch (err) {
-      console.error('Failed to restore rule version:', err)
-    }
-  }
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
-
-  if (isLoading)
-    return (
-      <Layout>
-        <div className="py-4 text-center">Loading...</div>
-      </Layout>
-    )
-  if (error)
-    return (
-      <Layout>
-        <div className="py-4 text-red-600">Error: {(error as Error).message}</div>
-      </Layout>
-    )
-
-  const { rules, total } = data || { rules: [], total: 0 }
-  const totalPages = Math.ceil(total / pageSize)
 
   return (
     <>
       <Layout>
-        <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
+        <form onSubmit={handleSubmit}>
+          <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
 
-        <div className="mb-8 bg-white shadow-lg sm:rounded-lg">
-          <RuleForm
-            rule={editingRule || { code: '', name: '', type: 'standard', description: '' }}
-            setRule={(rule: Rule | CreateRuleDTO) => setEditingRule(rule as Rule)}
-            handleSubmit={handleSubmitRule}
-            isEditing={!!editingRule && 'id' in editingRule}
-            cancelEdit={() => setEditingRule(null)}
-          />
-        </div>
+          <ExampleCom />
+          <ExampleCom2 />
+          {/*<SchoolEndorsement*/}
+          {/*  data={formData.schoolEndorsement}*/}
+          {/*  updateData={(data) => updateFormData('schoolEndorsement', data)}*/}
+          {/*/>*/}
 
-        <SearchInput value={searchTerm} onChange={handleSearchChange} />
+          {/*<AvailabilityRescission*/}
+          {/*  data={formData.availabilityRescission}*/}
+          {/*  updateData={(data) => updateFormData('availabilityRescission', data)}*/}
+          {/*/>*/}
 
-        <div className="mt-8 overflow-hidden bg-white shadow-lg sm:rounded-lg">
-          <RuleTable
-            rules={rules}
-            onEdit={setEditingRule}
-            onDelete={handleDeleteRule}
-            onShowHistory={handleShowHistory}
-          />
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div>
+          {/*<Administration*/}
+          {/*  data={formData.administration}*/}
+          {/*  updateData={(data) => updateFormData('administration', data)}*/}
+          {/*/>*/}
 
-        {showHistory !== null && (
-          <div ref={ruleHistoryRef}>
-            <RuleHistory
-              history={ruleHistory}
-              onClose={() => setShowHistory(null)}
-              onRestore={handleRestoreVersion}
-            />
+          {/*<Details data={formData.details} updateData={(data) => updateFormData('details', data)} />*/}
+
+          {/*<VolumeOfLearning*/}
+          {/*  data={formData.volumeOfLearning}*/}
+          {/*  updateData={(data) => updateFormData('volumeOfLearning', data)}*/}
+          {/*/>*/}
+
+          {/*<AdmissionSelection*/}
+          {/*  data={formData.admissionSelection}*/}
+          {/*  updateData={(data) => updateFormData('admissionSelection', data)}*/}
+          {/*/>*/}
+
+          {/*<FieldOfEducation*/}
+          {/*  data={formData.fieldOfEducation}*/}
+          {/*  updateData={(data) => updateFormData('fieldOfEducation', data)}*/}
+          {/*/>*/}
+
+          {/*<ArticulationAgreement*/}
+          {/*  data={formData.articulationAgreement}*/}
+          {/*  updateData={(data) => updateFormData('articulationAgreement', data)}*/}
+          {/*/>*/}
+
+          {/*<OutcomesAQF*/}
+          {/*  data={formData.outcomesAQF}*/}
+          {/*  updateData={(data) => updateFormData('outcomesAQF', data)}*/}
+          {/*/>*/}
+
+          <div className="mt-6 flex items-center justify-end gap-x-6">
+            <button
+              type="submit"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Save Changes
+            </button>
           </div>
-        )}
+        </form>
       </Layout>
       <Footer />
     </>
