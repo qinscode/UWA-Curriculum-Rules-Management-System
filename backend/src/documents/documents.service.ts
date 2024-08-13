@@ -105,6 +105,91 @@ const rules_list: Rule[] = [
       },
     ],
   },
+  {
+    title: 'Course structure',
+    content: [
+      {
+        number: '7.(1)',
+        text: 'The course consists of units to a total value of 96 points (maximum value) which include conversion units to a value of 24 points.',
+      },
+      {
+        number: '(2)',
+        text: 'Units must be selected in accordance with the course structure, as set out in these rules.',
+      },
+      {
+        number: '(3)',
+        text: "Students who have completed a bachelor's degree with a major in a cognate area, or equivalent as recognised by the Faculty are granted credit for conversion units up to a value of 24 points.",
+      },
+    ],
+  },
+  {
+    title: 'Satisfactory progress rule',
+    content: [
+      {
+        number: '8.',
+        text: 'To make satisfactory progress a student must pass units to a point value greater than half the total value of units in which they remain enrolled after the final date for withdrawal without academic penalty.',
+      },
+    ],
+  },
+  {
+    title: 'Progress status',
+    content: [
+      {
+        number: '10.(1)',
+        text: 'A student who makes satisfactory progress in terms of Rule 8 is assigned the status of "Good Standing".',
+      },
+      {
+        number: '(2)',
+        text: 'Unless the relevant board determines otherwise because of exceptional circumstances—',
+      },
+      {
+        number: '(a)',
+        text: 'a student who does not make satisfactory progress for the first time under Rule 8 is assigned a progress status of "On Probation";',
+      },
+      {
+        number: '(b)',
+        text: 'a student who does not make satisfactory progress for the second time under Rule 8 is assigned a progress status of "Suspended";',
+      },
+      {
+        number: '(c)',
+        text: 'a student who does not make satisfactory progress for the third time under Rule 8 is assigned a progress status of "Excluded".',
+      },
+    ],
+  },
+  {
+    title: 'Award with distinction rule',
+    content: [
+      {
+        number: '12.',
+        text: 'To be awarded the degree with distinction a student must achieve a course weighted average mark (WAM) of at least 80 per cent which is calculated based on—',
+      },
+      {
+        number: '(a)',
+        text: 'all units above Level 3 attempted as part of the course that are awarded a final percentage mark;',
+      },
+      {
+        number: '(b)',
+        text: 'all relevant units above Level 3 undertaken in articulating courses of this University that are awarded a final percentage mark;',
+      },
+      {
+        number: 'and',
+        text: '',
+      },
+      {
+        number: '(c)',
+        text: "all units above Level 3 completed at this University that are credited to the master's degree course.",
+      },
+    ],
+  },
+  {
+    title: 'Deferral',
+    content: [
+      {
+        number: '13.',
+        text: 'Applicants awarded admission to the course are entitled to a deferral of up to 12 months, as per the University Policy on: Admissions (Coursework).',
+      },
+    ],
+  },
 ]
 
 config()
@@ -115,7 +200,6 @@ export class DocumentsService {
 
   private readonly PDF_URL_PREFIX: string
   private readonly executablePath: string
-
 
   constructor() {
     if (!fs.existsSync(this.pdfDirectory)) {
@@ -133,11 +217,11 @@ export class DocumentsService {
     const filePath = path.join(this.pdfDirectory, fileName)
 
     const browser = await puppeteer.launch({
-      headless:true,
-      args: ["--no-sandbox"],
-      ...(this.executablePath ? { executablePath: this.executablePath } : {})
-  });    
-  const page = await browser.newPage()
+      headless: true,
+      args: ['--no-sandbox'],
+      ...(this.executablePath ? { executablePath: this.executablePath } : {}),
+    })
+    const page = await browser.newPage()
 
     // Use the template function to generate the HTML content
     const htmlContent = courseRulesTemplate(rules_list)
