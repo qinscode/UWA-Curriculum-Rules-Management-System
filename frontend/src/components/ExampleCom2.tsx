@@ -9,7 +9,7 @@ import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 
 const AdmissionRequirements: React.FC = () => {
   const [requirements, setRequirements] = useState<Requirement[]>([])
-  const [styles, setStyles] = useState(['numeric', 'alphabetic', 'numeric'])
+  const [defaultStyles, setDefaultStyles] = useState(['numeric', 'alphabetic', 'numeric'])
   const [showHelp, setShowHelp] = useState(false)
 
   const addRequirement = (parentId: number | null = null, level = 1) => {
@@ -18,6 +18,7 @@ const AdmissionRequirements: React.FC = () => {
       level,
       content: '',
       children: [],
+      style: defaultStyles[level - 1] || 'numeric', // 使用默认样式
     }
 
     setRequirements((prevRequirements) => {
@@ -59,6 +60,15 @@ const AdmissionRequirements: React.FC = () => {
     )
   }
 
+  const updateRequirementStyle = (id: number, style: string) => {
+    setRequirements((prevRequirements) =>
+      updateNestedRequirements(prevRequirements, id, (req) => ({
+        ...req,
+        style,
+      }))
+    )
+  }
+
   const removeRequirement = (id: number) => {
     setRequirements((prevRequirements) => {
       const removeNested = (reqs: Requirement[]): Requirement[] => {
@@ -81,7 +91,7 @@ const AdmissionRequirements: React.FC = () => {
           req={req}
           index={index}
           parentIndexes={parentIndexes}
-          styles={styles}
+          defaultStyles={defaultStyles}
           onUpdateRequirement={updateRequirement}
           onRemoveRequirement={removeRequirement}
           onAddRequirement={addRequirement}
@@ -89,82 +99,77 @@ const AdmissionRequirements: React.FC = () => {
         />
       )
     },
-    [styles, updateRequirement, removeRequirement, addRequirement]
+    [defaultStyles, updateRequirement, updateRequirementStyle, removeRequirement, addRequirement]
   )
 
-  const handleStyleChange = (level: number, newStyle: string) => {
-    setStyles((prevStyles) => {
+  const handleDefaultStyleChange = (level: number, newStyle: string) => {
+    setDefaultStyles((prevStyles) => {
       const newStyles = [...prevStyles]
-      newStyles[level] = newStyle
+      newStyles[level - 1] = newStyle
       return newStyles
     })
   }
 
   const loadPresetRules = () => {
-    setRequirements(PRESET_RULES)
+    // 确保 PRESET_RULES 包含 style 信息
+    setRequirements(
+      PRESET_RULES.map((rule) => ({
+        ...rule,
+        style: rule.style || defaultStyles[rule.level - 1] || 'numeric',
+      }))
+    )
   }
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result
 
-    // Dropped outside the list
     if (!destination) {
       return
     }
 
-    // If the item is dropped in the same position, do nothing
     if (source.droppableId === destination.droppableId && source.index === destination.index) {
       return
     }
 
-    // If it's a top-level drag
-    if (source.droppableId === 'main' && destination.droppableId === 'main') {
-      const newRequirements = Array.from(requirements)
-      const [reorderedItem] = newRequirements.splice(source.index, 1)
-      newRequirements.splice(destination.index, 0, reorderedItem)
-      setRequirements(newRequirements)
-    } else {
-      // It's a nested drag
-      const sourceParentId = parseInt(source.droppableId)
-      const destParentId = parseInt(destination.droppableId)
-
-      setRequirements((prevRequirements) => {
-        const updateChildren = (reqs: Requirement[]): Requirement[] => {
-          return reqs.map((req) => {
-            if (req.id === sourceParentId) {
-              const newChildren = Array.from(req.children)
-              const [reorderedItem] = newChildren.splice(source.index, 1)
-
-              if (req.id === destParentId) {
-                // Same parent, just reorder
-                newChildren.splice(destination.index, 0, reorderedItem)
-              }
-
-              return { ...req, children: newChildren }
-            }
-
-            if (req.id === destParentId) {
-              // Different parent
-              const newChildren = Array.from(req.children)
-              const sourceParent = reqs.find((r) => r.id === sourceParentId)
-              const reorderedItem = sourceParent?.children[source.index]
-              if (reorderedItem) {
-                newChildren.splice(destination.index, 0, reorderedItem)
-              }
-              return { ...req, children: newChildren }
-            }
-
-            if (req.children.length > 0) {
-              return { ...req, children: updateChildren(req.children) }
-            }
-
-            return req
-          })
+    setRequirements((prevRequirements) => {
+      const updateChildren = (reqs: Requirement[]): Requirement[] => {
+        if (source.droppableId === 'main' && destination.droppableId === 'main') {
+          const newReqs = Array.from(reqs)
+          const [removed] = newReqs.splice(source.index, 1)
+          newReqs.splice(destination.index, 0, removed)
+          return newReqs
         }
 
-        return updateChildren(prevRequirements)
-      })
-    }
+        return reqs.map((req) => {
+          if (req.id.toString() === source.droppableId) {
+            const newChildren = Array.from(req.children)
+            const [removed] = newChildren.splice(source.index, 1)
+            if (req.id.toString() === destination.droppableId) {
+              newChildren.splice(destination.index, 0, removed)
+            }
+            return { ...req, children: newChildren }
+          }
+
+          if (req.id.toString() === destination.droppableId) {
+            const newChildren = Array.from(req.children)
+            const sourceReq = reqs.find((r) => r.id.toString() === source.droppableId)
+            if (sourceReq) {
+              const [removed] = sourceReq.children.splice(source.index, 1)
+              newChildren.splice(destination.index, 0, removed)
+            }
+            return { ...req, children: newChildren }
+          }
+
+          if (req.children.length > 0) {
+            return { ...req, children: updateChildren(req.children) }
+          }
+
+          return req
+        })
+      }
+
+      return updateChildren(prevRequirements)
+    })
   }
 
   return (
@@ -172,8 +177,8 @@ const AdmissionRequirements: React.FC = () => {
       <div className="mx-auto max-w-3xl p-6">
         <h2 className="mb-6 text-2xl font-bold">Admission Requirements</h2>
         <ControlPanel
-          styles={styles}
-          onStyleChange={handleStyleChange}
+          defaultStyles={defaultStyles}
+          onDefaultStyleChange={handleDefaultStyleChange}
           onToggleHelp={() => setShowHelp(!showHelp)}
           onLoadPreset={loadPresetRules}
         />

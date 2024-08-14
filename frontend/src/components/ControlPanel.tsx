@@ -3,21 +3,24 @@ import { QuestionMarkCircleIcon, DocumentTextIcon } from '@heroicons/react/20/so
 import StyleSelector from './StyleSelector'
 
 interface ControlPanelProps {
-  styles: string[]
-  onStyleChange: (level: number, newStyle: string) => void
+  defaultStyles: string[]
+  onDefaultStyleChange: (level: number, newStyle: string) => void
   onToggleHelp: () => void
   onLoadPreset: () => void
 }
 
 const ControlPanel: React.FC<ControlPanelProps> = ({
-  styles,
-  onStyleChange,
+  defaultStyles,
+  onDefaultStyleChange,
   onToggleHelp,
   onLoadPreset,
 }) => {
   return (
     <div className="mb-4 flex items-center justify-between">
-      <StyleSelector styles={styles} onStyleChange={onStyleChange} />
+      <div>
+        <h3 className="mb-2 text-sm font-medium text-gray-700">Default Styles:</h3>
+        <StyleSelector styles={defaultStyles} onStyleChange={onDefaultStyleChange} />
+      </div>
       <div className="flex items-center space-x-2">
         <button
           onClick={onToggleHelp}

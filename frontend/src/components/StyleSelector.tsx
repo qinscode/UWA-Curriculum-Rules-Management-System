@@ -15,7 +15,7 @@ const StyleSelector: React.FC<StyleSelectorProps> = ({ styles, onStyleChange }) 
           <span className="mr-2 text-sm">Level {level} style:</span>
           <SelectMenu
             value={styles[level - 1]}
-            onChange={(newStyle) => onStyleChange(level - 1, newStyle)}
+            onChange={(newStyle) => onStyleChange(level, newStyle)}
             options={styleOptions}
           />
         </div>

@@ -7,7 +7,7 @@ interface RequirementItemProps {
   req: Requirement
   index: number
   parentIndexes: number[]
-  styles: string[]
+  defaultStyles: string[]
   onUpdateRequirement: (id: number, content: string) => void
   onRemoveRequirement: (id: number) => void
   onAddRequirement: (parentId: number | null, level: number) => void
@@ -18,14 +18,14 @@ const RequirementItem: React.FC<RequirementItemProps> = ({
   req,
   index,
   parentIndexes,
-  styles,
+  defaultStyles,
   onUpdateRequirement,
   onRemoveRequirement,
   onAddRequirement,
   renderRequirement,
 }) => {
   const fullIndex = [...parentIndexes, index]
-  const numberingStyle = styles[req.level - 1] as keyof typeof numberingStyles
+  const numberingStyle = defaultStyles[req.level - 1] as keyof typeof numberingStyles
   const prefix = numberingStyle === 'none' ? '' : numberingStyles[numberingStyle](index, req.level)
 
   return (

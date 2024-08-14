@@ -40,6 +40,7 @@ export interface Requirement {
   level: number
   content: string
   children: Requirement[]
+  style: string
 }
 
 export interface StyleOption {
