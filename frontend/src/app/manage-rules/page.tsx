@@ -12,7 +12,6 @@ import Footer from '@/components/Footer'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import ArticulationAgreement from '@/components/manage-rules/ArticulationAgreement'
 import FieldOfEducation from '@/components/manage-rules/FieldOfEducation'
-import ExampleCom from '@/components/ExampleCom'
 import ExampleCom2 from '@/components/ExampleCom2'
 
 const ManageRules: React.FC = () => {
@@ -47,7 +46,6 @@ const ManageRules: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
 
-          <ExampleCom />
           <ExampleCom2 />
           {/*<SchoolEndorsement*/}
           {/*  data={formData.schoolEndorsement}*/}

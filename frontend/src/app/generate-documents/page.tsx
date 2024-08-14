@@ -16,10 +16,14 @@ const GenerateDocuments: FC = () => {
     exportRules,
   } = useDocuments()
   const { rules, isLoading: rulesLoading, error: rulesError } = useRules()
-  const [selectedCourse, setSelectedCourse] = useState('')
+  const [selectedCourse, setSelectedCourse] = useState<string>('')
+
   const [isPdfReady, setIsPdfReady] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
 
+  const handleCourseChange = (value: string | string[]) => {
+    setSelectedCourse(Array.isArray(value) ? value[0] : value)
+  }
   const handleGenerateCoursePDF = async () => {
     if (selectedCourse) {
       try {
@@ -61,7 +65,7 @@ const GenerateDocuments: FC = () => {
                     <SelectMenu
                       label="Select Course"
                       value={selectedCourse}
-                      onChange={setSelectedCourse}
+                      onChange={handleCourseChange}
                       options={rules.map((rule) => ({
                         value: rule.id.toString(),
                         label: `${rule.code} - ${rule.name}`,

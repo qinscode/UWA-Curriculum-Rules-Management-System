@@ -15,7 +15,6 @@ const navigation: NavigationItem[] = [
   { name: 'Home', href: '/' },
   { name: 'Manage Rules', href: '/manage-rules' },
   { name: 'Generate Documents', href: '/generate-documents' },
-  { name: 'Settings', href: '/settings' },
 ]
 
 function classNames(...classes: string[]): string {
