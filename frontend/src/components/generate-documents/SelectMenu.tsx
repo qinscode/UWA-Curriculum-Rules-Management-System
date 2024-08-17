@@ -1,5 +1,11 @@
 import React, { Fragment } from 'react'
-import { Listbox, Transition } from '@headlessui/react'
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 interface Option {
@@ -29,6 +35,7 @@ const SelectMenu: React.FC<SelectMenuProps> = ({
   const selectedOptions = multiple
     ? options.filter((option) => (value as string[])?.includes(option.value))
     : options.find((option) => option.value === value)
+
   const handleChange = (newValue: string | string[]) => {
     if (multiple) {
       const updatedValue = Array.isArray(value)
@@ -42,32 +49,30 @@ const SelectMenu: React.FC<SelectMenuProps> = ({
     }
   }
 
-  // @ts-ignore
+  const displayValue = () => {
+    if (multiple) {
+      return (selectedOptions as Option[]).length > 0
+        ? (selectedOptions as Option[]).map((option) => option.label).join(', ')
+        : placeholder
+    } else {
+      return (selectedOptions as Option)?.label || placeholder
+    }
+  }
 
   return (
-    <Listbox value={value} onChange={handleChange} multiple={multiple}>
-      {({ open }) => (
-        <>
-          {label && (
-            <Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
-              {label}
-            </Listbox.Label>
-          )}
-          <div className="relative mt-2">
-            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-              <span className="block truncate">
-                {multiple
-                  ? selectedOptions.length > 0
-                    ? selectedOptions.map((option) => option.label).join(', ')
-                    : placeholder
-                  : selectedOptions
-                    ? (selectedOptions as Option).label
-                    : placeholder}
-              </span>
+    <div className="relative">
+      {label && (
+        <label className="mb-1 block text-sm font-medium leading-6 text-gray-900">{label}</label>
+      )}
+      <Listbox value={value} onChange={handleChange} multiple={multiple}>
+        {({ open }) => (
+          <>
+            <ListboxButton className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+              <span className="block truncate">{displayValue()}</span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
-            </Listbox.Button>
+            </ListboxButton>
 
             <Transition
               show={open}
@@ -76,9 +81,9 @@ const SelectMenu: React.FC<SelectMenuProps> = ({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                 {options.map((option) => (
-                  <Listbox.Option
+                  <ListboxOption
                     key={option.value}
                     className={({ active }) =>
                       classNames(
@@ -111,14 +116,14 @@ const SelectMenu: React.FC<SelectMenuProps> = ({
                         )}
                       </>
                     )}
-                  </Listbox.Option>
+                  </ListboxOption>
                 ))}
-              </Listbox.Options>
+              </ListboxOptions>
             </Transition>
-          </div>
-        </>
-      )}
-    </Listbox>
+          </>
+        )}
+      </Listbox>
+    </div>
   )
 }
 
