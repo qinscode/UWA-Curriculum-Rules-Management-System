@@ -1,37 +1,28 @@
-import React, { useState, FC } from 'react'
+import React, { FC } from 'react'
 import SelectMenu from '@/components/generate-documents/SelectMenu'
 import { DocumentTextIcon, ArrowDownTrayIcon } from '@heroicons/react/24/solid'
-import { Rule } from '@/types'
 
-interface CoursePDFGeneratorProps {
-  rules: Rule[]
+interface CoursePDFSectionProps {
+  rules: any[]
   rulesLoading: boolean
-  generateCoursePDF: (courseId: string) => Promise<string>
+  selectedCourse: string
+  handleCourseChange: (value: string | string[]) => void
+  handleGenerateCoursePDF: () => void
+  isPdfReady: boolean
+  pdfUrl: string | null
   isGenerating: boolean
 }
 
-const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
+const CoursePDFSection: FC<CoursePDFSectionProps> = ({
   rules,
   rulesLoading,
-  generateCoursePDF,
+  selectedCourse,
+  handleCourseChange,
+  handleGenerateCoursePDF,
+  isPdfReady,
+  pdfUrl,
   isGenerating,
 }) => {
-  const [selectedCourse, setSelectedCourse] = useState('')
-  const [isPdfReady, setIsPdfReady] = useState(false)
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
-
-  const handleGenerateCoursePDF = async () => {
-    if (selectedCourse) {
-      try {
-        const url = await generateCoursePDF(selectedCourse)
-        setPdfUrl(url)
-        setIsPdfReady(true)
-      } catch (error) {
-        console.error('Failed to generate PDF:', error)
-      }
-    }
-  }
-
   const handleDownloadPDF = () => {
     if (pdfUrl) {
       window.open(pdfUrl, '_blank')
@@ -50,7 +41,7 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
             <SelectMenu
               label="Select Course"
               value={selectedCourse}
-              onChange={(value) => setSelectedCourse(value as string)} // Ensure it's cast to string
+              onChange={handleCourseChange}
               options={rules.map((rule) => ({
                 value: rule.id.toString(),
                 label: `${rule.code} - ${rule.name}`,
@@ -65,15 +56,24 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
           <button
             onClick={handleGenerateCoursePDF}
             disabled={isGenerating || !selectedCourse || rulesLoading}
-            className="mt-2 flex w-full items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
+            className="mt-2 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
           >
             <DocumentTextIcon className="mr-2 h-5 w-5" />
             Generate Course PDF
           </button>
+
+          <button
+            onClick={handleGenerateCoursePDF}
+            disabled={isGenerating || !selectedCourse || rulesLoading}
+            className="mt-2 flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
+          >
+            <DocumentTextIcon className="mr-2 h-5 w-5" />
+            Generate Course HTML
+          </button>
           {isPdfReady && (
             <button
               onClick={handleDownloadPDF}
-              className="mt-2 flex w-full items-center justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+              className="mt-2 flex items-center justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
             >
               <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
               Download PDF
@@ -85,4 +85,4 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
   )
 }
 
-export default CoursePDFGenerator
+export default CoursePDFSection

@@ -1,23 +1,30 @@
-import { FC } from 'react'
+import React, { FC } from 'react'
+import { ArrowDownTrayIcon } from '@heroicons/react/24/solid'
 
-interface RulesExporterProps {
-  onExport: () => Promise<void>
+interface ExportRulesSectionProps {
+  exportRules: () => void
   isGenerating: boolean
 }
 
-const RulesExporter: FC<RulesExporterProps> = ({ onExport, isGenerating }) => {
+const ExportRulesSection: FC<ExportRulesSectionProps> = ({ exportRules, isGenerating }) => {
   return (
     <div>
-      <h3 className="mb-2 text-xl font-bold">Export All Rules</h3>
-      <button
-        onClick={onExport}
-        disabled={isGenerating}
-        className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-      >
-        Export Rules as JSON
-      </button>
+      <h3 className="text-base font-semibold leading-7 text-gray-900">Export Rules</h3>
+      <p className="mt-1 text-sm leading-6 text-gray-600">
+        Export all rules as a JSON file for backup or integration purposes.
+      </p>
+      <div className="mt-6">
+        <button
+          onClick={exportRules}
+          disabled={isGenerating}
+          className="flex w-full items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 sm:w-auto"
+        >
+          <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
+          Export Rules as JSON
+        </button>
+      </div>
     </div>
   )
 }
 
-export default RulesExporter
+export default ExportRulesSection
