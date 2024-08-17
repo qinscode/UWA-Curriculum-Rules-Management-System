@@ -1,19 +1,7 @@
 import React from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { PlusIcon, MinusIcon, LinkIcon } from '@heroicons/react/20/solid'
-import { Requirement, numberingStyles } from '@/types'
-
-interface RequirementItemProps {
-  req: Requirement
-  index: number
-  parentIndexes: number[]
-  defaultStyles: string[]
-  onUpdateRequirement: (id: number, content: string) => void
-  onRemoveRequirement: (id: number) => void
-  onAddRequirement: (parentId: number | null, level: number) => void
-  onAddConnector: (parentId: number, level: number) => void
-  renderRequirement: (req: Requirement, index: number, parentIndexes: number[]) => React.ReactNode
-}
+import { Requirement, numberingStyles, RequirementItemProps } from '@/types'
 
 const RequirementItem: React.FC<RequirementItemProps> = ({
   req,
