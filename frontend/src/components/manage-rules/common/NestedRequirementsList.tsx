@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback } from 'react'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import ControlPanel from './ControlPanel'
