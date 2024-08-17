@@ -1,7 +1,7 @@
 import React from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { SelectMenuProps, StyleOption } from '@/types'
+import { SelectMenuProps } from '@/types'
 
 const SelectMenu: React.FC<SelectMenuProps> = ({ value, onChange, options }) => {
   const selectedOption = options.find((option) => option.value === value)
