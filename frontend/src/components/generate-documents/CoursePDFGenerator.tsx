@@ -50,7 +50,7 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
             <SelectMenu
               label="Select Course"
               value={selectedCourse}
-              onChange={setSelectedCourse}
+              onChange={(value) => setSelectedCourse(value as string)} // Ensure it's cast to string
               options={rules.map((rule) => ({
                 value: rule.id.toString(),
                 label: `${rule.code} - ${rule.name}`,
