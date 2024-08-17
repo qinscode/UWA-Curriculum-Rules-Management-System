@@ -1,3 +1,5 @@
+import React from 'react'
+
 export interface Rule {
   id: number
   code: string
@@ -67,6 +69,48 @@ export const numberingStyles = {
       : `(${romanNumerals[index] || (index + 1).toString()})`
   },
   none: () => '',
+}
+
+export interface NestedRequirementsListProps {
+  initialRequirements?: Requirement[]
+  onChange?: (requirements: Requirement[]) => void
+  defaultStyles?: string[]
+  showControls?: boolean
+  showHelpPanel?: boolean
+  addMainButtonText?: string
+  presetRules?: Requirement[]
+}
+
+export interface AdmissionSelectionProps {
+  data: {
+    englishRequirements?: Requirement[]
+    admissionRequirements?: Requirement[]
+    rankingSelection?: Requirement[]
+    satisfactoryProgress?: Requirement[]
+    progressStatus?: Requirement[]
+    awardWithDistinction?: Requirement[]
+    deferralAllowed?: Requirement[]
+    deferralRules?: Requirement[]
+  }
+  updateData: (data: Partial<AdmissionSelectionProps['data']>) => void
+}
+
+export interface RequirementItemProps {
+  req: Requirement
+  index: number
+  parentIndexes: number[]
+  defaultStyles: string[]
+  onUpdateRequirement: (id: number, content: string) => void
+  onRemoveRequirement: (id: number) => void
+  onAddRequirement: (parentId: number | null, level: number) => void
+  onAddConnector: (parentId: number, level: number) => void
+  renderRequirement: (req: Requirement, index: number, parentIndexes: number[]) => React.ReactNode
+}
+
+export interface SelectMenuProps {
+  value: string
+  onChange: (value: string) => void
+  options: StyleOption[]
 }
 
 export type CreateRuleDTO = Omit<Rule, 'id'>
