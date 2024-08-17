@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, FC } from 'react'
 import Layout from '@/components/Layout'
-import SelectMenu from '@/components/SelectMenu'
+import SelectMenu from '@/components/generate-documents/SelectMenu'
 import { useDocuments } from '@/hooks/useDocuments'
 import { DocumentTextIcon, ArrowDownTrayIcon, BookOpenIcon } from '@heroicons/react/24/solid'
 import { useRules } from '@/hooks/useRules'

@@ -1,5 +1,5 @@
 import React, { useState, FC } from 'react'
-import SelectMenu from '@/components/SelectMenu'
+import SelectMenu from '@/components/generate-documents/SelectMenu'
 import { DocumentTextIcon, ArrowDownTrayIcon } from '@heroicons/react/24/solid'
 import { Rule } from '@/types'
 

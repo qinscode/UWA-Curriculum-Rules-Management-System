@@ -1,5 +1,5 @@
 import React from 'react'
-import SelectMenu from '@/components/SelectMenu'
+import SelectMenu from '@/components/generate-documents/SelectMenu'
 
 interface DetailsProps {
   data: {
