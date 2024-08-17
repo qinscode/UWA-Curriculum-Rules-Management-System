@@ -1,7 +1,7 @@
 import React from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { PlusIcon, MinusIcon, LinkIcon } from '@heroicons/react/20/solid'
-import { Requirement, numberingStyles, RequirementItemProps } from '@/types'
+import { numberingStyles, RequirementItemProps } from '@/types'
 
 const RequirementItem: React.FC<RequirementItemProps> = ({
   req,

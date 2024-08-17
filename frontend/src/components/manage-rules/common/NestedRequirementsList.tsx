@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { PlusIcon } from '@heroicons/react/20/solid'
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
 import ControlPanel from './ControlPanel'
 import HelpPanel from './HelpPanel'
 import RequirementItem from './RequirementItem'
-import { NestedRequirementsListProps, Requirement, StyleOption } from '@/types'
+import { NestedRequirementsListProps, Requirement } from '@/types'
 
 const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   initialRequirements = [],
@@ -18,6 +18,28 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements)
   const [defaultStyles, setDefaultStyles] = useState(propDefaultStyles)
   const [showHelp, setShowHelp] = useState(false)
+
+  const updateNestedRequirements = useCallback(
+    (
+      reqs: Requirement[],
+      id: number,
+      updateFn: (req: Requirement) => Requirement
+    ): Requirement[] => {
+      return reqs.map((req) => {
+        if (req.id === id) {
+          return updateFn(req)
+        }
+        if (req.children.length > 0) {
+          return {
+            ...req,
+            children: updateNestedRequirements(req.children, id, updateFn),
+          }
+        }
+        return req
+      })
+    },
+    []
+  )
 
   const updateRequirements = useCallback(
     (newRequirements: Requirement[]) => {
@@ -50,27 +72,8 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
         return updatedRequirements
       })
     },
-    [defaultStyles, onChange]
+    [defaultStyles, onChange, updateNestedRequirements]
   )
-
-  const updateNestedRequirements = (
-    reqs: Requirement[],
-    id: number,
-    updateFn: (req: Requirement) => Requirement
-  ): Requirement[] => {
-    return reqs.map((req) => {
-      if (req.id === id) {
-        return updateFn(req)
-      }
-      if (req.children.length > 0) {
-        return {
-          ...req,
-          children: updateNestedRequirements(req.children, id, updateFn),
-        }
-      }
-      return req
-    })
-  }
 
   const updateRequirement = useCallback(
     (id: number, content: string) => {
@@ -83,7 +86,7 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
         return updatedRequirements
       })
     },
-    [onChange]
+    [onChange, updateNestedRequirements]
   )
 
   const removeRequirement = useCallback(
@@ -129,7 +132,7 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
         return updatedRequirements
       })
     },
-    [onChange]
+    [onChange, updateNestedRequirements]
   )
 
   const renderRequirement = useCallback(
