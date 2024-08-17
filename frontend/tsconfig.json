@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    // do not check any
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
