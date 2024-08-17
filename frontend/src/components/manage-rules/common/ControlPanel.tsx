@@ -1,5 +1,5 @@
 import React from 'react'
-import { QuestionMarkCircleIcon, DocumentTextIcon } from '@heroicons/react/20/solid'
+import { QuestionMarkCircleIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/20/solid'
 import StyleSelector from './StyleSelector'
 
 interface ControlPanelProps {
@@ -34,7 +34,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
           className="p-2 text-green-600 hover:text-green-800 focus:outline-none"
           title="Load Preset Rules"
         >
-          <DocumentTextIcon className="h-6 w-6" />
+          <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
         </button>
       </div>
     </div>
