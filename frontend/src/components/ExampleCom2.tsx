@@ -18,7 +18,8 @@ const AdmissionRequirements: React.FC = () => {
       level,
       content: '',
       children: [],
-      style: defaultStyles[level - 1] || 'numeric', // 使用默认样式
+      style: defaultStyles[level - 1],
+      isConnector: false,
     }
 
     setRequirements((prevRequirements) => {
@@ -60,15 +61,6 @@ const AdmissionRequirements: React.FC = () => {
     )
   }
 
-  const updateRequirementStyle = (id: number, style: string) => {
-    setRequirements((prevRequirements) =>
-      updateNestedRequirements(prevRequirements, id, (req) => ({
-        ...req,
-        style,
-      }))
-    )
-  }
-
   const removeRequirement = (id: number) => {
     setRequirements((prevRequirements) => {
       const removeNested = (reqs: Requirement[]): Requirement[] => {
@@ -83,6 +75,24 @@ const AdmissionRequirements: React.FC = () => {
     })
   }
 
+  const addConnector = (parentId: number, level: number) => {
+    const newConnector: Requirement = {
+      id: Date.now(),
+      level,
+      content: 'and',
+      children: [],
+      style: 'none',
+      isConnector: true,
+    }
+
+    setRequirements((prevRequirements) =>
+      updateNestedRequirements(prevRequirements, parentId, (parent) => ({
+        ...parent,
+        children: [...parent.children, newConnector],
+      }))
+    )
+  }
+
   const renderRequirement = useCallback(
     (req: Requirement, index: number, parentIndexes: number[] = []) => {
       return (
@@ -95,13 +105,13 @@ const AdmissionRequirements: React.FC = () => {
           onUpdateRequirement={updateRequirement}
           onRemoveRequirement={removeRequirement}
           onAddRequirement={addRequirement}
+          onAddConnector={addConnector}
           renderRequirement={renderRequirement}
         />
       )
     },
-    [defaultStyles, updateRequirement, updateRequirementStyle, removeRequirement, addRequirement]
+    [defaultStyles, updateRequirement, removeRequirement, addRequirement, addConnector]
   )
-
   const handleDefaultStyleChange = (level: number, newStyle: string) => {
     setDefaultStyles((prevStyles) => {
       const newStyles = [...prevStyles]
@@ -111,11 +121,11 @@ const AdmissionRequirements: React.FC = () => {
   }
 
   const loadPresetRules = () => {
-    // 确保 PRESET_RULES 包含 style 信息
     setRequirements(
       PRESET_RULES.map((rule) => ({
         ...rule,
         style: rule.style || defaultStyles[rule.level - 1] || 'numeric',
+        isConnector: rule.isConnector || false,
       }))
     )
   }

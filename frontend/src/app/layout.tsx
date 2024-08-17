@@ -14,6 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* eslint-disable-next-line react/jsx-no-undef */}
         <Providers>{children}</Providers>
       </body>
     </html>

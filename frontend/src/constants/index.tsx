@@ -1,17 +1,4 @@
 import { Requirement } from '@/types'
-
-export const numberingStyles = {
-  numeric: (index: number, level: number) => (level === 1 ? `${index + 1}` : `(${index + 1})`),
-  alphabetic: (index: number, level: number) =>
-    level === 1 ? String.fromCharCode(97 + index) : `(${String.fromCharCode(97 + index)})`,
-  roman: (index: number, level: number) => {
-    const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
-    return level === 1
-      ? romanNumerals[index]
-      : `(${romanNumerals[index] || (index + 1).toString()})`
-  },
-  none: () => '',
-}
 export const PRESET_RULES: Requirement[] = [
   {
     id: 1,

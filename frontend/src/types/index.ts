@@ -41,6 +41,7 @@ export interface Requirement {
   content: string
   children: Requirement[]
   style: string
+  isConnector?: boolean
 }
 
 export interface StyleOption {
