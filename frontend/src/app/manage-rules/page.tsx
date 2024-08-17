@@ -1,37 +1,34 @@
 'use client'
 import React, { useState } from 'react'
 import Layout from '@/components/Layout'
-import SchoolEndorsement from '@/components/manage-rules/SchoolEndorsement'
-import AvailabilityRescission from '@/components/manage-rules/AvailabilityRescission'
-import Administration from '@/components/manage-rules/Administration'
-import Details from '@/components/manage-rules/Details'
-import VolumeOfLearning from '@/components/manage-rules/VolumeOfLearning'
 import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
 import Footer from '@/components/Footer'
-
+import { PRESET_RULES } from '@/constants'
+import { AdmissionSelectionProps } from '@/types'
+import SatisfactoryProgress from '@/components/manage-rules/SatisfactoryProgress'
+import ProgressStatus from '@/components/manage-rules/ProgressStatus'
+import AdditionalRules from '@/components/manage-rules/AdditionalRules'
+import Deferrals from '@/components/manage-rules/Deferrals'
+import AwardWithDistinction from '@/components/manage-rules/AwardWithDistinction'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
-import ArticulationAgreement from '@/components/manage-rules/ArticulationAgreement'
-import FieldOfEducation from '@/components/manage-rules/FieldOfEducation'
-import ExampleCom2 from '@/components/manage-rules/ExampleCom2'
 
 const ManageRules: React.FC = () => {
-  const [formData, setFormData] = useState({
-    schoolEndorsement: {},
-    availabilityRescission: {},
-    administration: {},
-    details: {},
-    volumeOfLearning: {},
-    admissionSelection: {},
-    fieldOfEducation: {},
-    articulationAgreement: {},
-    outcomesAQF: {},
+  const [formData, setFormData] = useState<AdmissionSelectionProps['data']>({
+    englishRequirements: [],
+    admissionRequirements: PRESET_RULES,
+    rankingSelection: [],
+    satisfactoryProgress: [],
+    progressStatus: [],
+    awardWithDistinction: [],
+    deferralAllowed: [],
+    deferralRules: [],
   })
 
-  const updateFormData = (section: string, data: never) => {
-    // setFormData((prevData) => ({
-    //   ...prevData,
-    //   [section]: { ...prevData[section], ...data },
-    // }))
+  const updateFormData = (data: Partial<AdmissionSelectionProps['data']>) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      ...data,
+    }))
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,66 +38,86 @@ const ManageRules: React.FC = () => {
   }
 
   return (
-    <>
-      <Layout>
+    <Layout>
+      <div className="mx-auto max-w-7xl pb-6 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit}>
-          <h2 className="mb-8 text-2xl font-bold text-gray-900">Manage Course Rules</h2>
+          <div className="px-4 py-5 sm:p-6">
+            <div className="space-y-8">
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
+                  Admission and selection
+                </h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <AdmissionSelection data={formData} updateData={updateFormData} />
+                </div>
+              </section>
 
-          <ExampleCom2 />
-          {/*<SchoolEndorsement*/}
-          {/*  data={formData.schoolEndorsement}*/}
-          {/*  updateData={(data) => updateFormData('schoolEndorsement', data)}*/}
-          {/*/>*/}
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
+                  Satisfactory Progress
+                </h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <SatisfactoryProgress data={formData} updateData={updateFormData} />
+                </div>
+              </section>
 
-          {/*<AvailabilityRescission*/}
-          {/*  data={formData.availabilityRescission}*/}
-          {/*  updateData={(data) => updateFormData('availabilityRescission', data)}*/}
-          {/*/>*/}
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
+                  Progress Status
+                </h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <ProgressStatus data={formData} updateData={updateFormData} />
+                </div>
+              </section>
 
-          {/*<Administration*/}
-          {/*  data={formData.administration}*/}
-          {/*  updateData={(data) => updateFormData('administration', data)}*/}
-          {/*/>*/}
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
+                  Award with distinction
+                </h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <AwardWithDistinction data={formData} updateData={updateFormData} />
+                </div>
+              </section>
 
-          {/*<Details data={formData.details} updateData={(data) => updateFormData('details', data)} />*/}
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">Deferrals</h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <Deferrals data={formData} updateData={updateFormData} />
+                </div>
+              </section>
 
-          {/*<VolumeOfLearning*/}
-          {/*  data={formData.volumeOfLearning}*/}
-          {/*  updateData={(data) => updateFormData('volumeOfLearning', data)}*/}
-          {/*/>*/}
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
+                  Additional rules
+                </h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <AdditionalRules data={formData} updateData={updateFormData} />
+                </div>
+              </section>
 
-          {/*<AdmissionSelection*/}
-          {/*  data={formData.admissionSelection}*/}
-          {/*  updateData={(data) => updateFormData('admissionSelection', data)}*/}
-          {/*/>*/}
+              <section>
+                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
+                  Outcomes & Australian Qualifications Framework
+                </h3>
+                <div className="rounded-md bg-gray-50 p-4">
+                  <OutcomesAQF data={formData} updateData={updateFormData} />
+                </div>
+              </section>
+            </div>
+          </div>
 
-          {/*<FieldOfEducation*/}
-          {/*  data={formData.fieldOfEducation}*/}
-          {/*  updateData={(data) => updateFormData('fieldOfEducation', data)}*/}
-          {/*/>*/}
-
-          {/*<ArticulationAgreement*/}
-          {/*  data={formData.articulationAgreement}*/}
-          {/*  updateData={(data) => updateFormData('articulationAgreement', data)}*/}
-          {/*/>*/}
-
-          {/*<OutcomesAQF*/}
-          {/*  data={formData.outcomesAQF}*/}
-          {/*  updateData={(data) => updateFormData('outcomesAQF', data)}*/}
-          {/*/>*/}
-
-          <div className="mt-6 flex items-center justify-end gap-x-6">
+          <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
             <button
               type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Save Changes
             </button>
           </div>
         </form>
-      </Layout>
+      </div>
       <Footer />
-    </>
+    </Layout>
   )
 }
 
