@@ -12,7 +12,7 @@ import Footer from '@/components/Footer'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import ArticulationAgreement from '@/components/manage-rules/ArticulationAgreement'
 import FieldOfEducation from '@/components/manage-rules/FieldOfEducation'
-import ExampleCom2 from '@/components/ExampleCom2'
+import ExampleCom2 from '@/components/manage-rules/ExampleCom2'
 
 const ManageRules: React.FC = () => {
   const [formData, setFormData] = useState({
