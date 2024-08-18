@@ -9,9 +9,9 @@ export enum NumberingStyle {
 
 export interface Requirement {
   id: number
-  level: number
   content: string
   style: NumberingStyle
+  numbering?: string
   children: Requirement[]
   isConnector?: boolean
 }
