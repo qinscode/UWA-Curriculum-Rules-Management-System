@@ -118,6 +118,20 @@ const SortableTreeComponent: React.FC = () => {
     setItems(updateItemsWithNumbers(items))
   }, [levelStyles, updateItemsWithNumbers])
 
+  const handleContentChange = useCallback((id: number, newContent: string) => {
+    setItems((prevItems) => {
+      const updateContent = (items: TreeItems<Requirement>): TreeItems<Requirement> => {
+        return items.map((item) => {
+          if (item.id === id) {
+            return { ...item, content: newContent }
+          }
+          return { ...item, children: updateContent(item.children) }
+        })
+      }
+      return updateContent(prevItems)
+    })
+  }, [])
+
   return (
     <div className="p-4">
       <div className="mb-4 flex space-x-4">
@@ -177,7 +191,12 @@ const SortableTreeComponent: React.FC = () => {
         items={items}
         onItemsChanged={handleItemsChange}
         TreeItemComponent={(props) => (
-          <TreeItemComponent {...props} onAddChild={handleAddChild} onDelete={handleDelete} />
+          <TreeItemComponent
+            {...props}
+            onAddChild={handleAddChild}
+            onDelete={handleDelete}
+            onContentChange={handleContentChange} // 传递 onContentChange 方法
+          />
         )}
       />
     </div>

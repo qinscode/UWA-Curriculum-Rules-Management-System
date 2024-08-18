@@ -36,11 +36,16 @@ const generateNumbering = (index: number, style: NumberingStyle): string => {
 interface ExtendedTreeItemComponentProps extends TreeItemComponentProps<Requirement> {
   onDelete: (id: number) => void
   onAddChild: (parentId: number) => void
+  onContentChange: (id: number, newContent: string) => void
 }
 
 export const TreeItemComponent = forwardRef<HTMLDivElement, ExtendedTreeItemComponentProps>(
   (props, ref) => {
-    const { item, depth, onDelete, onAddChild } = props
+    const { item, depth, onDelete, onAddChild, onContentChange } = props
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      onContentChange(item.id, event.target.value)
+    }
 
     const handleAddChild = (event: React.MouseEvent) => {
       event.stopPropagation() // 阻止事件冒泡
@@ -64,7 +69,7 @@ export const TreeItemComponent = forwardRef<HTMLDivElement, ExtendedTreeItemComp
                 value={item.content}
                 placeholder="Enter requirement content..."
                 className="flex-grow"
-                readOnly
+                onChange={handleInputChange} // 绑定 onChange 事件
               />
             </div>
             <div className="space-x-2">
