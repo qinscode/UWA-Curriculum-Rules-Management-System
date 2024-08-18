@@ -19,15 +19,22 @@ const HelpAndImport: React.FC<ControlPanelProps> = ({
   return (
     <div className="mb-4 flex items-center justify-between">
       <div>
-        <h3 className="mb-2 text-sm font-medium text-gray-700">Default Styles:</h3>
         <StyleSelector styles={defaultStyles} onStyleChange={onDefaultStyleChange} />
       </div>
-      <div className="flex items-center space-x-2">
-        <Button onClick={onToggleHelp} variant="outline" size="icon" title="Show Help">
-          <HelpCircle className="h-4 w-4" />
+      <div className="flex items-center space-x-4">
+        <Button
+          onClick={onToggleHelp}
+          variant="outline"
+          size="sm"
+          title="Show Help"
+          className={'bg-indigo-600'}
+        >
+          <HelpCircle className="mr-2 h-4 w-4" />
+          Help
         </Button>
-        <Button onClick={onLoadPreset} variant="outline" size="icon" title="Load Preset Rules">
-          <FileUp className="h-4 w-4" />
+        <Button onClick={onLoadPreset} variant="outline" size="sm" title="Load Preset Rules">
+          <FileUp className="mr-2 h-4 w-4" />
+          Load Preset
         </Button>
       </div>
     </div>

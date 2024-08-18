@@ -51,7 +51,7 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
           onAddRequirement={addRequirement}
           onAddConnector={addConnector}
         />
-        <Button onClick={() => addRequirement()} variant="outline" className="w-full">
+        <Button onClick={() => addRequirement()} variant="outline" className="">
           <Plus className="mr-2 h-4 w-4" />
           {addMainButtonText}
         </Button>

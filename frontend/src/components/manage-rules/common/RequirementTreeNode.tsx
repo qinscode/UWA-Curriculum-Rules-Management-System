@@ -32,7 +32,7 @@ const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
           type="text"
           value={req.content}
           onChange={(e) => onUpdateRequirement(req.id, e.target.value)}
-          className={req.isConnector ? 'ml-[30px] font-bold text-blue-600' : ''}
+          className={`flex-grow ${req.isConnector ? 'font-bold text-blue-600' : ''}`}
           placeholder={
             req.isConnector ? "Enter connector (e.g., 'and', 'or')" : 'Enter requirement'
           }
@@ -42,8 +42,8 @@ const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
         <Button
           onClick={() => onRemoveRequirement(req.id)}
           variant="outline"
-          size="icon"
-          className="h-8 w-8"
+          size="sm"
+          className="h-8 w-8 p-0"
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -51,8 +51,8 @@ const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
           <Button
             onClick={() => onAddRequirement(req.id, req.level + 1)}
             variant="outline"
-            size="icon"
-            className="h-8 w-8"
+            size="sm"
+            className="h-8 w-8 p-0"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -61,8 +61,8 @@ const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
           <Button
             onClick={() => onAddConnector(req.id, req.level + 1)}
             variant="outline"
-            size="icon"
-            className="h-8 w-8"
+            size="sm"
+            className="h-8 w-8 p-0"
             title="Add Connector"
           >
             <Link className="h-4 w-4" />
