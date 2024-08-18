@@ -1,6 +1,5 @@
 import React from 'react'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { AdmissionSelectionProps } from '@/types'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 
