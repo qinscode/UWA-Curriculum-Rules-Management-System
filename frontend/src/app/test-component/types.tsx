@@ -1,11 +1,18 @@
 import { TreeItemComponentProps } from 'dnd-kit-sortable-tree'
 
+export enum NumberingStyle {
+  Numeric = 'numeric',
+  Alphabetic = 'alphabetic',
+  Roman = 'roman',
+  None = 'none',
+}
+
 export interface Requirement {
   id: number
   level: number
   content: string
+  style: NumberingStyle
   children: Requirement[]
-  style: string
   isConnector?: boolean
 }
 
