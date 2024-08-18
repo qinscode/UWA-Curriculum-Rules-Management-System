@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import dynamic from 'next/dynamic'
-import Head from 'next/head'
 
 // Dynamically import the SortableTreeComponent to avoid SSR issues
 const SortableTreeComponent = dynamic(() => import('./SortableTreeComponent'), {

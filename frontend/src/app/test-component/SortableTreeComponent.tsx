@@ -61,6 +61,50 @@ const SortableTreeComponent: React.FC = () => {
     [updateItemsWithNumbers]
   )
 
+  const handleAddChild = useCallback(
+    (parentId: number) => {
+      setItems((prevItems) => {
+        const addItemToParent = (items: TreeItems<Requirement>): TreeItems<Requirement> => {
+          return items.map((item) => {
+            if (item.id === parentId) {
+              const newChild = {
+                id: Date.now(), // 生成一个唯一ID
+                content: '新子项目',
+                style: item.style,
+                numbering: '', // 初始编号为空，稍后生成
+                children: [],
+              }
+              const updatedItem = { ...item, children: [...item.children, newChild] }
+              return updatedItem
+            }
+            return { ...item, children: addItemToParent(item.children) }
+          })
+        }
+        const updatedItems = addItemToParent(prevItems)
+        return updateItemsWithNumbers(updatedItems) // 立即更新编号
+      })
+    },
+    [updateItemsWithNumbers]
+  )
+
+  const handleDelete = useCallback(
+    (id: number) => {
+      setItems((prevItems) => {
+        const deleteItemById = (items: TreeItems<Requirement>): TreeItems<Requirement> => {
+          return items
+            .filter((item) => item.id !== id)
+            .map((item) => ({
+              ...item,
+              children: deleteItemById(item.children),
+            }))
+        }
+        const updatedItems = deleteItemById(prevItems)
+        return updateItemsWithNumbers(updatedItems) // 立即更新编号
+      })
+    },
+    [updateItemsWithNumbers]
+  )
+
   const handleStyleChange = (level: string, style: NumberingStyle) => {
     setLevelStyles((prevStyles) => ({
       ...prevStyles,
@@ -79,9 +123,12 @@ const SortableTreeComponent: React.FC = () => {
       <div className="mb-4 flex space-x-4">
         <div>
           <Label>一级编号样式</Label>
-          <Select onValueChange={(value) => handleStyleChange('level1', value as NumberingStyle)}>
+          <Select
+            value={levelStyles.level1}
+            onValueChange={(value) => handleStyleChange('level1', value as NumberingStyle)}
+          >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="选择样式" defaultValue={levelStyles.level1} />
+              <SelectValue placeholder="选择样式" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
@@ -93,9 +140,12 @@ const SortableTreeComponent: React.FC = () => {
         </div>
         <div>
           <Label>二级编号样式</Label>
-          <Select onValueChange={(value) => handleStyleChange('level2', value as NumberingStyle)}>
+          <Select
+            value={levelStyles.level2}
+            onValueChange={(value) => handleStyleChange('level2', value as NumberingStyle)}
+          >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="选择样式" defaultValue={levelStyles.level2} />
+              <SelectValue placeholder="选择样式" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
@@ -107,9 +157,12 @@ const SortableTreeComponent: React.FC = () => {
         </div>
         <div>
           <Label>三级编号样式</Label>
-          <Select onValueChange={(value) => handleStyleChange('level3', value as NumberingStyle)}>
+          <Select
+            value={levelStyles.level3}
+            onValueChange={(value) => handleStyleChange('level3', value as NumberingStyle)}
+          >
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="选择样式" defaultValue={levelStyles.level3} />
+              <SelectValue placeholder="选择样式" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
@@ -123,7 +176,9 @@ const SortableTreeComponent: React.FC = () => {
       <SortableTree
         items={items}
         onItemsChanged={handleItemsChange}
-        TreeItemComponent={TreeItemComponent}
+        TreeItemComponent={(props) => (
+          <TreeItemComponent {...props} onAddChild={handleAddChild} onDelete={handleDelete} />
+        )}
       />
     </div>
   )
