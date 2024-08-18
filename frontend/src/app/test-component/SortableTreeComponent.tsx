@@ -12,15 +12,15 @@ import {
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 
-// 用于生成编号的函数
 const generateNumbering = (index: number, style: NumberingStyle): string => {
+  const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
+
   switch (style) {
     case NumberingStyle.Numeric:
       return `${index}.`
     case NumberingStyle.Alphabetic:
       return String.fromCharCode(96 + index).toUpperCase() + '.'
     case NumberingStyle.Roman:
-      const romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
       return romanNumerals[index - 1] + '.'
     case NumberingStyle.None:
     default:
@@ -51,7 +51,6 @@ const SortableTreeComponent: React.FC = () => {
   )
 
   const [items, setItems] = useState<TreeItems<Requirement>>(() => {
-    // 初始化时生成编号
     return updateItemsWithNumbers(initialViableRequirementData)
   })
 
@@ -82,7 +81,7 @@ const SortableTreeComponent: React.FC = () => {
           <Label>一级编号样式</Label>
           <Select onValueChange={(value) => handleStyleChange('level1', value as NumberingStyle)}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="选择样式" />
+              <SelectValue placeholder="选择样式" defaultValue={levelStyles.level1} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
@@ -96,7 +95,7 @@ const SortableTreeComponent: React.FC = () => {
           <Label>二级编号样式</Label>
           <Select onValueChange={(value) => handleStyleChange('level2', value as NumberingStyle)}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="选择样式" />
+              <SelectValue placeholder="选择样式" defaultValue={levelStyles.level2} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
@@ -110,7 +109,7 @@ const SortableTreeComponent: React.FC = () => {
           <Label>三级编号样式</Label>
           <Select onValueChange={(value) => handleStyleChange('level3', value as NumberingStyle)}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="选择样式" />
+              <SelectValue placeholder="选择样式" defaultValue={levelStyles.level3} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
