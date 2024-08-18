@@ -1,9 +1,9 @@
 import React from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { PlusIcon, MinusIcon, LinkIcon } from '@heroicons/react/20/solid'
-import { numberingStyles, RequirementItemProps } from '@/types'
+import { numberingStyles, RequirementTreeNodeProps } from '@/types'
 
-const RequirementItem: React.FC<RequirementItemProps> = ({
+const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
   req,
   index,
   parentIndexes,
@@ -12,7 +12,7 @@ const RequirementItem: React.FC<RequirementItemProps> = ({
   onRemoveRequirement,
   onAddRequirement,
   onAddConnector,
-  renderRequirement,
+  renderRequirementNode,
 }) => {
   const fullIndex = [...parentIndexes, index]
   const numberingStyle = req.isConnector
@@ -82,7 +82,7 @@ const RequirementItem: React.FC<RequirementItemProps> = ({
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps} className="ml-8 mt-2">
                   {req.children.map((child, childIndex) =>
-                    renderRequirement(child, childIndex, fullIndex)
+                    renderRequirementNode(child, childIndex, fullIndex)
                   )}
                   {provided.placeholder}
                 </div>
@@ -95,4 +95,4 @@ const RequirementItem: React.FC<RequirementItemProps> = ({
   )
 }
 
-export default RequirementItem
+export default RequirementTreeNode

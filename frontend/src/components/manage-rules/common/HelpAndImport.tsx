@@ -9,7 +9,7 @@ interface ControlPanelProps {
   onLoadPreset: () => void
 }
 
-const ControlPanel: React.FC<ControlPanelProps> = ({
+const HelpAndImport: React.FC<ControlPanelProps> = ({
   defaultStyles,
   onDefaultStyleChange,
   onToggleHelp,
@@ -41,4 +41,4 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   )
 }
 
-export default ControlPanel
+export default HelpAndImport

@@ -95,7 +95,7 @@ export interface AdmissionSelectionProps {
   updateData: (data: Partial<AdmissionSelectionProps['data']>) => void
 }
 
-export interface RequirementItemProps {
+export interface RequirementTreeNodeProps {
   req: Requirement
   index: number
   parentIndexes: number[]
@@ -104,9 +104,12 @@ export interface RequirementItemProps {
   onRemoveRequirement: (id: number) => void
   onAddRequirement: (parentId: number | null, level: number) => void
   onAddConnector: (parentId: number, level: number) => void
-  renderRequirement: (req: Requirement, index: number, parentIndexes: number[]) => React.ReactNode
+  renderRequirementNode: (
+    req: Requirement,
+    index: number,
+    parentIndexes: number[]
+  ) => React.ReactNode
 }
-
 export interface SelectMenuProps {
   value: string
   onChange: (value: string) => void
