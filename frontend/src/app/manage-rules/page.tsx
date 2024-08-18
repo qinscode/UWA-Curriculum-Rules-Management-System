@@ -1,5 +1,8 @@
 'use client'
 import React, { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import Layout from '@/components/Layout'
 import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
 import Footer from '@/components/Footer'
@@ -11,6 +14,7 @@ import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import Deferrals from '@/components/manage-rules/Deferrals'
 import AwardWithDistinction from '@/components/manage-rules/AwardWithDistinction'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
+import { Save } from 'lucide-react'
 
 const ManageRules: React.FC = () => {
   const [formData, setFormData] = useState<AdmissionSelectionProps['data']>({
@@ -39,80 +43,48 @@ const ManageRules: React.FC = () => {
 
   return (
     <Layout>
-      <div className="mx-auto max-w-7xl pb-6 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-4xl py-8">
         <form onSubmit={handleSubmit}>
-          <div className="px-4 py-5 sm:p-6">
-            <div className="space-y-8">
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  Admission and selection
-                </h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <AdmissionSelection data={formData} updateData={updateFormData} />
-                </div>
-              </section>
+          <Card>
+            <CardHeader>
+              <CardTitle>Manage Rules</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <Section title="Admission and selection">
+                <AdmissionSelection data={formData} updateData={updateFormData} />
+              </Section>
 
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  Satisfactory Progress
-                </h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <SatisfactoryProgress data={formData} updateData={updateFormData} />
-                </div>
-              </section>
+              <Section title="Satisfactory Progress">
+                <SatisfactoryProgress data={formData} updateData={updateFormData} />
+              </Section>
 
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  Progress Status
-                </h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <ProgressStatus data={formData} updateData={updateFormData} />
-                </div>
-              </section>
+              <Section title="Progress Status">
+                <ProgressStatus data={formData} updateData={updateFormData} />
+              </Section>
 
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  Award with distinction
-                </h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <AwardWithDistinction data={formData} updateData={updateFormData} />
-                </div>
-              </section>
+              <Section title="Award with distinction">
+                <AwardWithDistinction data={formData} updateData={updateFormData} />
+              </Section>
 
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">Deferrals</h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <Deferrals data={formData} updateData={updateFormData} />
-                </div>
-              </section>
+              <Section title="Deferrals">
+                <Deferrals data={formData} updateData={updateFormData} />
+              </Section>
 
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  Additional rules
-                </h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <AdditionalRules data={formData} updateData={updateFormData} />
-                </div>
-              </section>
+              <Section title="Additional rules">
+                <AdditionalRules data={formData} updateData={updateFormData} />
+              </Section>
 
-              <section>
-                <h3 className="mb-4 text-lg font-medium leading-6 text-gray-900">
-                  Outcomes & Australian Qualifications Framework
-                </h3>
-                <div className="rounded-md bg-gray-50 p-4">
-                  <OutcomesAQF data={formData} updateData={updateFormData} />
-                </div>
-              </section>
-            </div>
-          </div>
+              <Section title="Outcomes & Australian Qualifications Framework">
+                <OutcomesAQF data={formData} updateData={updateFormData} />
+              </Section>
+            </CardContent>
+          </Card>
 
-          <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-            <button
-              type="submit"
-              className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
+          <div className="mt-6 flex justify-end">
+            <Button type="submit" className="w-full sm:w-auto">
+              <Save className="mr-2 h-4 w-4" />
               Save Changes
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -120,5 +92,14 @@ const ManageRules: React.FC = () => {
     </Layout>
   )
 }
+
+const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div>
+    <h3 className="mb-4 text-lg font-medium">{title}</h3>
+    <Card>
+      <CardContent className="p-4">{children}</CardContent>
+    </Card>
+  </div>
+)
 
 export default ManageRules

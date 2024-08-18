@@ -1,42 +1,25 @@
-import React, { useState } from 'react'
-import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import CheckboxWithLabel from '@/components/manage-rules/common/CheckboxWithLabel'
+import React from 'react'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { AdmissionSelectionProps } from '@/types'
 
-const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
-  const [showRankingRequirements, setShowRankingRequirements] = useState(false)
-
+const AdditionalRules: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
   return (
-    <div className="bg-white shadow sm:rounded-lg">
-      <div className="px-4 py-5 sm:p-6">
-        <div className="space-y-6">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Ranking and selection for admission
-            </label>
-            <CheckboxWithLabel
-              id="showRankingRequirements"
-              description="There are specific ranking and selection tools or requirements for this course."
-              checked={showRankingRequirements}
-              onChange={setShowRankingRequirements}
-            />
-          </div>
-
-          {showRankingRequirements && (
-            <div>
-              <NestedRequirementsList
-                initialRequirements={data.rankingSelection}
-                onChange={(requirements) => updateData({ rankingSelection: requirements })}
-                defaultStyles={['numeric', 'alphabetic', 'roman']}
-                showControls={true}
-                showHelpPanel={true}
-              />
-            </div>
-          )}
-        </div>
+    <div className="space-y-6">
+      <div>
+        <Label htmlFor="additionalRules" className="mb-1 block text-lg font-medium">
+          Additional Rules
+        </Label>
+        <Textarea
+          id="additionalRules"
+          placeholder="Enter any additional rules or requirements for this course..."
+          value={data.additionalRules || ''}
+          onChange={(e) => updateData({ additionalRules: e.target.value })}
+          className="min-h-[150px]"
+        />
       </div>
     </div>
   )
 }
 
-export default AdmissionSelection
+export default AdditionalRules

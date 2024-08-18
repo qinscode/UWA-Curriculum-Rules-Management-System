@@ -1,5 +1,6 @@
 import React from 'react'
-import { QuestionMarkCircleIcon, ArrowRightEndOnRectangleIcon } from '@heroicons/react/20/solid'
+import { Button } from '@/components/ui/button'
+import { HelpCircle, FileUp } from 'lucide-react'
 import StyleSelector from './StyleSelector'
 
 interface ControlPanelProps {
@@ -22,20 +23,12 @@ const HelpAndImport: React.FC<ControlPanelProps> = ({
         <StyleSelector styles={defaultStyles} onStyleChange={onDefaultStyleChange} />
       </div>
       <div className="flex items-center space-x-2">
-        <button
-          onClick={onToggleHelp}
-          className="p-2 text-blue-600 hover:text-blue-800 focus:outline-none"
-          title="Show Help"
-        >
-          <QuestionMarkCircleIcon className="h-6 w-6" />
-        </button>
-        <button
-          onClick={onLoadPreset}
-          className="p-2 text-green-600 hover:text-green-800 focus:outline-none"
-          title="Load Preset Rules"
-        >
-          <ArrowRightEndOnRectangleIcon className="h-6 w-6" />
-        </button>
+        <Button onClick={onToggleHelp} variant="outline" size="icon" title="Show Help">
+          <HelpCircle className="h-4 w-4" />
+        </Button>
+        <Button onClick={onLoadPreset} variant="outline" size="icon" title="Load Preset Rules">
+          <FileUp className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   )

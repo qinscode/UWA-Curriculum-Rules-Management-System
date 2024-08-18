@@ -1,11 +1,12 @@
 import React from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
+import { Button } from '@/components/ui/button'
 import { NestedRequirementsListProps } from '@/types'
 import { useRequirements } from '@/hooks/useRequirements'
 import RequirementTreeView from './RequirementTreeView'
 import HelpAndImport from './HelpAndImport'
 import HelpPanel from './HelpPanel'
-import AddMainRequirementButton from './AddMainRequirementButton'
+import { Plus } from 'lucide-react'
 
 const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   initialRequirements = [],
@@ -32,7 +33,7 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="py-6">
+      <div className="space-y-4">
         {showControls && (
           <HelpAndImport
             defaultStyles={defaultStyles}
@@ -50,7 +51,10 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
           onAddRequirement={addRequirement}
           onAddConnector={addConnector}
         />
-        <AddMainRequirementButton onClick={() => addRequirement()} text={addMainButtonText} />
+        <Button onClick={() => addRequirement()} variant="outline" className="w-full">
+          <Plus className="mr-2 h-4 w-4" />
+          {addMainButtonText}
+        </Button>
       </div>
     </DragDropContext>
   )

@@ -1,5 +1,6 @@
 import React from 'react'
-import { PlusIcon } from '@heroicons/react/20/solid'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
 
 interface AddMainRequirementButtonProps {
   onClick: () => void
@@ -7,13 +8,10 @@ interface AddMainRequirementButtonProps {
 }
 
 const AddMainRequirementButton: React.FC<AddMainRequirementButtonProps> = ({ onClick, text }) => (
-  <button
-    onClick={onClick}
-    className="mt-4 flex items-center rounded-md bg-indigo-600 px-4 py-1 text-white hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-  >
-    <PlusIcon className="mr-2 h-5 w-5" />
+  <Button onClick={onClick} variant="outline" className="mt-4 w-full">
+    <Plus className="mr-2 h-4 w-4" />
     {text}
-  </button>
+  </Button>
 )
 
 export default AddMainRequirementButton

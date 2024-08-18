@@ -1,6 +1,8 @@
 import React from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
-import { PlusIcon, MinusIcon, LinkIcon } from '@heroicons/react/20/solid'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Plus, Minus, Link } from 'lucide-react'
 import { numberingStyles, RequirementTreeNodeProps } from '@/types'
 
 const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
@@ -21,46 +23,50 @@ const RequirementTreeNode: React.FC<RequirementTreeNodeProps> = ({
   const prefix = numberingStyle === 'none' ? '' : numberingStyles[numberingStyle](index, req.level)
 
   const renderContent = () => (
-    <div className="flex w-full items-center">
+    <div className="flex w-full items-center space-x-2">
       <div className="flex flex-grow items-center">
         {!req.isConnector && (
           <span className="mr-2 min-w-[30px] text-right font-semibold">{prefix}</span>
         )}
-        <input
+        <Input
           type="text"
           value={req.content}
           onChange={(e) => onUpdateRequirement(req.id, e.target.value)}
-          className={`flex-grow rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-            req.isConnector ? 'ml-[30px] font-bold text-blue-600' : ''
-          }`}
+          className={req.isConnector ? 'ml-[30px] font-bold text-blue-600' : ''}
           placeholder={
             req.isConnector ? "Enter connector (e.g., 'and', 'or')" : 'Enter requirement'
           }
         />
       </div>
-      <div className="ml-2 flex items-center space-x-2">
-        <button
+      <div className="flex items-center space-x-2">
+        <Button
           onClick={() => onRemoveRequirement(req.id)}
-          className="p-2 text-red-600 hover:text-red-800 focus:outline-none"
+          variant="outline"
+          size="icon"
+          className="h-8 w-8"
         >
-          <MinusIcon className="h-5 w-5" />
-        </button>
+          <Minus className="h-4 w-4" />
+        </Button>
         {!req.isConnector && req.level < 3 && (
-          <button
+          <Button
             onClick={() => onAddRequirement(req.id, req.level + 1)}
-            className="p-2 text-green-600 hover:text-green-800 focus:outline-none"
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
           >
-            <PlusIcon className="h-5 w-5" />
-          </button>
+            <Plus className="h-4 w-4" />
+          </Button>
         )}
         {req.level < 3 && (
-          <button
+          <Button
             onClick={() => onAddConnector(req.id, req.level + 1)}
-            className="p-2 text-blue-600 hover:text-blue-800 focus:outline-none"
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
             title="Add Connector"
           >
-            <LinkIcon className="h-5 w-5" />
-          </button>
+            <Link className="h-4 w-4" />
+          </Button>
         )}
       </div>
     </div>

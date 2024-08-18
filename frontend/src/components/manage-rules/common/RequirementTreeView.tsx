@@ -40,7 +40,11 @@ const RequirementTreeView: React.FC<RequirementTreeViewProps> = ({
   return (
     <Droppable droppableId="main">
       {(provided) => (
-        <div ref={provided.innerRef} {...provided.droppableProps}>
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          className="space-y-4 rounded-lg bg-gray-50 p-4"
+        >
           {requirements.map((req, index) => renderRequirementNode(req, index))}
           {provided.placeholder}
         </div>

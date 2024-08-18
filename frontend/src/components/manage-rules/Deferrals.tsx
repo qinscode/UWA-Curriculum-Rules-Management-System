@@ -1,53 +1,52 @@
 import React, { useState } from 'react'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import CheckboxWithLabel from '@/components/manage-rules/common/CheckboxWithLabel'
 import { AdmissionSelectionProps } from '@/types'
 
-const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
-  const [showRankingRequirements, setShowRankingRequirements] = useState(false)
+const Deferrals: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
+  const [showDeferralRules, setShowDeferralRules] = useState(false)
 
   return (
-    <div className="bg-white shadow sm:rounded-lg">
-      <div className="px-4 py-5 sm:p-6">
-        <div className="space-y-6">
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Ranking and selection for admission
-            </label>
-            <CheckboxWithLabel
-              id="showRankingRequirements"
-              description="There are specific ranking and selection tools or requirements for this course."
-              checked={showRankingRequirements}
-              onChange={setShowRankingRequirements}
-            />
-          </div>
-
-          {showRankingRequirements && (
-            <div>
-              <NestedRequirementsList
-                initialRequirements={data.rankingSelection}
-                onChange={(requirements) => updateData({ rankingSelection: requirements })}
-                defaultStyles={['numeric', 'alphabetic', 'roman']}
-                showControls={true}
-                showHelpPanel={true}
-              />
-            </div>
-          )}
-
-          <div className="pt-6">
-            <label className="mb-1 block text-lg font-medium text-gray-900">Admissions</label>
-            <NestedRequirementsList
-              presetRules={data.admissionRequirements}
-              onChange={(requirements) => updateData({ admissionRequirements: requirements })}
-              defaultStyles={['numeric', 'alphabetic', 'roman']}
-              showControls={true}
-              showHelpPanel={true}
-            />
-          </div>
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="deferralAllowed"
+          checked={data.deferralAllowed}
+          onCheckedChange={(checked) => updateData({ deferralAllowed: checked })}
+        />
+        <Label htmlFor="deferralAllowed" className="text-sm">
+          Deferral is allowed for this course
+        </Label>
       </div>
+
+      {data.deferralAllowed && (
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="showDeferralRules"
+            checked={showDeferralRules}
+            onCheckedChange={setShowDeferralRules}
+          />
+          <Label htmlFor="showDeferralRules" className="text-sm">
+            Specify custom deferral rules
+          </Label>
+        </div>
+      )}
+
+      {data.deferralAllowed && showDeferralRules && (
+        <div>
+          <Label className="mb-1 block text-lg font-medium">Custom deferral rules</Label>
+          <NestedRequirementsList
+            initialRequirements={data.deferralRules}
+            onChange={(requirements) => updateData({ deferralRules: requirements })}
+            defaultStyles={['numeric', 'alphabetic', 'roman']}
+            showControls={true}
+            showHelpPanel={true}
+          />
+        </div>
+      )}
     </div>
   )
 }
 
-export default AdmissionSelection
+export default Deferrals
