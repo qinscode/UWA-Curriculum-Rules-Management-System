@@ -1,5 +1,5 @@
 import React from 'react'
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd'
+import { DragDropContext } from 'react-beautiful-dnd'
 import { NestedRequirementsListProps } from '@/types'
 import { useRequirements } from '@/hooks/useRequirements'
 import RequirementTreeView from './RequirementTreeView'
