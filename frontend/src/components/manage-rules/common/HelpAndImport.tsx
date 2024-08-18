@@ -27,12 +27,18 @@ const HelpAndImport: React.FC<ControlPanelProps> = ({
           variant="outline"
           size="sm"
           title="Show Help"
-          className={'bg-indigo-600'}
+          className={'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'}
         >
           <HelpCircle className="mr-2 h-4 w-4" />
           Help
         </Button>
-        <Button onClick={onLoadPreset} variant="outline" size="sm" title="Load Preset Rules">
+        <Button
+          onClick={onLoadPreset}
+          variant="outline"
+          size="sm"
+          title="Load Preset Rules"
+          className={'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'}
+        >
           <FileUp className="mr-2 h-4 w-4" />
           Load Preset
         </Button>

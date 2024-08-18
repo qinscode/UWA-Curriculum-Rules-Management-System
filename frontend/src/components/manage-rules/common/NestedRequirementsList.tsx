@@ -51,7 +51,11 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
           onAddRequirement={addRequirement}
           onAddConnector={addConnector}
         />
-        <Button onClick={() => addRequirement()} variant="outline" className="">
+        <Button
+          onClick={() => addRequirement()}
+          variant="outline"
+          className={'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'}
+        >
           <Plus className="mr-2 h-4 w-4" />
           {addMainButtonText}
         </Button>
