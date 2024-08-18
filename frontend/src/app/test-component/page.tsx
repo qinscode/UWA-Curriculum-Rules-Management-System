@@ -2,6 +2,7 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import AdmissionsDnDComponent from '@/app/test-component/AdmissionsDnDComponent'
 
 // Dynamically import the SortableTreeComponent to avoid SSR issues
 const SortableTreeComponent = dynamic(() => import('./SortableTreeComponent'), {
@@ -20,6 +21,7 @@ const SortableTreePage: React.FC = () => {
       <main>
         <h1 className="mb-4 text-3xl font-bold">Sortable Tree Demo</h1>
         <SortableTreeComponent />
+        <AdmissionsDnDComponent />
       </main>
     </div>
   )
