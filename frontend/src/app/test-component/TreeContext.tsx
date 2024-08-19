@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useCallback } from 'react'
-import { TreeItems } from 'dnd-kit-sortable-tree'
-import { TreeItemAdapter } from './types'
 
 interface TreeContextType {
   refreshTree: () => void
