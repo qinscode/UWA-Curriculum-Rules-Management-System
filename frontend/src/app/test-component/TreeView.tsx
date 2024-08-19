@@ -14,6 +14,7 @@ const TreeView: React.FC<TreeViewProps> = ({ items, onItemsChanged }) => {
       items={items}
       onItemsChanged={onItemsChanged}
       TreeItemComponent={TreeItemComponent}
+      dropAnimation={{ duration: 150 }}
     />
   )
 }
