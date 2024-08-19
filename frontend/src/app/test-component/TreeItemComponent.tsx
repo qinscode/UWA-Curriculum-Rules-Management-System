@@ -12,7 +12,7 @@ export const TreeItemComponent = forwardRef<
   HTMLDivElement,
   TreeItemComponentProps<TreeItemAdapter>
 >((props, ref) => {
-  const { item, childCount, onCollapse, onRemove } = props
+  const { item, onRemove } = props
 
   const [content, setContent] = useState(item.content)
   const { refreshTree } = useTreeContext()
