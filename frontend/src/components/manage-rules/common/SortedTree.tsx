@@ -4,7 +4,6 @@ import { Requirement, NumberingStyle } from '@/types'
 import { ChevronRight, ChevronDown, GripVertical, Plus, Trash } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import ControlPanel from '@/components/manage-rules/common/ControlPanel'
 
 interface BasePageProps {
   initialData: Requirement[]
@@ -22,16 +21,7 @@ export default function BasePage({
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
   const [data, setData] = useState<any[]>([])
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
-  const [defaultStyles, setDefaultStyles] = useState<NumberingStyle[]>([
-    NumberingStyle.Numeric,
-    NumberingStyle.Alphabetic,
-    NumberingStyle.Roman,
-  ])
-  const handleDefaultStyleChange = (level: number, newStyle: NumberingStyle) => {
-    const updatedStyles = [...defaultStyles]
-    updatedStyles[level - 1] = newStyle // level 从 1 开始
-    setDefaultStyles(updatedStyles)
-  }
+
   const handleAddRootNode = () => {
     setData((prevData) => {
       const newNode = {
@@ -231,66 +221,9 @@ export default function BasePage({
       </div>
     ),
   })
-  function toRoman(num: number): string {
-    const romanNumerals = [
-      ['M', 1000],
-      ['CM', 900],
-      ['D', 500],
-      ['CD', 400],
-      ['C', 100],
-      ['XC', 90],
-      ['L', 50],
-      ['XL', 40],
-      ['X', 10],
-      ['IX', 9],
-      ['V', 5],
-      ['IV', 4],
-      ['I', 1],
-    ] as [string, number][]
-
-    let result = ''
-
-    for (const [letter, n] of romanNumerals) {
-      while (num >= n) {
-        result += letter
-        num -= n
-      }
-    }
-
-    return result
-  }
-  const renderNodeWithNumbering = (node, level) => {
-    let prefix = ''
-    const style = defaultStyles[level - 1] // 获取当前层级的样式
-
-    switch (style) {
-      case NumberingStyle.Numeric:
-        prefix = `${node.index + 1}.`
-        break
-      case NumberingStyle.Alphabetic:
-        prefix = `${String.fromCharCode(97 + node.index)}.`
-        break
-      case NumberingStyle.Roman:
-        prefix = `${toRoman(node.index + 1)}.`
-        break
-      case NumberingStyle.None:
-      default:
-        prefix = ''
-    }
-
-    return `${prefix} ${node.name}`
-  }
-
-  // `toRoman` 是你需要自己实现的一个方法，用于将数字转换为罗马数字
 
   return (
     <div className="rounded-lg bg-gray-100 p-4 shadow-md">
-      <ControlPanel
-        defaultStyles={defaultStyles}
-        onDefaultStyleChange={handleDefaultStyleChange}
-        onToggleHelp={() => console.log('Help toggled')}
-        onLoadPreset={() => console.log('Preset loaded')}
-      />
       <div className="rounded-md p-4">
         <button
           className="mb-4 rounded-lg bg-indigo-600 px-4 py-2 text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
