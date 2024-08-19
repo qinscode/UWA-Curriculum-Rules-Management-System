@@ -4,6 +4,7 @@ import { Requirement, NumberingStyle } from '@/types'
 import { ChevronRight, ChevronDown, GripVertical, Plus, Trash } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import RequirementNumber from './RequirementNumber'
 
 interface BasePageProps {
   initialData: Requirement[]
@@ -199,6 +200,12 @@ export default function BasePage({
             >
               <GripVertical size={16} />
             </span>
+            <RequirementNumber
+              node={stat.node}
+              allNodes={data}
+              keys={keys}
+              style={NumberingStyle.Numeric} // Default style, you can change this if needed
+            />
             <Input
               className="flex-grow"
               value={stat.node.name}
@@ -221,7 +228,6 @@ export default function BasePage({
       </div>
     ),
   })
-
   return (
     <div className="rounded-lg bg-gray-100 p-4 shadow-md">
       <div className="rounded-md p-4">
