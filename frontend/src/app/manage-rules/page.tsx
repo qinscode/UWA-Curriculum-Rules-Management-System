@@ -2,7 +2,17 @@
 import React, { useState } from 'react'
 import Layout from '@/components/Layout'
 import Footer from '@/components/Footer'
-import { PRESET_RULES } from '@/constants'
+import {
+  PRESET_RULES_Admissions,
+  PRESET_RULES_RANKING_SELECTION,
+  AWARD_WITH_DISTINCTION_RULE,
+  PRESET_RULES_ENGLISH,
+  PRESET_RULES_ARTICULATION_AND_EXIT_AWARDS,
+  COURSE_STRUCTURE,
+  SATISFACTORY_PROGRESS_RULE,
+  PROGRESS_STATUS,
+  DEFERRAL,
+} from '@/constants'
 import { AdmissionSelectionProps } from '@/types'
 import RuleSection from '@/components/manage-rules/RuleSection'
 import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
@@ -16,14 +26,14 @@ import SaveButton from '@/components/manage-rules/SaveButton'
 
 const ManageRules: React.FC = () => {
   const [formData, setFormData] = useState<AdmissionSelectionProps['data']>({
-    englishRequirements: [],
-    admissionRequirements: PRESET_RULES,
-    rankingSelection: [],
-    satisfactoryProgress: [],
-    progressStatus: [],
-    awardWithDistinction: [],
-    deferralAllowed: [],
-    deferralRules: [],
+    englishRequirements: PRESET_RULES_ENGLISH,
+    admissionRequirements: PRESET_RULES_Admissions,
+    rankingSelection: PRESET_RULES_RANKING_SELECTION,
+    satisfactoryProgress: SATISFACTORY_PROGRESS_RULE,
+    progressStatus: PROGRESS_STATUS,
+    awardWithDistinction: AWARD_WITH_DISTINCTION_RULE,
+    // deferralAllowed: ,
+    deferralRules: DEFERRAL,
   })
 
   const updateFormData = (data: Partial<AdmissionSelectionProps['data']>) => {

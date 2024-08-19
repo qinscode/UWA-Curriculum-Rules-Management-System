@@ -13,7 +13,6 @@ import {
   ArrowDownLeft,
   Sparkles,
 } from 'lucide-react'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -256,7 +255,7 @@ export default function BasePage({
             }`}
           >
             <CardContent className="p-3">
-              <div className="flex items-start">
+              <div className="flex items-start p-2">
                 <div className="mr-2 flex items-center">
                   {stat.node.hasChildren && (
                     <Button
@@ -288,7 +287,7 @@ export default function BasePage({
                   )}
                 </div>
                 <Textarea
-                  className="min-h-[2.5rem] flex-grow resize-y"
+                  className="m-2 min-h-[2.5rem] flex-grow resize-y p-2"
                   value={stat.node.name}
                   onChange={(e) => handleInputChange(stat.node.id, e.target.value)}
                   rows={2}
