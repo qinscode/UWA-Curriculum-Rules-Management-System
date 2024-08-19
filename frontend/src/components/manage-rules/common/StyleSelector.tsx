@@ -1,44 +1,26 @@
 import React from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import { styleOptions } from '@/types'
+import { NumberingStyle } from '@/types'
 
 interface StyleSelectorProps {
-  styles: string[]
-  onStyleChange: (level: number, newStyle: string) => void
+  level: number
+  selectedStyle: NumberingStyle
+  onStyleChange: (newStyle: NumberingStyle) => void
 }
 
-const StyleSelector: React.FC<StyleSelectorProps> = ({ styles, onStyleChange }) => {
+const StyleSelector: React.FC<StyleSelectorProps> = ({ level, selectedStyle, onStyleChange }) => {
   return (
-    <div className="flex items-center space-x-4">
-      {[1, 2, 3].map((level) => (
-        <div key={level} className="flex flex-col space-y-1">
-          <Label htmlFor={`level-${level}-style`} className="text-sm">
-            Level {level} style:
-          </Label>
-          <Select
-            value={styles[level - 1]}
-            onValueChange={(newStyle) => onStyleChange(level, newStyle)}
-          >
-            <SelectTrigger id={`level-${level}-style`} className="w-[130px]">
-              <SelectValue placeholder="Select style" />
-            </SelectTrigger>
-            <SelectContent>
-              {styleOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      ))}
+    <div className="mb-2">
+      <label className="mr-2 text-sm font-medium text-gray-700">Level {level} Style:</label>
+      <select
+        value={selectedStyle}
+        onChange={(e) => onStyleChange(e.target.value as NumberingStyle)}
+        className="rounded border px-2 py-1 text-sm"
+      >
+        <option value={NumberingStyle.Numeric}>Numeric</option>
+        <option value={NumberingStyle.Alphabetic}>Alphabetic</option>
+        <option value={NumberingStyle.Roman}>Roman</option>
+        <option value={NumberingStyle.None}>None</option>
+      </select>
     </div>
   )
 }
