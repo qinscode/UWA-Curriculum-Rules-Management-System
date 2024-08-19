@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { PlusCircle, Trash2 } from 'lucide-react'
 import { NumberingStyle, TreeItemAdapter } from './types'
+import { useTreeContext } from './TreeContext'
 
 export const TreeItemComponent = forwardRef<
   HTMLDivElement,
@@ -14,6 +15,7 @@ export const TreeItemComponent = forwardRef<
   const { item, childCount, onCollapse, onRemove } = props
 
   const [content, setContent] = useState(item.content)
+  const { refreshTree } = useTreeContext()
 
   useEffect(() => {
     setContent(item.content)
@@ -41,9 +43,10 @@ export const TreeItemComponent = forwardRef<
       children: [],
     }
     item.children.push(newChild)
-    if (onCollapse) {
-      onCollapse()
-    }
+    refreshTree()
+    // if (onCollapse) {
+    //   onCollapse()
+    // }
   }
 
   const handleDelete = (e: React.MouseEvent) => {
