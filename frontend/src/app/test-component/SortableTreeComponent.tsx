@@ -6,14 +6,7 @@ import TreeView from './TreeView'
 import { initialViableRequirementData } from './initialData'
 import { TreeProvider } from './TreeContext'
 import { UniqueIdentifier } from '@dnd-kit/core'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+import LevelStyleSelector from './LevelStyleSelector'
 
 const SortableTreeComponent: React.FC = () => {
   const [levelStyles, setLevelStyles] = useState({
@@ -34,12 +27,13 @@ const SortableTreeComponent: React.FC = () => {
     [levelStyles]
   )
 
-  const handleStyleChange = (level: string, style: NumberingStyle) => {
-    setLevelStyles((prevStyles) => ({
-      ...prevStyles,
-      [level]: style,
-    }))
-  }
+  const handleStyleChange = useCallback((level: string, style: NumberingStyle) => {
+    setLevelStyles((prevStyles) => {
+      const newStyles = { ...prevStyles, [level]: style }
+      setItems((prevItems) => updateItemsWithNumbers(prevItems, newStyles))
+      return newStyles
+    })
+  }, [])
 
   const refreshTree = useCallback(() => {
     setItems((prevItems) => updateItemsWithNumbers(prevItems, levelStyles))
@@ -70,48 +64,9 @@ const SortableTreeComponent: React.FC = () => {
     <TreeProvider onRefresh={refreshTree} onToggleConnector={toggleConnector}>
       <div className="p-4">
         <div className="mb-4 flex space-x-4">
-          <div>
-            <Label>Level 1 Style</Label>
-            <Select onValueChange={(value) => handleStyleChange('level1', value as NumberingStyle)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select style" defaultValue={levelStyles.level1} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
-                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
-                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
-                <SelectItem value={NumberingStyle.None}>None</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>Level 2 Style</Label>
-            <Select onValueChange={(value) => handleStyleChange('level2', value as NumberingStyle)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select style" defaultValue={levelStyles.level2} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
-                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
-                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
-                <SelectItem value={NumberingStyle.None}>None</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label>Level 3 Style</Label>
-            <Select onValueChange={(value) => handleStyleChange('level3', value as NumberingStyle)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select style" defaultValue={levelStyles.level3} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
-                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
-                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
-                <SelectItem value={NumberingStyle.None}>None</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <LevelStyleSelector level="1" value={levelStyles.level1} onChange={handleStyleChange} />
+          <LevelStyleSelector level="2" value={levelStyles.level2} onChange={handleStyleChange} />
+          <LevelStyleSelector level="3" value={levelStyles.level3} onChange={handleStyleChange} />
         </div>
         <TreeView items={items} onItemsChanged={handleItemsChange} />
       </div>
