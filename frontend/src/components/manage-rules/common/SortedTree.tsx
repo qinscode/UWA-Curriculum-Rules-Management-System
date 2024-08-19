@@ -10,7 +10,8 @@ import {
   HelpCircle,
   FileText,
   Link,
-  Settings,
+  ArrowDownLeft,
+  Sparkles,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -151,6 +152,8 @@ export default function BasePage({
   }
 
   const handleToggleConnector = (id: number) => {
+    // if node isConnector is true, set it to false, otherwise set it to true
+
     setData((prevData) => {
       const updatedData = prevData.map((node) =>
         node.id === id ? { ...node, isConnector: !node.isConnector } : node
@@ -291,14 +294,14 @@ export default function BasePage({
                   rows={2}
                 />
                 <div className="ml-2 flex">
-                  {!stat.node.hasChildren && !stat.node.isConnector && (
+                  {!stat.node.hasChildren && (
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() => handleToggleConnector(stat.node.id)}
                       className="mr-1"
                     >
-                      <Link size={16} />
+                      <Sparkles size={16} />
                     </Button>
                   )}
                   <Button
@@ -359,7 +362,7 @@ export default function BasePage({
           <HelpCircle className="h-4 w-4" />
         </Button>
         <Button variant="outline" size="icon" onClick={loadPresetRequirements}>
-          <FileText className="h-4 w-4" />
+          <ArrowDownLeft className="h-4 w-4" />
         </Button>
       </div>
       <HelpPanel showHelp={showHelp} />
