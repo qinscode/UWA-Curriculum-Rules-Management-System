@@ -1,10 +1,17 @@
-import { useHeTree, sortFlatData } from 'he-tree-react'
 import React, { useState, useEffect } from 'react'
+import { useHeTree, sortFlatData } from 'he-tree-react'
 import { Requirement, NumberingStyle } from '@/types'
-import { ChevronRight, ChevronDown, GripVertical, Plus, Trash } from 'lucide-react'
+import {
+  ChevronRight,
+  ChevronDown,
+  GripVertical,
+  Plus,
+  Trash,
+  HelpCircle,
+  FileText,
+} from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import RequirementNumber from './RequirementNumber'
 import {
   Select,
   SelectContent,
@@ -12,9 +19,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import RequirementNumber from './RequirementNumber'
 
 interface BasePageProps {
   initialData: Requirement[]
+  presetRequirements: Requirement[]
   onUpdateRequirement?: (
     value: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
   ) => void
@@ -23,6 +41,7 @@ interface BasePageProps {
 
 export default function BasePage({
   initialData,
+  presetRequirements,
   onUpdateRequirement,
   onAddChildNode,
 }: BasePageProps) {
@@ -35,13 +54,18 @@ export default function BasePage({
     NumberingStyle.Roman,
   ])
 
+  useEffect(() => {
+    const flattenedData = flattenRequirements(initialData)
+    setData(flattenedData)
+  }, [initialData])
+
   const handleAddRootNode = () => {
     setData((prevData) => {
       const newNode = {
         id: Date.now(),
-        parent_id: null, // 一级节点的 parent_id 为 null
+        parent_id: null,
         name: 'New Root Requirement',
-        style: NumberingStyle.None,
+        style: NumberingStyle.Numeric,
         isConnector: false,
         hasChildren: false,
       }
@@ -56,64 +80,11 @@ export default function BasePage({
     })
   }
 
-  useEffect(() => {
-    const flattenData = (items: Requirement[], parentId: number | null = null): any[] => {
-      return items.reduce((acc: any[], item: Requirement) => {
-        acc.push({
-          id: item.id,
-          parent_id: parentId,
-          name: item.content,
-          style: item.style,
-          isConnector: item.isConnector,
-          hasChildren: item.children && item.children.length > 0,
-        })
-        if (item.children && item.children.length > 0) {
-          acc.push(...flattenData(item.children, item.id))
-        }
-        return acc
-      }, [])
-    }
-
-    const flatData = flattenData(initialData)
-    setData(sortFlatData(flatData, keys))
-  }, [initialData])
-
-  function convertDataToRequirements(flatData: any[]): Requirement[] {
-    const map = new Map<number, Requirement[]>()
-
-    flatData.forEach((item) => {
-      if (!map.has(item.parent_id)) {
-        map.set(item.parent_id, [])
-      }
-      const requirement: Requirement = {
-        id: item.id,
-        content: item.name,
-        style: item.style,
-        children: [],
-        isConnector: item.isConnector,
-      }
-      map.get(item.parent_id)!.push(requirement)
-    })
-
-    function buildTree(parentId: number | null): Requirement[] {
-      return (map.get(parentId as number) || []).map((requirement) => {
-        requirement.children = buildTree(requirement.id)
-        return requirement
-      })
-    }
-
-    return buildTree(null)
-  }
-
-  const toggleNode = (id: number) => {
-    setExpandedNodes((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
-        newSet.add(id)
-      }
-      return newSet
+  const handleLevelStyleChange = (level: number, newStyle: NumberingStyle) => {
+    setLevelStyles((prevStyles) => {
+      const newStyles = [...prevStyles]
+      newStyles[level] = newStyle
+      return newStyles
     })
   }
 
@@ -152,7 +123,7 @@ export default function BasePage({
         id: Date.now(),
         parent_id: parentId,
         name: 'New Requirement',
-        style: NumberingStyle.None,
+        style: NumberingStyle.Numeric,
         isConnector: false,
         hasChildren: false,
       }
@@ -165,15 +136,82 @@ export default function BasePage({
       }, 0)
       return updatedData
     })
-    setExpandedNodes((prev) => new Set(prev).add(parentId)) // 展开新添加子节点的父节点
+    setExpandedNodes((prev) => new Set(prev).add(parentId))
   }
 
-  const handleLevelStyleChange = (level: number, newStyle: NumberingStyle) => {
-    setLevelStyles((prevStyles) => {
-      const newStyles = [...prevStyles]
-      newStyles[level] = newStyle
-      return newStyles
+  const toggleNode = (id: number) => {
+    setExpandedNodes((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(id)) {
+        newSet.delete(id)
+      } else {
+        newSet.add(id)
+      }
+      return newSet
     })
+  }
+
+  const loadPresetRequirements = () => {
+    const flattenedData = flattenRequirements(presetRequirements)
+    setData(flattenedData)
+    if (onUpdateRequirement) {
+      onUpdateRequirement(presetRequirements)
+    }
+  }
+
+  const flattenRequirements = (
+    requirements: Requirement[],
+    parentId: number | null = null
+  ): any[] => {
+    return requirements.reduce((acc: any[], req: Requirement) => {
+      const flatNode = {
+        id: req.id,
+        parent_id: parentId,
+        name: req.content,
+        style: req.style || NumberingStyle.Numeric,
+        isConnector: req.isConnector || false,
+        hasChildren: req.children && req.children.length > 0,
+      }
+      acc.push(flatNode)
+      if (req.children) {
+        acc.push(...flattenRequirements(req.children, req.id))
+      }
+      return acc
+    }, [])
+  }
+
+  const convertDataToRequirements = (flatData: any[]): Requirement[] => {
+    const map = new Map<number, Requirement>()
+
+    flatData.forEach((item) => {
+      const requirement: Requirement = {
+        id: item.id,
+        content: item.name,
+        style: item.style,
+        children: [],
+        isConnector: item.isConnector,
+      }
+      map.set(item.id, requirement)
+    })
+
+    const rootRequirements: Requirement[] = []
+
+    flatData.forEach((item) => {
+      const requirement = map.get(item.id)
+      if (requirement) {
+        if (item.parent_id === null) {
+          rootRequirements.push(requirement)
+        } else {
+          const parent = map.get(item.parent_id)
+          if (parent) {
+            parent.children = parent.children || []
+            parent.children.push(requirement)
+          }
+        }
+      }
+    })
+
+    return rootRequirements
   }
 
   const { renderTree, placeholder } = useHeTree({
@@ -248,26 +286,60 @@ export default function BasePage({
       </div>
     ),
   })
+
   return (
     <div className="rounded-lg bg-gray-100 p-4 shadow-md">
-      <div className="mb-4 flex space-x-4">
-        {[0, 1, 2].map((level) => (
-          <Select
-            key={level}
-            value={levelStyles[level]}
-            onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder={`Level ${level + 1} Style`} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
-              <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
-              <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
-              <SelectItem value={NumberingStyle.None}>None</SelectItem>
-            </SelectContent>
-          </Select>
-        ))}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex space-x-4">
+          {[0, 1, 2].map((level) => (
+            <div key={level} className="flex flex-col">
+              <Label htmlFor={`level-${level + 1}-style`} className="mb-2">
+                Level {level + 1} Style
+              </Label>
+              <Select
+                value={levelStyles[level]}
+                onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
+              >
+                <SelectTrigger id={`level-${level + 1}-style`} className="w-[180px]">
+                  <SelectValue placeholder={`Select style`} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+                  <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+                  <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+                  <SelectItem value={NumberingStyle.None}>None</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ))}
+        </div>
+        <div className="flex space-x-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="icon">
+                <HelpCircle className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Help Information</DialogTitle>
+                <DialogDescription>
+                  This tool allows you to create and manage hierarchical requirements.
+                  <ul className="mt-2 list-inside list-disc">
+                    <li>Use the "Add Root Node" button to create top-level requirements.</li>
+                    <li>Click the "+" button on any node to add a child requirement.</li>
+                    <li>Use the drag handle to reorder requirements.</li>
+                    <li>Select different numbering styles for each level using the dropdowns.</li>
+                    <li>Click the preset button to load a set of predefined requirements.</li>
+                  </ul>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+          <Button variant="outline" size="icon" onClick={loadPresetRequirements}>
+            <FileText className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       <div className="rounded-md p-4">
         <button

@@ -49,6 +49,7 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
         initialData={useRequirement}
         onUpdateRequirement={setUseRequirement}
         onAddChildNode={handleAddChildNodeInParent}
+        presetRequirements={presetRules}
       />
     </div>
   )
