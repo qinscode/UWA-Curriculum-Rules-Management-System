@@ -1,5 +1,12 @@
 import { UniqueIdentifier } from '@dnd-kit/core'
 
+export interface TreeItemAdapterExtra {
+  id: UniqueIdentifier
+  children: TreeItemAdapter[]
+  collapsed?: boolean
+  canHaveChildren?: boolean
+  disableSorting?: boolean
+}
 export enum NumberingStyle {
   Numeric = 'numeric',
   Alphabetic = 'alphabetic',
