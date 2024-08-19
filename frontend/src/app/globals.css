@@ -67,3 +67,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* delete border */
+.dnd-sortable-tree_simple_tree-item {
+  border: none !important;
+}
