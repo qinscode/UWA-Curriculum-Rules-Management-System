@@ -69,7 +69,6 @@
 }
 
 /* delete border */
-
-/*.dnd-sortable-tree_simple_tree-item {*/
-/*  @apply border: none !important;*/
-/*}*/
+.dnd-sortable-tree_simple_tree-item {
+  border: none !important;
+}

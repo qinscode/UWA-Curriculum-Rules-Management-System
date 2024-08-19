@@ -1,5 +1,4 @@
 import React from 'react'
-import { UniqueIdentifier } from '@dnd-kit/core'
 
 export interface Rule {
   id: number
