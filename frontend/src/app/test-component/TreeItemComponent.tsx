@@ -11,25 +11,7 @@ export const TreeItemComponent = forwardRef<
   HTMLDivElement,
   TreeItemComponentProps<TreeItemAdapter>
 >((props, ref) => {
-  const {
-    item,
-    childCount,
-    clone,
-    depth,
-    disableSelection,
-    disableInteraction,
-    ghost,
-    handleProps,
-    indentationWidth,
-    isLast,
-    isOver,
-    isOverParent,
-    onCollapse,
-    onRemove,
-    parent,
-    style,
-    wrapperRef,
-  } = props
+  const { item, childCount, onCollapse, onRemove } = props
 
   const [content, setContent] = useState(item.content)
 
@@ -53,14 +35,14 @@ export const TreeItemComponent = forwardRef<
   const handleAddChild = (e: React.MouseEvent) => {
     e.stopPropagation()
     const newChild: TreeItemAdapter = {
-      id: Date.now().toString(), // Using string as UniqueIdentifier
+      id: Date.now().toString(),
       content: 'New Child Item',
       style: NumberingStyle.Numeric,
       children: [],
     }
     item.children.push(newChild)
     if (onCollapse) {
-      onCollapse() // Toggle collapse state
+      onCollapse()
     }
   }
 

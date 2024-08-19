@@ -68,14 +68,20 @@ const convertToTreeItemAdapter = (requirements: Requirement[]): TreeItemAdapter[
 const updateItemsWithNumbers = (
   items: TreeItemAdapter[],
   levelStyles: Record<string, NumberingStyle>,
-  level = 1
+  level = 1,
+  parentNumbering = ''
 ): TreeItemAdapter[] => {
   return items.map((item, index) => {
     const style = levelStyles[`level${level}`] || NumberingStyle.None
+    const currentNumbering = generateNumbering(index, style)
+    const fullNumbering = parentNumbering
+      ? `${parentNumbering}${currentNumbering}`
+      : currentNumbering
+
     return {
       ...item,
-      numbering: generateNumbering(index, style),
-      children: updateItemsWithNumbers(item.children, levelStyles, level + 1),
+      numbering: fullNumbering,
+      children: updateItemsWithNumbers(item.children, levelStyles, level + 1, fullNumbering),
     }
   })
 }
