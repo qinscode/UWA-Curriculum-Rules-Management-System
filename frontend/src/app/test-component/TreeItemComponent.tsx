@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { PlusCircle, Trash2 } from 'lucide-react'
+import { Link, PlusCircle, Trash2 } from 'lucide-react'
 import { NumberingStyle, TreeItemAdapter } from './types'
 import { useTreeContext } from './TreeContext'
 
@@ -15,7 +15,7 @@ export const TreeItemComponent = forwardRef<
   const { item, onRemove } = props
 
   const [content, setContent] = useState(item.content)
-  const { refreshTree } = useTreeContext()
+  const { refreshTree, toggleConnector } = useTreeContext()
 
   useEffect(() => {
     setContent(item.content)
@@ -56,14 +56,22 @@ export const TreeItemComponent = forwardRef<
     }
   }
 
+  const handleToggleConnector = () => {
+    toggleConnector(item.id)
+    refreshTree()
+  }
+
   return (
     <SimpleTreeItemWrapper {...props} ref={ref}>
       <Card className={`mb-2 shadow-sm transition-shadow duration-200 hover:shadow-md`}>
         <div className="space-y-2 p-4">
           <div className="flex items-center space-x-2">
-            <Badge variant="outline" className="whitespace-nowrap bg-primary/10 text-primary">
-              {item.numbering}
-            </Badge>
+            {item.numbering !== NumberingStyle.None && (
+              <Badge variant="outline" className="whitespace-nowrap bg-primary/10 text-primary">
+                {item.numbering}
+              </Badge>
+            )}
+
             <Input
               value={content}
               placeholder="Enter requirement content..."
@@ -77,6 +85,9 @@ export const TreeItemComponent = forwardRef<
             </Button>
             <Button variant="ghost" size="icon" onClick={handleDelete} title="Delete Item">
               <Trash2 className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleToggleConnector} title="Delete Item">
+              <Link className="h-4 w-4" />
             </Button>
           </div>
         </div>

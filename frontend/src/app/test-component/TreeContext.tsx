@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useCallback } from 'react'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 interface TreeContextType {
   refreshTree: () => void
+  toggleConnector: (id: UniqueIdentifier) => void
 }
 
 const TreeContext = createContext<TreeContextType | undefined>(undefined)
@@ -17,12 +19,26 @@ export const useTreeContext = () => {
 interface TreeProviderProps {
   children: React.ReactNode
   onRefresh: () => void
+  onToggleConnector: (id: UniqueIdentifier) => void
 }
 
-export const TreeProvider: React.FC<TreeProviderProps> = ({ children, onRefresh }) => {
+export const TreeProvider: React.FC<TreeProviderProps> = ({
+  children,
+  onRefresh,
+  onToggleConnector,
+}) => {
   const refreshTree = useCallback(() => {
     onRefresh()
   }, [onRefresh])
 
-  return <TreeContext.Provider value={{ refreshTree }}>{children}</TreeContext.Provider>
+  const toggleConnector = useCallback(
+    (id: UniqueIdentifier) => {
+      onToggleConnector(id)
+    },
+    [onToggleConnector]
+  )
+
+  return (
+    <TreeContext.Provider value={{ refreshTree, toggleConnector }}>{children}</TreeContext.Provider>
+  )
 }

@@ -32,9 +32,19 @@ export const updateItemsWithNumbers = (
   level = 1,
   parentNumbering = ''
 ): TreeItemAdapter[] => {
-  return items.map((item, index) => {
+  let numbering = 0
+  return items.map((item) => {
+    if (item.isConnector) {
+      return {
+        ...item,
+        numbering: '',
+        children: updateItemsWithNumbers(item.children, levelStyles, level + 1, parentNumbering),
+      }
+    }
+
     const style = levelStyles[`level${level}`] || NumberingStyle.None
-    const currentNumbering = generateNumbering(index, style)
+    numbering++
+    const currentNumbering = generateNumbering(numbering - 1, style)
     const fullNumbering = parentNumbering
       ? `${parentNumbering}${currentNumbering}`
       : currentNumbering

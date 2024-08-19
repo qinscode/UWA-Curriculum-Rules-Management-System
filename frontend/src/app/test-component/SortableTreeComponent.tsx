@@ -2,10 +2,18 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { TreeItems } from 'dnd-kit-sortable-tree'
 import { NumberingStyle, TreeItemAdapter } from './types'
 import { convertToTreeItemAdapter, updateItemsWithNumbers } from './utils'
-import NumberingStyleSelector from './NumberingStyleSelector'
 import TreeView from './TreeView'
 import { initialViableRequirementData } from './initialData'
 import { TreeProvider } from './TreeContext'
+import { UniqueIdentifier } from '@dnd-kit/core'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 const SortableTreeComponent: React.FC = () => {
   const [levelStyles, setLevelStyles] = useState({
@@ -41,18 +49,69 @@ const SortableTreeComponent: React.FC = () => {
     refreshTree()
   }, [levelStyles, refreshTree])
 
+  const toggleConnector = useCallback((id: UniqueIdentifier) => {
+    setItems((prevItems) => {
+      const toggleItem = (items: TreeItemAdapter[]): TreeItemAdapter[] => {
+        return items.map((item) => {
+          if (item.id === id) {
+            return { ...item, isConnector: !item.isConnector }
+          }
+          if (item.children.length > 0) {
+            return { ...item, children: toggleItem(item.children) }
+          }
+          return item
+        })
+      }
+      return toggleItem(prevItems)
+    })
+  }, [])
+
   return (
-    <TreeProvider onRefresh={refreshTree}>
+    <TreeProvider onRefresh={refreshTree} onToggleConnector={toggleConnector}>
       <div className="p-4">
         <div className="mb-4 flex space-x-4">
-          {Object.entries(levelStyles).map(([level, style]) => (
-            <NumberingStyleSelector
-              key={level}
-              level={level.replace('level', '')}
-              value={style}
-              onChange={handleStyleChange}
-            />
-          ))}
+          <div>
+            <Label>Level 1 Numbering Style</Label>
+            <Select onValueChange={(value) => handleStyleChange('level1', value as NumberingStyle)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select style" defaultValue={levelStyles.level1} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+                <SelectItem value={NumberingStyle.None}>None</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>Level 2 Numbering Style</Label>
+            <Select onValueChange={(value) => handleStyleChange('level2', value as NumberingStyle)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select style" defaultValue={levelStyles.level2} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+                <SelectItem value={NumberingStyle.None}>None</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>Level 3 Numbering Style</Label>
+            <Select onValueChange={(value) => handleStyleChange('level3', value as NumberingStyle)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select style" defaultValue={levelStyles.level3} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+                <SelectItem value={NumberingStyle.None}>None</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <TreeView items={items} onItemsChanged={handleItemsChange} />
       </div>
