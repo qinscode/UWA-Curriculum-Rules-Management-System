@@ -2,14 +2,6 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
 
-// Dynamically import the SortableTreeComponent to avoid SSR issues
-const SortableTreeComponent = dynamic(
-  () => import('@/components/manage-rules/SortedTree/SortableTreeComponent'),
-  {
-    ssr: false,
-  }
-)
-
 const SortableTreePage: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
