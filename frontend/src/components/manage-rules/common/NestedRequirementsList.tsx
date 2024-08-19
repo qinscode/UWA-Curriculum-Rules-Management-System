@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { NestedRequirementsListProps } from '@/types'
 import { useRequirements } from '@/hooks/useRequirements'
-import HelpAndImport from './HelpAndImport'
-import HelpPanel from './HelpPanel'
+
 import BasePage from '@/components/manage-rules/common/SortedTree'
 
 const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
@@ -36,15 +35,15 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 
   return (
     <div className="space-y-4">
-      {showControls && (
-        <HelpAndImport
-          defaultStyles={defaultStyles}
-          onDefaultStyleChange={handleDefaultStyleChange}
-          onToggleHelp={() => setShowHelp(!showHelp)}
-          onLoadPreset={loadPresetRules}
-        />
-      )}
-      {showHelpPanel && <HelpPanel showHelp={showHelp} />}
+      {/*{showControls && (*/}
+      {/*  <HelpAndImport*/}
+      {/*    defaultStyles={defaultStyles}*/}
+      {/*    onDefaultStyleChange={handleDefaultStyleChange}*/}
+      {/*    onToggleHelp={() => setShowHelp(!showHelp)}*/}
+      {/*    onLoadPreset={loadPresetRules}*/}
+      {/*  />*/}
+      {/*)}*/}
+      {/*{showHelpPanel && <HelpPanel showHelp={showHelp} />}*/}
 
       <BasePage
         initialData={useRequirement}

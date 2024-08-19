@@ -5,6 +5,13 @@ import { ChevronRight, ChevronDown, GripVertical, Plus, Trash } from 'lucide-rea
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import RequirementNumber from './RequirementNumber'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface BasePageProps {
   initialData: Requirement[]
@@ -22,6 +29,11 @@ export default function BasePage({
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
   const [data, setData] = useState<any[]>([])
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
+  const [levelStyles, setLevelStyles] = useState<NumberingStyle[]>([
+    NumberingStyle.Numeric,
+    NumberingStyle.Alphabetic,
+    NumberingStyle.Roman,
+  ])
 
   const handleAddRootNode = () => {
     setData((prevData) => {
@@ -156,6 +168,14 @@ export default function BasePage({
     setExpandedNodes((prev) => new Set(prev).add(parentId)) // 展开新添加子节点的父节点
   }
 
+  const handleLevelStyleChange = (level: number, newStyle: NumberingStyle) => {
+    setLevelStyles((prevStyles) => {
+      const newStyles = [...prevStyles]
+      newStyles[level] = newStyle
+      return newStyles
+    })
+  }
+
   const { renderTree, placeholder } = useHeTree({
     ...keys,
     data,
@@ -204,10 +224,10 @@ export default function BasePage({
               node={stat.node}
               allNodes={data}
               keys={keys}
-              style={NumberingStyle.Numeric} // Default style, you can change this if needed
+              levelStyles={levelStyles}
             />
             <Input
-              className="flex-grow"
+              className="mr-2 flex-grow"
               value={stat.node.name}
               onChange={(e) => handleInputChange(stat.node.id, e.target.value)}
             />
@@ -230,6 +250,25 @@ export default function BasePage({
   })
   return (
     <div className="rounded-lg bg-gray-100 p-4 shadow-md">
+      <div className="mb-4 flex space-x-4">
+        {[0, 1, 2].map((level) => (
+          <Select
+            key={level}
+            value={levelStyles[level]}
+            onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder={`Level ${level + 1} Style`} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+              <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+              <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+              <SelectItem value={NumberingStyle.None}>None</SelectItem>
+            </SelectContent>
+          </Select>
+        ))}
+      </div>
       <div className="rounded-md p-4">
         <button
           className="mb-4 rounded-lg bg-indigo-600 px-4 py-2 text-white shadow-sm hover:bg-indigo-500 focus:outline-none"

@@ -5,11 +5,15 @@ interface RequirementNumberProps {
   node: any
   allNodes: any[]
   keys: { idKey: string; parentIdKey: string }
-  style: NumberingStyle
+  levelStyles: NumberingStyle[]
 }
 
-const RequirementNumber: React.FC<RequirementNumberProps> = ({ node, allNodes, keys, style }) => {
-  // Convert a number to the specified numbering style
+const RequirementNumber: React.FC<RequirementNumberProps> = ({
+  node,
+  allNodes,
+  keys,
+  levelStyles,
+}) => {
   const getNumber = (num: number, style: NumberingStyle): string => {
     switch (style) {
       case NumberingStyle.Numeric:
@@ -18,8 +22,10 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({ node, allNodes, k
         return String.fromCharCode(96 + num).toUpperCase()
       case NumberingStyle.Roman:
         return toRoman(num)
-      default:
+      case NumberingStyle.None:
         return ''
+      default:
+        return num.toString()
     }
   }
 
@@ -52,10 +58,6 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({ node, allNodes, k
 
   // Generate the full node number
   const getNodeNumber = (node: any): string => {
-    // If the style is None, return an empty string
-    if (style === NumberingStyle.None) return ''
-
-    // Get all parent nodes
     const getParents = (node: any): any[] => {
       const parent = allNodes.find((n) => n[keys.idKey] === node[keys.parentIdKey])
       return parent ? [...getParents(parent), parent] : []
@@ -64,40 +66,30 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({ node, allNodes, k
     const parents = getParents(node)
     const level = parents.length
 
-    // Get all siblings (nodes with the same parent)
+    const getIndex = (node: any, siblings: any[]): number => {
+      return siblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
+    }
+
+    const numbers = parents.map((parent, index) => {
+      const parentSiblings = allNodes.filter(
+        (n) => n[keys.parentIdKey] === parent[keys.parentIdKey]
+      )
+      const parentIndex = getIndex(parent, parentSiblings)
+      return getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
+    })
+
     const siblings = allNodes.filter((n) => n[keys.parentIdKey] === node[keys.parentIdKey])
+    const currentIndex = getIndex(node, siblings)
+    numbers.push(getNumber(currentIndex, levelStyles[level] || NumberingStyle.Numeric))
 
-    // Find the index of the current node among its siblings
-    const index = siblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
-
-    // Determine the numbering style for this level
-    const levelStyle = [NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman][
-      level % 3
-    ]
-
-    // Generate the full number
-    return parents
-      .map((p, i) => {
-        const parentSiblings = allNodes.filter((n) => n[keys.parentIdKey] === p[keys.parentIdKey])
-        const parentIndex = parentSiblings.findIndex((s) => s[keys.idKey] === p[keys.idKey]) + 1
-        const parentStyle = [
-          NumberingStyle.Numeric,
-          NumberingStyle.Alphabetic,
-          NumberingStyle.Roman,
-        ][i % 3]
-        return getNumber(parentIndex, parentStyle)
-      })
-      .concat(getNumber(index, levelStyle))
-      .join('.')
+    return numbers.filter((n) => n !== '').join('.')
   }
 
   const nodeNumber = getNodeNumber(node)
 
-  // Log debugging information
-  console.log('RequirementNumber props:', { node, allNodes, keys, style })
+  console.log('RequirementNumber props:', { node, allNodes, keys, levelStyles })
   console.log('Generated number:', nodeNumber)
 
-  // Render the node number with a distinctive style
   return <span className="mr-2 font-semibold text-blue-600">{nodeNumber}</span>
 }
 
