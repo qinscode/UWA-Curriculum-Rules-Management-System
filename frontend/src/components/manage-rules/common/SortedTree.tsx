@@ -9,6 +9,7 @@ import {
   Trash,
   HelpCircle,
   FileText,
+  Link,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -20,14 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
 
 interface BasePageProps {
@@ -53,11 +47,27 @@ export default function BasePage({
     NumberingStyle.Alphabetic,
     NumberingStyle.Roman,
   ])
+  const [showHelp, setShowHelp] = useState(false)
 
   useEffect(() => {
     const flattenedData = flattenRequirements(initialData)
     setData(flattenedData)
   }, [initialData])
+
+  const handleToggleConnector = (id: number) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((node) =>
+        node.id === id ? { ...node, isConnector: !node.isConnector } : node
+      )
+      setTimeout(() => {
+        if (onUpdateRequirement) {
+          const requirements = convertDataToRequirements(updatedData)
+          onUpdateRequirement(requirements)
+        }
+      }, 0)
+      return updatedData
+    })
+  }
 
   const handleAddRootNode = () => {
     setData((prevData) => {
@@ -241,16 +251,18 @@ export default function BasePage({
             } ${stat.node.hasChildren ? 'font-semibold' : 'font-normal'}`}
           >
             {stat.node.hasChildren && (
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => toggleNode(stat.node.id)}
-                className="mr-1 text-gray-500 hover:text-gray-700 focus:outline-none"
+                className="mr-1 p-0 text-gray-500 hover:text-gray-700 focus:outline-none"
               >
                 {expandedNodes.has(stat.node.id) ? (
                   <ChevronDown size={16} />
                 ) : (
                   <ChevronRight size={16} />
                 )}
-              </button>
+              </Button>
             )}
             <span
               className="mr-2 cursor-grab text-gray-400 hover:text-gray-600"
@@ -258,35 +270,52 @@ export default function BasePage({
             >
               <GripVertical size={16} />
             </span>
-            <RequirementNumber
-              node={stat.node}
-              allNodes={data}
-              keys={keys}
-              levelStyles={levelStyles}
-            />
+            {!stat.node.isConnector && (
+              <RequirementNumber
+                node={stat.node}
+                allNodes={data}
+                keys={keys}
+                levelStyles={levelStyles}
+              />
+            )}
             <Input
               className="mr-2 flex-grow"
               value={stat.node.name}
               onChange={(e) => handleInputChange(stat.node.id, e.target.value)}
             />
-            <button
-              className="ml-2 text-red-500 hover:text-red-700 focus:outline-none"
+            {!stat.node.hasChildren && !stat.node.isConnector && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleToggleConnector(stat.node.id)}
+                className="mr-2 text-blue-500 hover:text-blue-700 focus:outline-none"
+              >
+                <Link size={16} />
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => handleDeleteNode(stat.node.id)}
+              className="mr-2 text-red-500 hover:text-red-700 focus:outline-none"
             >
               <Trash size={16} />
-            </button>
-            <button
-              className="ml-2 text-green-500 hover:text-green-700 focus:outline-none"
-              onClick={() => handleAddChildNode(stat.node.id)}
-            >
-              <Plus size={16} />
-            </button>
+            </Button>
+            {!stat.node.isConnector && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleAddChildNode(stat.node.id)}
+                className="mr-2 text-green-500 hover:text-green-700 focus:outline-none"
+              >
+                <Plus size={16} />
+              </Button>
+            )}
           </div>
         )}
       </div>
     ),
   })
-
   return (
     <div className="rounded-lg bg-gray-100 p-4 shadow-md">
       <div className="mb-4 flex items-center justify-between">
@@ -314,33 +343,15 @@ export default function BasePage({
           ))}
         </div>
         <div className="flex space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
-                <HelpCircle className="h-4 w-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Help Information</DialogTitle>
-                <DialogDescription>
-                  This tool allows you to create and manage hierarchical requirements.
-                  <ul className="mt-2 list-inside list-disc">
-                    <li>Use the "Add Root Node" button to create top-level requirements.</li>
-                    <li>Click the "+" button on any node to add a child requirement.</li>
-                    <li>Use the drag handle to reorder requirements.</li>
-                    <li>Select different numbering styles for each level using the dropdowns.</li>
-                    <li>Click the preset button to load a set of predefined requirements.</li>
-                  </ul>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <Button variant="outline" size="icon" onClick={() => setShowHelp(!showHelp)}>
+            <HelpCircle className="h-4 w-4" />
+          </Button>
           <Button variant="outline" size="icon" onClick={loadPresetRequirements}>
             <FileText className="h-4 w-4" />
           </Button>
         </div>
       </div>
+      <HelpPanel showHelp={showHelp} />
       <div className="rounded-md p-4">
         <button
           className="mb-4 rounded-lg bg-indigo-600 px-4 py-2 text-white shadow-sm hover:bg-indigo-500 focus:outline-none"

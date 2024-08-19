@@ -64,31 +64,31 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({
     }
 
     const parents = getParents(node)
-    const level = parents.length
+    const level = parents.filter((p) => !p.isConnector).length
 
     const getIndex = (node: any, siblings: any[]): number => {
-      return siblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
+      const nonConnectorSiblings = siblings.filter((s) => !s.isConnector)
+      return nonConnectorSiblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
     }
 
-    const numbers = parents.map((parent, index) => {
-      const parentSiblings = allNodes.filter(
-        (n) => n[keys.parentIdKey] === parent[keys.parentIdKey]
-      )
-      const parentIndex = getIndex(parent, parentSiblings)
-      return getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
-    })
+    const numbers = parents
+      .filter((parent) => !parent.isConnector)
+      .map((parent, index) => {
+        const parentSiblings = allNodes.filter(
+          (n) => n[keys.parentIdKey] === parent[keys.parentIdKey]
+        )
+        const parentIndex = getIndex(parent, parentSiblings)
+        return getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
+      })
 
     const siblings = allNodes.filter((n) => n[keys.parentIdKey] === node[keys.parentIdKey])
     const currentIndex = getIndex(node, siblings)
     numbers.push(getNumber(currentIndex, levelStyles[level] || NumberingStyle.Numeric))
 
-    return numbers.filter((n) => n !== '').join('.')
+    return numbers.join('.')
   }
 
   const nodeNumber = getNodeNumber(node)
-
-  console.log('RequirementNumber props:', { node, allNodes, keys, levelStyles })
-  console.log('Generated number:', nodeNumber)
 
   return <span className="mr-2 font-semibold text-blue-600">{nodeNumber}</span>
 }
