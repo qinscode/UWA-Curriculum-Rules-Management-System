@@ -7,6 +7,7 @@ import RequirementTreeView from './RequirementTreeView'
 import HelpAndImport from './HelpAndImport'
 import HelpPanel from './HelpPanel'
 import { Plus } from 'lucide-react'
+import { SortableTree } from 'dnd-kit-sortable-tree'
 
 const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   initialRequirements = [],
@@ -32,35 +33,33 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   } = useRequirements(initialRequirements, propDefaultStyles, onChange, presetRules)
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div className="space-y-4">
-        {showControls && (
-          <HelpAndImport
-            defaultStyles={defaultStyles}
-            onDefaultStyleChange={handleDefaultStyleChange}
-            onToggleHelp={() => setShowHelp(!showHelp)}
-            onLoadPreset={loadPresetRules}
-          />
-        )}
-        {showHelpPanel && <HelpPanel showHelp={showHelp} />}
-        <RequirementTreeView
-          requirements={requirements}
+    <div className="space-y-4">
+      {showControls && (
+        <HelpAndImport
           defaultStyles={defaultStyles}
-          onUpdateRequirement={updateRequirement}
-          onRemoveRequirement={removeRequirement}
-          onAddRequirement={addRequirement}
-          onAddConnector={addConnector}
+          onDefaultStyleChange={handleDefaultStyleChange}
+          onToggleHelp={() => setShowHelp(!showHelp)}
+          onLoadPreset={loadPresetRules}
         />
-        <Button
-          onClick={() => addRequirement()}
-          variant="outline"
-          className={'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          {addMainButtonText}
-        </Button>
-      </div>
-    </DragDropContext>
+      )}
+      {showHelpPanel && <HelpPanel showHelp={showHelp} />}
+      <RequirementTreeView
+        requirements={requirements}
+        defaultStyles={defaultStyles}
+        onUpdateRequirement={updateRequirement}
+        onRemoveRequirement={removeRequirement}
+        onAddRequirement={addRequirement}
+        onAddConnector={addConnector}
+      />
+      <Button
+        onClick={() => addRequirement()}
+        variant="outline"
+        className={'bg-indigo-600 text-white shadow-sm hover:bg-indigo-500'}
+      >
+        <Plus className="mr-2 h-4 w-4" />
+        {addMainButtonText}
+      </Button>
+    </div>
   )
 }
 

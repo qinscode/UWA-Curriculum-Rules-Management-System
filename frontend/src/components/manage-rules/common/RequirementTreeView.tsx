@@ -1,16 +1,5 @@
 import React from 'react'
-import { Droppable } from 'react-beautiful-dnd'
 import RequirementTreeNode from './RequirementTreeNode'
-import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import { HelpCircle, FileUp } from 'lucide-react'
 import { Requirement, styleOptions } from '@/types'
 
 interface RequirementTreeViewProps {
@@ -47,18 +36,7 @@ const RequirementTreeView: React.FC<RequirementTreeViewProps> = ({
     )
   }
 
-  return (
-    <div className="space-y-6">
-      <Droppable droppableId="main">
-        {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
-            {requirements.map((req, index) => renderRequirementNode(req, index))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </div>
-  )
+  return <div className="space-y-6"></div>
 }
 
 export default RequirementTreeView

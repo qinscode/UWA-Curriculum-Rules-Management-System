@@ -14,7 +14,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import { Requirement } from '@/types'
 
+interface SortableTreeComponentProps {
+  requirements: Requirement[]
+}
 const SortableTreeComponent: React.FC = () => {
   const [levelStyles, setLevelStyles] = useState({
     level1: NumberingStyle.Numeric,
