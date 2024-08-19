@@ -3,52 +3,101 @@ import { SimpleTreeItemWrapper, TreeItemComponentProps } from 'dnd-kit-sortable-
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { NumberingStyle, Requirement } from './types'
+import { Button } from '@/components/ui/button'
+import { PlusCircle, Trash2 } from 'lucide-react'
+import { NumberingStyle, TreeItemAdapter } from './types'
 
-export const TreeItemComponent = forwardRef<HTMLDivElement, TreeItemComponentProps<Requirement>>(
-  (props, ref) => {
-    const [content, setContent] = useState(props.item.content)
+export const TreeItemComponent = forwardRef<
+  HTMLDivElement,
+  TreeItemComponentProps<TreeItemAdapter>
+>((props, ref) => {
+  const {
+    item,
+    childCount,
+    clone,
+    depth,
+    disableSelection,
+    disableInteraction,
+    ghost,
+    handleProps,
+    indentationWidth,
+    isLast,
+    isOver,
+    isOverParent,
+    onCollapse,
+    onRemove,
+    parent,
+    style,
+    wrapperRef,
+  } = props
 
-    useEffect(() => {
-      setContent(props.item.content)
-    }, [props.item.content])
+  const [content, setContent] = useState(item.content)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setContent(e.target.value)
-      props.item.content = e.target.value
-    }
+  useEffect(() => {
+    setContent(item.content)
+  }, [item.content])
 
-    const handleBlur = () => {
-      props.item.content = content
-    }
-
-    const handleInputClick = (e: React.MouseEvent) => {
-      // fix for input click propagation
-      e.stopPropagation()
-    }
-
-    return (
-      <SimpleTreeItemWrapper {...props} ref={ref}>
-        <Card className={`mb-2 shadow-sm transition-shadow duration-200 hover:shadow-md`}>
-          <div className="space-y-2 p-4">
-            <div className="flex items-center space-x-2">
-              <Badge variant="outline" className="whitespace-nowrap bg-primary/10 text-primary">
-                {props.item.numbering}
-              </Badge>
-              <Input
-                value={content}
-                placeholder="Enter requirement content..."
-                className="flex-grow"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                onClick={handleInputClick}
-              />
-            </div>
-          </div>
-        </Card>
-      </SimpleTreeItemWrapper>
-    )
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setContent(e.target.value)
+    item.content = e.target.value
   }
-)
+
+  const handleBlur = () => {
+    item.content = content
+  }
+
+  const handleInputClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
+  const handleAddChild = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const newChild: TreeItemAdapter = {
+      id: Date.now().toString(), // Using string as UniqueIdentifier
+      content: 'New Child Item',
+      style: NumberingStyle.Numeric,
+      children: [],
+    }
+    item.children.push(newChild)
+    if (onCollapse) {
+      onCollapse() // Toggle collapse state
+    }
+  }
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (onRemove) {
+      onRemove()
+    }
+  }
+
+  return (
+    <SimpleTreeItemWrapper {...props} ref={ref}>
+      <Card className={`mb-2 shadow-sm transition-shadow duration-200 hover:shadow-md`}>
+        <div className="space-y-2 p-4">
+          <div className="flex items-center space-x-2">
+            <Badge variant="outline" className="whitespace-nowrap bg-primary/10 text-primary">
+              {item.numbering}
+            </Badge>
+            <Input
+              value={content}
+              placeholder="Enter requirement content..."
+              className="flex-grow"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              onClick={handleInputClick}
+            />
+            <Button variant="ghost" size="icon" onClick={handleAddChild} title="Add Child Item">
+              <PlusCircle className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleDelete} title="Delete Item">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </Card>
+    </SimpleTreeItemWrapper>
+  )
+})
 
 TreeItemComponent.displayName = 'TreeItem'
