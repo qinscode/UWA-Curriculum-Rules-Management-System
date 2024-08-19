@@ -5,6 +5,7 @@ import { convertToTreeItemAdapter, updateItemsWithNumbers } from './utils'
 import NumberingStyleSelector from './NumberingStyleSelector'
 import TreeView from './TreeView'
 import { initialViableRequirementData } from './initialData'
+import { TreeProvider } from './TreeContext'
 
 const SortableTreeComponent: React.FC = () => {
   const [levelStyles, setLevelStyles] = useState({
@@ -32,24 +33,30 @@ const SortableTreeComponent: React.FC = () => {
     }))
   }
 
-  useEffect(() => {
-    setItems(updateItemsWithNumbers(items, levelStyles))
+  const refreshTree = useCallback(() => {
+    setItems((prevItems) => updateItemsWithNumbers(prevItems, levelStyles))
   }, [levelStyles])
 
+  useEffect(() => {
+    refreshTree()
+  }, [levelStyles, refreshTree])
+
   return (
-    <div className="p-4">
-      <div className="mb-4 flex space-x-4">
-        {Object.entries(levelStyles).map(([level, style]) => (
-          <NumberingStyleSelector
-            key={level}
-            level={level.replace('level', '')}
-            value={style}
-            onChange={handleStyleChange}
-          />
-        ))}
+    <TreeProvider onRefresh={refreshTree}>
+      <div className="p-4">
+        <div className="mb-4 flex space-x-4">
+          {Object.entries(levelStyles).map(([level, style]) => (
+            <NumberingStyleSelector
+              key={level}
+              level={level.replace('level', '')}
+              value={style}
+              onChange={handleStyleChange}
+            />
+          ))}
+        </div>
+        <TreeView items={items} onItemsChanged={handleItemsChange} />
       </div>
-      <TreeView items={items} onItemsChanged={handleItemsChange} />
-    </div>
+    </TreeProvider>
   )
 }
 
