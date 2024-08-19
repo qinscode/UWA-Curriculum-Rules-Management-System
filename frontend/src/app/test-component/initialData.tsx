@@ -4,7 +4,6 @@ import { Requirement, NumberingStyle } from './types'
 export const initialViableRequirementData: TreeItems<Requirement> = [
   {
     id: 1,
-    level: 1,
     content: "A Bachelor's degree, or an equivalent qualification, as recognised by UWA;",
     style: NumberingStyle.Numeric,
     children: [
@@ -26,7 +25,6 @@ export const initialViableRequirementData: TreeItems<Requirement> = [
   },
   {
     id: 2,
-    level: 1,
     content: 'Completed one of the following at UWA:',
     style: NumberingStyle.Numeric,
     children: [
@@ -41,7 +39,6 @@ export const initialViableRequirementData: TreeItems<Requirement> = [
   },
   {
     id: 3,
-    level: 1,
     content: 'Connector',
     style: NumberingStyle.None,
     children: [],
