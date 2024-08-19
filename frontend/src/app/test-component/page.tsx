@@ -22,7 +22,11 @@ const SortableTreePage: React.FC = () => {
         >
           Print
         </Button>
-        <SortedTree initialData={useRequirement} onUpdateRequirement={setUseRequirement} />
+        <SortedTree
+          initialData={useRequirement}
+          onUpdateRequirement={setUseRequirement}
+          presetRequirements={initialViableRequirementData}
+        />
       </main>
     </div>
   )
