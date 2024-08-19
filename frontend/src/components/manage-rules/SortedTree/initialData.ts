@@ -1,4 +1,4 @@
-import { Requirement, NumberingStyle } from './types'
+import { Requirement, NumberingStyle } from '@/types'
 
 export const initialViableRequirementData: Requirement[] = [
   {

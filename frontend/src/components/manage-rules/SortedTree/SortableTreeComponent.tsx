@@ -19,15 +19,17 @@ import { Requirement } from '@/types'
 interface SortableTreeComponentProps {
   requirements: Requirement[]
 }
-const SortableTreeComponent: React.FC = () => {
+const SortableTreeComponent: React.FC<SortableTreeComponentProps> = (props) => {
   const [levelStyles, setLevelStyles] = useState({
     level1: NumberingStyle.Numeric,
     level2: NumberingStyle.Alphabetic,
     level3: NumberingStyle.Roman,
   })
 
+  const { requirements } = props
+
   const [items, setItems] = useState<TreeItemAdapter[]>(() => {
-    const adaptedItems = convertToTreeItemAdapter(initialViableRequirementData)
+    const adaptedItems = convertToTreeItemAdapter(requirements)
     return updateItemsWithNumbers(adaptedItems, levelStyles)
   })
 

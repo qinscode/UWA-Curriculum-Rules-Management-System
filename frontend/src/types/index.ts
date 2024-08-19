@@ -38,15 +38,6 @@ export interface RuleHistoryDto {
   timestamp: string
 }
 
-export interface Requirement {
-  id: number
-  level: number
-  content: string
-  children: Requirement[]
-  style: string
-  isConnector?: boolean
-}
-
 export interface StyleOption {
   value: string
   label: string
@@ -58,19 +49,6 @@ export const styleOptions: StyleOption[] = [
   { value: 'roman', label: 'i, ii, iii' },
   { value: 'none', label: 'No numbering' },
 ]
-
-export const numberingStyles = {
-  numeric: (index: number, level: number) => (level === 1 ? `${index + 1}` : `(${index + 1})`),
-  alphabetic: (index: number, level: number) =>
-    level === 1 ? String.fromCharCode(97 + index) : `(${String.fromCharCode(97 + index)})`,
-  roman: (index: number, level: number) => {
-    const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
-    return level === 1
-      ? romanNumerals[index]
-      : `(${romanNumerals[index] || (index + 1).toString()})`
-  },
-  none: () => '',
-}
 
 export interface NestedRequirementsListProps {
   initialRequirements?: Requirement[]
@@ -120,3 +98,36 @@ export interface SelectMenuProps {
 export type CreateRuleDTO = Omit<Rule, 'id'>
 export type UpdateRuleDTO = Partial<Omit<Rule, 'id'>>
 export type UpdateSettingsDTO = Partial<Omit<Settings, 'id'>>
+
+export interface TreeItemAdapterExtra {
+  id: UniqueIdentifier
+  children: TreeItemAdapter[]
+  collapsed?: boolean
+  canHaveChildren?: boolean
+  disableSorting?: boolean
+}
+export enum NumberingStyle {
+  Numeric = 'numeric',
+  Alphabetic = 'alphabetic',
+  Roman = 'roman',
+  None = 'none',
+}
+
+export interface Requirement {
+  id: number
+  content: string
+  style: NumberingStyle
+  numbering?: string
+  children: Requirement[]
+  isConnector?: boolean
+}
+
+export interface TreeItemAdapterExtra {
+  id: UniqueIdentifier
+  children: TreeItemAdapter[]
+  collapsed?: boolean
+  canHaveChildren?: boolean
+  disableSorting?: boolean
+}
+
+export type TreeItemAdapter = Omit<Requirement, 'id' | 'children'> & TreeItemAdapterExtra
