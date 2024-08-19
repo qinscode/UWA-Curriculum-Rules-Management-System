@@ -10,6 +10,7 @@ import {
   HelpCircle,
   FileText,
   Link,
+  Settings,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -21,6 +22,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent } from '@/components/ui/card'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
 
@@ -53,21 +57,6 @@ export default function BasePage({
     const flattenedData = flattenRequirements(initialData)
     setData(flattenedData)
   }, [initialData])
-
-  const handleToggleConnector = (id: number) => {
-    setData((prevData) => {
-      const updatedData = prevData.map((node) =>
-        node.id === id ? { ...node, isConnector: !node.isConnector } : node
-      )
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
-      return updatedData
-    })
-  }
 
   const handleAddRootNode = () => {
     setData((prevData) => {
@@ -161,6 +150,21 @@ export default function BasePage({
     })
   }
 
+  const handleToggleConnector = (id: number) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((node) =>
+        node.id === id ? { ...node, isConnector: !node.isConnector } : node
+      )
+      setTimeout(() => {
+        if (onUpdateRequirement) {
+          const requirements = convertDataToRequirements(updatedData)
+          onUpdateRequirement(requirements)
+        }
+      }, 0)
+      return updatedData
+    })
+  }
+
   const loadPresetRequirements = () => {
     const flattenedData = flattenRequirements(presetRequirements)
     setData(flattenedData)
@@ -243,122 +247,129 @@ export default function BasePage({
             DROP HERE
           </div>
         ) : (
-          <div
-            className={`flex items-center rounded-md border p-2 transition-colors duration-200 ${
-              stat.node.isConnector
-                ? 'border-blue-200 bg-blue-50 hover:bg-blue-100'
-                : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-            } ${stat.node.hasChildren ? 'font-semibold' : 'font-normal'}`}
+          <Card
+            className={`transition-colors duration-200 ${
+              stat.node.isConnector ? 'bg-blue-50' : ''
+            }`}
           >
-            {stat.node.hasChildren && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => toggleNode(stat.node.id)}
-                className="mr-1 p-0 text-gray-500 hover:text-gray-700 focus:outline-none"
-              >
-                {expandedNodes.has(stat.node.id) ? (
-                  <ChevronDown size={16} />
-                ) : (
-                  <ChevronRight size={16} />
-                )}
-              </Button>
-            )}
-            <span
-              className="mr-2 cursor-grab text-gray-400 hover:text-gray-600"
-              draggable={stat.draggable}
-            >
-              <GripVertical size={16} />
-            </span>
-            {!stat.node.isConnector && (
-              <RequirementNumber
-                node={stat.node}
-                allNodes={data}
-                keys={keys}
-                levelStyles={levelStyles}
-              />
-            )}
-            <Input
-              className="mr-2 flex-grow"
-              value={stat.node.name}
-              onChange={(e) => handleInputChange(stat.node.id, e.target.value)}
-            />
-            {!stat.node.hasChildren && !stat.node.isConnector && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleToggleConnector(stat.node.id)}
-                className="mr-2 text-blue-500 hover:text-blue-700 focus:outline-none"
-              >
-                <Link size={16} />
-              </Button>
-            )}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => handleDeleteNode(stat.node.id)}
-              className="mr-2 text-red-500 hover:text-red-700 focus:outline-none"
-            >
-              <Trash size={16} />
-            </Button>
-            {!stat.node.isConnector && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleAddChildNode(stat.node.id)}
-                className="mr-2 text-green-500 hover:text-green-700 focus:outline-none"
-              >
-                <Plus size={16} />
-              </Button>
-            )}
-          </div>
+            <CardContent className="p-3">
+              <div className="flex items-start">
+                <div className="mr-2 flex items-center">
+                  {stat.node.hasChildren && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => toggleNode(stat.node.id)}
+                      className="p-1 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    >
+                      {expandedNodes.has(stat.node.id) ? (
+                        <ChevronDown size={16} />
+                      ) : (
+                        <ChevronRight size={16} />
+                      )}
+                    </Button>
+                  )}
+                  <span
+                    className="cursor-grab p-1 text-gray-400 hover:text-gray-600"
+                    draggable={stat.draggable}
+                  >
+                    <GripVertical size={16} />
+                  </span>
+                  {!stat.node.isConnector && (
+                    <RequirementNumber
+                      node={stat.node}
+                      allNodes={data}
+                      keys={keys}
+                      levelStyles={levelStyles}
+                    />
+                  )}
+                </div>
+                <Textarea
+                  className="min-h-[2.5rem] flex-grow resize-y"
+                  value={stat.node.name}
+                  onChange={(e) => handleInputChange(stat.node.id, e.target.value)}
+                  rows={2}
+                />
+                <div className="ml-2 flex">
+                  {!stat.node.hasChildren && !stat.node.isConnector && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleToggleConnector(stat.node.id)}
+                      className="mr-1"
+                    >
+                      <Link size={16} />
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleDeleteNode(stat.node.id)}
+                    className="mr-1 text-red-500 hover:text-red-700 focus:outline-none"
+                  >
+                    <Trash size={16} />
+                  </Button>
+                  {!stat.node.isConnector && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleAddChildNode(stat.node.id)}
+                      className="text-green-500 hover:text-green-700 focus:outline-none"
+                    >
+                      <Plus size={16} />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     ),
   })
+
   return (
-    <div className="rounded-lg bg-gray-100 p-4 shadow-md">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex space-x-4">
-          {[0, 1, 2].map((level) => (
-            <div key={level} className="flex flex-col">
-              <Label htmlFor={`level-${level + 1}-style`} className="mb-2">
-                Level {level + 1} Style
-              </Label>
-              <Select
-                value={levelStyles[level]}
-                onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
-              >
-                <SelectTrigger id={`level-${level + 1}-style`} className="w-[180px]">
-                  <SelectValue placeholder={`Select style`} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
-                  <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
-                  <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
-                  <SelectItem value={NumberingStyle.None}>None</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          ))}
-        </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" size="icon" onClick={() => setShowHelp(!showHelp)}>
-            <HelpCircle className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={loadPresetRequirements}>
-            <FileText className="h-4 w-4" />
-          </Button>
-        </div>
+    <div className="rounded-lg bg-white p-6 shadow-md">
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex space-x-2"></div>
+      </div>
+      <div className="mb-6 flex space-x-4">
+        {[0, 1, 2].map((level) => (
+          <div key={level} className="flex flex-col">
+            <Label htmlFor={`level-${level + 1}-style`} className="mb-2">
+              Level {level + 1} Style
+            </Label>
+            <Select
+              value={levelStyles[level]}
+              onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
+            >
+              <SelectTrigger id={`level-${level + 1}-style`} className="w-[140px]">
+                <SelectValue placeholder={`Select style`} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+                <SelectItem value={NumberingStyle.None}>None</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        ))}
+        <Button variant="outline" size="icon" onClick={() => setShowHelp(!showHelp)}>
+          <HelpCircle className="h-4 w-4" />
+        </Button>
+        <Button variant="outline" size="icon" onClick={loadPresetRequirements}>
+          <FileText className="h-4 w-4" />
+        </Button>
       </div>
       <HelpPanel showHelp={showHelp} />
-      <div className="rounded-md p-4">
-        <button
-          className="mb-4 rounded-lg bg-indigo-600 px-4 py-2 text-white shadow-sm hover:bg-indigo-500 focus:outline-none"
+      <div className="rounded-md bg-gray-50 p-4 shadow-inner">
+        <Button
+          className="mb-4 bg-indigo-600 text-white hover:bg-indigo-500"
           onClick={handleAddRootNode}
         >
           Add Root Node
-        </button>
+        </Button>
         {renderTree({
           className: `${placeholder ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`,
         })}
