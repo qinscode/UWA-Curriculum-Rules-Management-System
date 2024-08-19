@@ -5,9 +5,12 @@ import { ChevronRight, ChevronDown, GripVertical } from 'lucide-react'
 
 interface BasePageProps {
   initialData: Requirement[]
+  onUpdateRequirement?: (
+    value: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
+  ) => void
 }
 
-export default function BasePage({ initialData }: BasePageProps) {
+export default function BasePage({ initialData, onUpdateRequirement }: BasePageProps) {
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
   const [data, setData] = useState<any[]>([])
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
