@@ -15,13 +15,16 @@ export const TreeItemComponent = forwardRef<HTMLDivElement, TreeItemComponentPro
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setContent(e.target.value)
-      // Update the item in the parent component's state
       props.item.content = e.target.value
     }
 
     const handleBlur = () => {
-      // Ensure the parent component's state is updated when the input loses focus
       props.item.content = content
+    }
+
+    const handleInputClick = (e: React.MouseEvent) => {
+      // fix for input click propagation
+      e.stopPropagation()
     }
 
     return (
@@ -38,6 +41,7 @@ export const TreeItemComponent = forwardRef<HTMLDivElement, TreeItemComponentPro
                 className="flex-grow"
                 onChange={handleChange}
                 onBlur={handleBlur}
+                onClick={handleInputClick}
               />
             </div>
           </div>
