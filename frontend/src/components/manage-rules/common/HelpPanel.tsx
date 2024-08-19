@@ -25,11 +25,12 @@ const HelpPanel: React.FC<HelpPanelProps> = ({ showHelp }) => {
             </CardHeader>
             <CardContent>
               <ul className="list-inside list-disc space-y-1">
-                <li>Click "Add Main Requirement" to add a top-level requirement.</li>
+                <li>Click "Add Root Node" to add a top-level requirement.</li>
                 <li>Use the "+" button next to each requirement to add sub-requirements.</li>
                 <li>Use the "-" button to remove a requirement and all its sub-requirements.</li>
                 <li>Change the numbering style for each level using the dropdowns.</li>
-                <li>Click the document icon to load preset admission rules.</li>
+                <li>Click the document icon to load preset requirements.</li>
+                <li>Use the drag handle to reorder requirements.</li>
               </ul>
             </CardContent>
           </Card>

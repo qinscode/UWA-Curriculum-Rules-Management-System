@@ -37,15 +37,6 @@ export interface RuleHistoryDto {
   timestamp: string
 }
 
-export interface Requirement {
-  id: number
-  level: number
-  content: string
-  children: Requirement[]
-  style: string
-  isConnector?: boolean
-}
-
 export interface StyleOption {
   value: string
   label: string
@@ -119,3 +110,19 @@ export interface SelectMenuProps {
 export type CreateRuleDTO = Omit<Rule, 'id'>
 export type UpdateRuleDTO = Partial<Omit<Rule, 'id'>>
 export type UpdateSettingsDTO = Partial<Omit<Settings, 'id'>>
+
+export enum NumberingStyle {
+  Numeric = 'numeric',
+  Alphabetic = 'alphabetic',
+  Roman = 'roman',
+  None = 'none',
+}
+
+export interface Requirement {
+  id: number
+  content: string
+  style: NumberingStyle
+  numbering?: string
+  children: Requirement[]
+  isConnector?: boolean
+}

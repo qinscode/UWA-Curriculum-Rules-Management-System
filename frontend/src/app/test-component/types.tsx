@@ -1,12 +1,3 @@
-import { UniqueIdentifier } from '@dnd-kit/core'
-
-export interface TreeItemAdapterExtra {
-  id: UniqueIdentifier
-  children: TreeItemAdapter[]
-  collapsed?: boolean
-  canHaveChildren?: boolean
-  disableSorting?: boolean
-}
 export enum NumberingStyle {
   Numeric = 'numeric',
   Alphabetic = 'alphabetic',
@@ -22,13 +13,3 @@ export interface Requirement {
   children: Requirement[]
   isConnector?: boolean
 }
-
-export interface TreeItemAdapterExtra {
-  id: UniqueIdentifier
-  children: TreeItemAdapter[]
-  collapsed?: boolean
-  canHaveChildren?: boolean
-  disableSorting?: boolean
-}
-
-export type TreeItemAdapter = Omit<Requirement, 'id' | 'children'> & TreeItemAdapterExtra
