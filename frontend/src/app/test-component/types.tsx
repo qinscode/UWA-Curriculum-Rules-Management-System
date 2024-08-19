@@ -1,5 +1,3 @@
-import { TreeItemComponentProps } from 'dnd-kit-sortable-tree'
-
 export enum NumberingStyle {
   Numeric = 'numeric',
   Alphabetic = 'alphabetic',
@@ -15,7 +13,3 @@ export interface Requirement {
   children: Requirement[]
   isConnector?: boolean
 }
-
-export type TreeItemComponentType<T, N extends HTMLElement> = React.ForwardRefExoticComponent<
-  React.PropsWithoutRef<TreeItemComponentProps<T>> & React.RefAttributes<N>
->
