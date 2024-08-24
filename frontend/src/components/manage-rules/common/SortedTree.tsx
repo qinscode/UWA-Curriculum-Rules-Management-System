@@ -256,7 +256,7 @@ export default function BasePage({
           >
             <CardContent className="p-3">
               <div className="flex items-start p-2">
-                <div className="mr-2 flex items-center">
+                <div className="m-2 flex items-center">
                   {stat.node.hasChildren && (
                     <Button
                       variant="ghost"
@@ -292,7 +292,7 @@ export default function BasePage({
                   onChange={(e) => handleInputChange(stat.node.id, e.target.value)}
                   rows={2}
                 />
-                <div className="ml-2 flex">
+                <div className="ml-2 flex p-2">
                   {!stat.node.hasChildren && (
                     <Button
                       variant="outline"
@@ -333,36 +333,47 @@ export default function BasePage({
   return (
     <div className="rounded-lg bg-white p-6 shadow-md">
       <div className="mb-6 flex items-center justify-between">
-        <div className="flex space-x-2"></div>
-      </div>
-      <div className="mb-6 flex space-x-4">
-        {[0, 1, 2].map((level) => (
-          <div key={level} className="flex flex-col">
-            <Label htmlFor={`level-${level + 1}-style`} className="mb-2">
-              Level {level + 1} Style
-            </Label>
-            <Select
-              value={levelStyles[level]}
-              onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
-            >
-              <SelectTrigger id={`level-${level + 1}-style`} className="w-[140px]">
-                <SelectValue placeholder={`Select style`} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
-                <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
-                <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
-                <SelectItem value={NumberingStyle.None}>None</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        ))}
-        <Button variant="outline" size="icon" onClick={() => setShowHelp(!showHelp)}>
-          <HelpCircle className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="icon" onClick={loadPresetRequirements}>
-          <ArrowDownLeft className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center space-x-4">
+          {[0, 1, 2].map((level) => (
+            <div key={level} className="flex flex-col">
+              <Label htmlFor={`level-${level + 1}-style`} className="mb-2">
+                Level {level + 1} Style
+              </Label>
+              <Select
+                value={levelStyles[level]}
+                onValueChange={(value: NumberingStyle) => handleLevelStyleChange(level, value)}
+              >
+                <SelectTrigger id={`level-${level + 1}-style`} className="w-[140px]">
+                  <SelectValue placeholder={`Select style`} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NumberingStyle.Numeric}>Numeric</SelectItem>
+                  <SelectItem value={NumberingStyle.Alphabetic}>Alphabetic</SelectItem>
+                  <SelectItem value={NumberingStyle.Roman}>Roman</SelectItem>
+                  <SelectItem value={NumberingStyle.None}>None</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ))}
+        </div>
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={loadPresetRequirements}
+            className="bg-indigo-600 text-white hover:bg-indigo-500"
+          >
+            <ArrowDownLeft className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowHelp(!showHelp)}
+            className="bg-indigo-600 text-white hover:bg-indigo-500"
+          >
+            <HelpCircle className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
       <HelpPanel showHelp={showHelp} />
       <div className="rounded-md bg-gray-50 p-4 shadow-inner">
