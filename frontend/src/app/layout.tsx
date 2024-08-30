@@ -1,20 +1,33 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
 import Providers from './providers'
-
-const inter = Inter({ subsets: ['latin'] })
+import { Inter, Lexend } from 'next/font/google'
+import clsx from 'clsx'
 
 export const metadata: Metadata = {
   title: 'Course Rules Management System',
   description: 'Demo for course rules management',
 }
 
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
+const lexend = Lexend({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-lexend',
+})
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        {/* eslint-disable-next-line react/jsx-no-undef */}
+    <html
+      lang="en"
+      className={clsx('h-full scroll-smooth bg-white antialiased', inter.variable, lexend.variable)}
+    >
+      <body className={`${inter.className} h-full scroll-smooth bg-white antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>
