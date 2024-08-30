@@ -3,7 +3,6 @@ import React, { FC, ReactNode } from 'react'
 import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import Footer from './Footer'
 
 interface NavigationItem {
   name: string
