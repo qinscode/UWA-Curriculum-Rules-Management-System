@@ -6,10 +6,7 @@ const formClasses =
 
 function Label({ id, children }: { id: string; children: React.ReactNode }) {
   return (
-    <label
-      htmlFor={id}
-      className="mb-3 block text-sm font-medium text-gray-700"
-    >
+    <label htmlFor={id} className="mb-3 block text-sm font-medium text-gray-700">
       {children}
     </label>
   )
@@ -21,7 +18,7 @@ export function TextField({
   className,
   ...props
 }: Omit<React.ComponentPropsWithoutRef<'input'>, 'id'> & { label: string }) {
-  let id = useId()
+  const id = useId()
 
   return (
     <div className={className}>
@@ -36,7 +33,7 @@ export function SelectField({
   className,
   ...props
 }: Omit<React.ComponentPropsWithoutRef<'select'>, 'id'> & { label: string }) {
-  let id = useId()
+  const id = useId()
 
   return (
     <div className={className}>
