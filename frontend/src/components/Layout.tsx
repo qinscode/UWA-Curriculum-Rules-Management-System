@@ -12,9 +12,8 @@ interface NavigationItem {
 
 const navigation: NavigationItem[] = [
   { name: 'Home', href: '/' },
-  { name: 'Manage Rules', href: '/manage-rules' },
+  { name: 'Manage Course', href: '/manage-course' },
   { name: 'Generate Documents', href: '/generate-documents' },
-  { name: 'Test Component', href: '/test-component' },
 ]
 
 function classNames(...classes: string[]): string {
