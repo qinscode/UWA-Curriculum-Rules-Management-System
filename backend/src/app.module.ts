@@ -14,6 +14,7 @@ import { CoursesModule } from './courses/courses.module'
 import { LoggerMiddleware } from './logger/logger.middleware'
 import { LoggerInterceptor } from './logger/logger.interceptor' // 引入拦截器
 import { APP_INTERCEPTOR } from '@nestjs/core'
+import { RequirementsModule } from './requirements/requirements.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
     AuthModule,
     UsersModule,
     CoursesModule,
+    RequirementsModule,
   ],
   controllers: [AppController],
   providers: [

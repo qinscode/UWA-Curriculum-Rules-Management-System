@@ -23,14 +23,15 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { AdmissionSelectionProps } from '@/types'
+import { AdmissionSelectionProps, Course, Requirement, RuleType } from '@/types'
+import { useCourse } from '@/context/CourseContext'
+import { ruleService } from '@/services/ruleService'
 
-interface ManageRulesProps {
-  courseCode: string
-  version: string
-}
+const ManageRules: React.FC = () => {
+  const { course, updateCourse } = useCourse()
+  const courseCode = course?.code
+  const version = course?.version
 
-const ManageRules: React.FC<ManageRulesProps> = ({ courseCode, version }) => {
   const [courseName, setCourseName] = useState<string>('')
   const [formData, setFormData] = useState<AdmissionSelectionProps['data']>({
     // Initialize with your default form data
@@ -45,7 +46,7 @@ const ManageRules: React.FC<ManageRulesProps> = ({ courseCode, version }) => {
     const fetchCourseDetails = async () => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      setCourseName('Mock Course Name')
+      setCourseName(course?.name || '')
       // Set initial form data here
     }
     fetchCourseDetails()
@@ -58,16 +59,32 @@ const ManageRules: React.FC<ManageRulesProps> = ({ courseCode, version }) => {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Form data submitted:', formData)
-    // Implement your save logic here
+
+    // @ts-ignore
+    // create englishRequirements dto
+    await ruleService.createRule(course.id, {
+      requirements: formData.englishRequirements || [],
+      name: RuleType.ENGLISH_ELIGIBILITY,
+      description: `${RuleType.ENGLISH_ELIGIBILITY} rule`,
+      type: RuleType.ENGLISH_ELIGIBILITY,
+    })
+
+    // await updateOrCreateRule(RuleType.ADMISSIONS, formData.englishRequirements || [])
+    // await updateOrCreateRule(RuleType.ADMISSIONS, formData.rankingSelection || [])
+    // await updateOrCreateRule(RuleType.PROGRESS, formData.satisfactoryProgress || [])
+    // await updateOrCreateRule(RuleType.PROGRESS_STATUS, formData.progressStatus || [])
+    // await updateOrCreateRule(RuleType.DISTINCTION, formData.awardWithDistinction || [])
+    // await updateOrCreateRule(RuleType.DEFERRALS, formData.deferralAllowed || [])
+    // await updateOrCreateRule(RuleType.DEFERRALS, formData.deferralRules || [])
+
     toast({
-      title: 'Changes saved',
-      description: 'Your changes have been successfully saved.',
+      title: 'Rules updated',
+      description: 'All rules have been successfully updated.',
     })
   }
-
   const handleSaveAsNewVersion = () => {
     if (newVersion) {
       console.log('Saving as new version:', newVersion)
@@ -90,7 +107,7 @@ const ManageRules: React.FC<ManageRulesProps> = ({ courseCode, version }) => {
             Manage Rules - {courseCode}: {courseName} (Version: {version})
           </h1>
         </div>
-
+        <Button onClick={() => console.log('Current Requirements:', formData)}>SSS</Button>
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             <RuleSection title="Admission and selection">
@@ -159,7 +176,9 @@ const ManageRules: React.FC<ManageRulesProps> = ({ courseCode, version }) => {
             </Dialog>
           </div>
 
-          <SaveButton />
+          <SaveButton handleSaveButton={handleSubmit} />
+
+          <Button onClick={() => console.log('Current Requirements:', formData)}>SSS</Button>
         </form>
       </div>
       <Footer />
