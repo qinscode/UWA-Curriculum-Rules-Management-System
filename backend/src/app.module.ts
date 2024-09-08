@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { ConfigModule } from '@nestjs/config'
@@ -11,6 +11,9 @@ import { AppDataSource } from './data-source'
 import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './users/users.module'
 import { CoursesModule } from './courses/courses.module'
+import { LoggerMiddleware } from './logger/logger.middleware'
+import { LoggerInterceptor } from './logger/logger.interceptor' // 引入拦截器
+import { APP_INTERCEPTOR } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -29,6 +32,18 @@ import { CoursesModule } from './courses/courses.module'
     CoursesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR, // 全局应用拦截器
+      useClass: LoggerInterceptor,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware) // 应用中间件
+      .forRoutes('*') // 捕获所有路由
+  }
+}
