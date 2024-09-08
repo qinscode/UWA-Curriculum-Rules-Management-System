@@ -29,7 +29,7 @@ describe('DocumentsController', () => {
   })
 
   describe('generateCoursePDF', () => {
-    it('should call service.generateCoursePDF with correct id', async () => {
+    it('should call services.generateCoursePDF with correct id', async () => {
       const courseId = '1'
       const expectedResult = { url: 'http://example.com/pdf/course_1_rules.pdf' }
       jest.spyOn(service, 'generateCoursePDF').mockResolvedValue(expectedResult)
@@ -42,7 +42,7 @@ describe('DocumentsController', () => {
   })
 
   describe('generateCourseHTML', () => {
-    it('should call service.generateCourseHTML with correct id', async () => {
+    it('should call services.generateCourseHTML with correct id', async () => {
       const courseId = '1'
       const expectedResult = { url: 'http://example.com/html/course_1_rules.html' }
       jest.spyOn(service, 'generateCourseHTML').mockResolvedValue(expectedResult)

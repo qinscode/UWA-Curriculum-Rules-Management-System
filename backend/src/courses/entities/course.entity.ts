@@ -7,20 +7,27 @@ import {
   OneToMany,
 } from 'typeorm'
 import { Rule } from '../../rules/entities/rule.entity'
+import { CourseType } from './course-type.enum'
 
 @Entity('courses')
 export class Course {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
+  @Column({ nullable: false })
   code: string
 
-  @Column()
+  @Column({ nullable: false })
   name: string
 
-  @Column('text')
+  @Column('text', { nullable: true })
   description: string
+
+  @Column({
+    type: 'enum',
+    enum: CourseType,
+  })
+  type: CourseType
 
   @Column()
   version: number

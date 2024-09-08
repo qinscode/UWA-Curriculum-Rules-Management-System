@@ -9,43 +9,33 @@ import { CreateCourseDto, UpdateCourseDto } from './dto'
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  // 获取所有课程，返回时带有 versions 字段
   @Get()
-  findAll(): Promise<Course[]> {
+  findAll(): Promise<any[]> {
     return this.coursesService.findAll()
   }
 
+  // 根据课程 ID 获取课程信息，并返回带有 versions 字段的课程
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Course> {
+  findOne(@Param('id') id: string): Promise<any> {
     return this.coursesService.findOne(+id)
   }
 
+  // 创建课程
   @Post()
   create(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
     return this.coursesService.create(createCourseDto)
   }
 
+  // 更新课程信息
   @Put(':id')
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto): Promise<Course> {
     return this.coursesService.update(+id, updateCourseDto)
   }
 
+  // 删除课程
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.coursesService.remove(+id)
-  }
-
-  @Get(':id/versions')
-  findVersions(@Param('id') id: string): Promise<Course[]> {
-    return this.coursesService.findVersions(+id)
-  }
-
-  @Post(':id/versions')
-  createVersion(@Param('id') id: string): Promise<Course> {
-    return this.coursesService.createVersion(+id)
-  }
-
-  @Get(':id/full')
-  findFullCourse(@Param('id') id: string): Promise<Course> {
-    return this.coursesService.findFullCourse(+id)
   }
 }
