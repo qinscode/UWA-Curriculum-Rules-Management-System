@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { apiClient } from '../lib/api-client'
-import { Rule, CreateRuleDTO, UpdateRuleDTO, RuleHistoryDto } from '../types'
+import { Rule, CreateRuleDTO, UpdateRuleDTO } from '../types'
 
 export function useRules() {
   const [rules, setRules] = useState<Rule[]>([])
@@ -67,15 +67,6 @@ export function useRules() {
     }
   }, [])
 
-  const fetchRuleHistory = useCallback(async (id: number) => {
-    try {
-      return await apiClient.getRuleHistory(id)
-    } catch (err) {
-      setError('Failed to fetch rule history')
-      throw err
-    }
-  }, [])
-
   const restoreRuleVersion = useCallback(async (id: number, version: number) => {
     try {
       const restoredRule = await apiClient.restoreRuleVersion(id, version)
@@ -105,7 +96,6 @@ export function useRules() {
     addRule,
     updateRule,
     deleteRule,
-    fetchRuleHistory,
     restoreRuleVersion,
   }
 }
