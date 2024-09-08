@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { RulesService } from './rules.service'
-import { RulesController } from './rules.controller'
 import { Rule } from './entities/rule.entity'
 import { Requirement } from './entities/requirement.entity'
-import { Course } from '../courses/entities/course.entity'
+import { RulesService } from './rules.service'
+import { RulesController } from './rules.controller'
+import { CoursesModule } from '../courses/courses.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rule, Requirement, Course])],
+  imports: [TypeOrmModule.forFeature([Rule, Requirement]), CoursesModule],
   providers: [RulesService],
   controllers: [RulesController],
+  exports: [TypeOrmModule, RulesService],
 })
 export class RulesModule {}

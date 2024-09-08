@@ -1,14 +1,7 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import { Rule } from './rule.entity'
 
-@Entity('requirements')
+@Entity()
 export class Requirement {
   @PrimaryGeneratedColumn()
   id: number
@@ -30,10 +23,4 @@ export class Requirement {
 
   @Column()
   order_index: number
-
-  @CreateDateColumn()
-  created_at: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
 }
