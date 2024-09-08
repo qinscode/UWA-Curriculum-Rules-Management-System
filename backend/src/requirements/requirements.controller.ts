@@ -37,7 +37,7 @@ export class RequirementsController {
     @Param('ruleId', ParseIntPipe) ruleId: number,
     @Body() createRequirementDtos: CreateRequirementDto[]
   ): Promise<Requirement[]> {
-    this.logger.log(`收到创建要求请求：${JSON.stringify(createRequirementDtos)}`)
+    this.logger.log(`Receive createRequirement request：${JSON.stringify(createRequirementDtos)}`)
     return Promise.all(
       createRequirementDtos.map((dto) =>
         this.requirementsService.createRequirement(courseId, ruleId, dto)
