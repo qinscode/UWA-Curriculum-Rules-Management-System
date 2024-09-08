@@ -1,3 +1,4 @@
+'use client'
 import { type Metadata } from 'next'
 import Link from 'next/link'
 
@@ -5,18 +6,37 @@ import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/ui/Fields'
 import { Logo } from '@/components/ui/Logo'
 import { SlimLayout } from '@/components/ui/SlimLayout'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { login } from '@/services/authService' // Import the login service
 
-export const metadata: Metadata = {
-  title: 'Sign In',
-}
+// export const metadata: Metadata = {
+//   title: 'Sign In',
+// }
 
 export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const router = useRouter()
+
+  // Handle form submission and login logic
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    try {
+      const token = await login(email, password) // Use the login service from authService.ts
+      localStorage.setItem('token', token) // Store JWT token
+      router.push('/manage-course') // Redirect to dashboard after successful login
+    } catch (error: any) {
+      setError(error.message || 'An error occurred. Please try again.') // Display error if login fails
+    }
+  }
+
   return (
     <SlimLayout>
       <div className="flex">
-        <Link href="/" aria-label="Home">
-          <Logo className="h-10 w-auto" />
-        </Link>
+        <Logo className="h-10 w-auto" />
       </div>
       <h2 className="mt-20 text-lg font-semibold text-gray-900">Sign in to your account</h2>
       <p className="mt-2 text-sm text-gray-700">
@@ -25,13 +45,24 @@ export default function Login() {
           Sign up
         </Link>
       </p>
-      <form action="#" className="mt-10 grid grid-cols-1 gap-y-8">
-        <TextField label="Email address" name="email" type="email" autoComplete="email" required />
+      {error && <p className="text-red-500">{error}</p>}
+      <form onSubmit={handleSubmit} className="mt-10 grid grid-cols-1 gap-y-8">
+        <TextField
+          label="Email address"
+          name="email"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
         <TextField
           label="Password"
           name="password"
           type="password"
           autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <div>

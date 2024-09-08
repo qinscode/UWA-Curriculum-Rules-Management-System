@@ -1,8 +1,10 @@
 'use client'
-import React, { FC, ReactNode } from 'react'
+import React, { FC, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { isAuthenticated, logout } from '@/services/authService' // Import auth functions
+import { useRouter } from 'next/navigation'
 
 interface NavigationItem {
   name: string
@@ -25,6 +27,21 @@ interface LayoutProps {
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {
+  const [loggedIn, setLoggedIn] = useState(false) // Track user login state
+  const router = useRouter()
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    setLoggedIn(isAuthenticated())
+  }, [])
+
+  // Handle logout
+  const handleLogout = () => {
+    logout() // Clear user token
+    setLoggedIn(false) // Update state
+    router.push('/') // Redirect to home after logout
+  }
+
   return (
     <>
       <div className="min-h-screen bg-white">
@@ -56,20 +73,39 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                     </div>
                   </div>
                   <div className="flex items-center">
-                    {/* Sign In and Register Links */}
+                    {/* Conditionally render Sign In/Register or profile/Logout */}
                     <div className="hidden sm:flex sm:space-x-4">
-                      <Link
-                        href={'/login'}
-                        className="text-sm font-medium text-gray-500 hover:text-gray-700"
-                      >
-                        Sign In
-                      </Link>
-                      <Link
-                        href={'/register'}
-                        className="text-sm font-medium text-gray-500 hover:text-gray-700"
-                      >
-                        Register
-                      </Link>
+                      {loggedIn ? (
+                        <>
+                          <Link
+                            href={'/profile'}
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                          >
+                            Profile
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                          >
+                            Logout
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            href={'/login'}
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                          >
+                            Sign In
+                          </Link>
+                          <Link
+                            href={'/register'}
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                          >
+                            Register
+                          </Link>
+                        </>
+                      )}
                     </div>
                     <div className="-mr-2 flex items-center sm:hidden">
                       <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
@@ -103,21 +139,42 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                       {item.name}
                     </DisclosureButton>
                   ))}
-                  {/* Sign In and Register Links for Mobile */}
-                  <DisclosureButton
-                    as="a"
-                    href="/sign-in"
-                    className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
-                  >
-                    Sign In
-                  </DisclosureButton>
-                  <DisclosureButton
-                    as="a"
-                    href="/register"
-                    className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
-                  >
-                    Register
-                  </DisclosureButton>
+                  {/* Conditionally render Sign In/Register or profile/Logout for Mobile */}
+                  {loggedIn ? (
+                    <>
+                      <DisclosureButton
+                        as="a"
+                        href="/profile"
+                        className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
+                      >
+                        Profile
+                      </DisclosureButton>
+                      <DisclosureButton
+                        as="button"
+                        onClick={handleLogout}
+                        className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
+                      >
+                        Logout
+                      </DisclosureButton>
+                    </>
+                  ) : (
+                    <>
+                      <DisclosureButton
+                        as="a"
+                        href="/login"
+                        className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
+                      >
+                        Sign In
+                      </DisclosureButton>
+                      <DisclosureButton
+                        as="a"
+                        href="/register"
+                        className="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800"
+                      >
+                        Register
+                      </DisclosureButton>
+                    </>
+                  )}
                 </div>
               </DisclosurePanel>
             </>
