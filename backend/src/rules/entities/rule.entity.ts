@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 import { Course } from '../../courses/entities/course.entity'
 import { Requirement } from './requirement.entity'
+import { RuleType } from './rule.enum'
 
 @Entity('rules')
 export class Rule {
@@ -18,8 +19,11 @@ export class Rule {
   @Column()
   name: string
 
-  @Column()
-  type: string
+  @Column({
+    type: 'enum',
+    enum: RuleType,
+  })
+  type: RuleType
 
   @Column('text')
   description: string
