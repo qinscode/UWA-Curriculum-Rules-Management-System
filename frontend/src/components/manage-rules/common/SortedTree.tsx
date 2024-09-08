@@ -381,7 +381,7 @@ export default function BasePage({
           className="mb-4 bg-indigo-600 text-white hover:bg-indigo-500"
           onClick={handleAddRootNode}
         >
-          Add Root Node
+          Add Requirement
         </Button>
         {renderTree({
           className: `${placeholder ? 'opacity-50' : 'opacity-100'} transition-opacity duration-200`,

@@ -1,11 +1,4 @@
-import {
-  Rule,
-  CreateRuleDTO,
-  UpdateRuleDTO,
-  RuleHistoryDto,
-  Settings,
-  UpdateSettingsDTO,
-} from '../types'
+import { Rule, CreateRuleDTO, UpdateRuleDTO } from '@/types'
 import urljoin from 'url-join'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6015/api/'
@@ -48,13 +41,8 @@ export const apiClient = {
   updateRule: (id: number, rule: UpdateRuleDTO) =>
     fetchJson<Rule>(`rules/${id}`, { method: 'PUT', body: JSON.stringify(rule) }),
   deleteRule: (id: number) => fetchJson<void>(`rules/${id}`, { method: 'DELETE' }),
-  getRuleHistory: (id: number) => fetchJson<RuleHistoryDto[]>(`rules/${id}/history`),
   restoreRuleVersion: (id: number, version: number) =>
     fetchJson<Rule>(`rules/${id}/restore/${version}`, { method: 'PUT' }),
-
-  getSettings: () => fetchJson<Settings>('settings'),
-  updateSettings: (settings: UpdateSettingsDTO) =>
-    fetchJson<Settings>('settings', { method: 'PUT', body: JSON.stringify(settings) }),
 
   exportRules: () => fetchJson<{ url: string }>('rules/export'),
   generateHandbook: () => fetchJson<{ url: string }>('handbook/generate'),
