@@ -10,7 +10,7 @@ export const login = async (email: string, password: string): Promise<string> =>
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email, password }), // Send email and password in the request body
+    body: JSON.stringify({ email, password }),
   })
 
   if (!res.ok) {
@@ -31,13 +31,11 @@ export const logout = () => {
   localStorage.removeItem('token')
 }
 
-// Function to get the JWT token from localStorage
 export const getToken = (): string | null => {
   return localStorage.getItem('token')
 }
 
-// Function to check if the user is authenticated by checking if a token exists
 export const isAuthenticated = (): boolean => {
   const token = getToken()
-  return !!token // Return true if the token exists, false otherwise
+  return !!token
 }
