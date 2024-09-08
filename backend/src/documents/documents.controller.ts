@@ -9,4 +9,9 @@ export class DocumentsController {
   generateCoursePDF(@Param('id') id: string) {
     return this.documentsService.generateCoursePDF(id)
   }
+
+  @Get('course/:id/html')
+  generateCourseHTML(@Param('id') id: string) {
+    return this.documentsService.generateCourseHTML(id)
+  }
 }

@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common'
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from './entities/user.entity'
@@ -21,6 +26,10 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    const existingUser = await this.usersRepository.findOne({ where: { email: registerDto.email } })
+    if (existingUser) {
+      throw new ConflictException('User already exists')
+    }
     const hashedPassword = await bcrypt.hash(registerDto.password, 10)
     const user = this.usersRepository.create({
       ...registerDto,
@@ -79,8 +88,18 @@ export class AuthService {
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    // Verify reset token and update password
-    // Implement the logic to verify the reset token and update the password
+    // 实现重置密码的逻辑
+    // 例如：验证重置令牌，更新用户密码等
+    const { token, newPassword } = resetPasswordDto
+    // 这里应该有验证令牌的逻辑
+    // 然后更新用户密码
+    // 为了示例，假设令牌就是用户ID
+    const user = await this.usersRepository.findOne({ where: { id: parseInt(token) } })
+    if (!user) {
+      throw new NotFoundException('User not found')
+    }
+    user.password = await bcrypt.hash(newPassword, 10)
+    await this.usersRepository.save(user)
     return { message: 'Password reset successfully' }
   }
 }

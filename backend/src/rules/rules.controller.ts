@@ -1,97 +1,40 @@
-// src/rules/rules.controller.ts
-
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Body,
-  Param,
-  HttpException,
-  HttpStatus,
-  Query,
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common'
 import { RulesService } from './rules.service'
-import { CreateRuleDto, UpdateRuleDto, RuleDto } from './dto/rule.dto'
-import { RuleHistoryDto } from './dto/rule-history.dto'
 import { Rule } from './entities/rule.entity'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
+import { CreateRuleDto, UpdateRuleDto } from './dto'
 
-@Controller('rules')
+@Controller('courses/:courseId/rules')
+@UseGuards(JwtAuthGuard)
 export class RulesController {
   constructor(private readonly rulesService: RulesService) {}
 
   @Get()
-  async findAll(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
-    @Query('search') search: string = ''
-  ): Promise<{ rules: Rule[]; total: number }> {
-    const parsedPage = parseInt(page, 10)
-    const parsedLimit = parseInt(limit, 10)
-
-    if (isNaN(parsedPage) || isNaN(parsedLimit)) {
-      throw new HttpException('Invalid page or limit parameter', HttpStatus.BAD_REQUEST)
-    }
-
-    return this.rulesService.findAll(parsedPage, parsedLimit, search)
+  findAll(@Param('courseId') courseId: string): Promise<Rule[]> {
+    return this.rulesService.findAll(+courseId)
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<RuleDto> {
-    const rule = await this.rulesService.findOne(+id)
-    if (!rule) {
-      throw new HttpException('Rule not found', HttpStatus.NOT_FOUND)
-    }
-    return rule
+  findOne(@Param('courseId') courseId: string, @Param('id') id: string): Promise<Rule> {
+    return this.rulesService.findOne(+courseId, +id)
   }
 
   @Post()
-  async create(@Body() createRuleDto: CreateRuleDto): Promise<RuleDto> {
-    return this.rulesService.create(createRuleDto)
+  create(@Param('courseId') courseId: string, @Body() createRuleDto: CreateRuleDto): Promise<Rule> {
+    return this.rulesService.create(+courseId, createRuleDto)
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateRuleDto: UpdateRuleDto): Promise<RuleDto> {
-    const updatedRule = await this.rulesService.update(+id, updateRuleDto)
-    if (!updatedRule) {
-      throw new HttpException('Rule not found', HttpStatus.NOT_FOUND)
-    }
-    return updatedRule
+  update(
+    @Param('courseId') courseId: string,
+    @Param('id') id: string,
+    @Body() updateRuleDto: UpdateRuleDto
+  ): Promise<Rule> {
+    return this.rulesService.update(+courseId, +id, updateRuleDto)
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<{ success: boolean }> {
-    const deleted = await this.rulesService.remove(+id)
-    if (!deleted) {
-      throw new HttpException('Rule not found', HttpStatus.NOT_FOUND)
-    }
-    return { success: true }
-  }
-
-  @Get(':id/history')
-  async getRuleHistory(@Param('id') id: string): Promise<RuleHistoryDto[]> {
-    const history = await this.rulesService.getRuleHistory(+id)
-    if (!history || history.length === 0) {
-      throw new HttpException('Rule history not found', HttpStatus.NOT_FOUND)
-    }
-    return history
-  }
-
-  @Put(':id/restore/:version')
-  async restoreRuleVersion(
-    @Param('id') id: string,
-    @Param('version') version: string
-  ): Promise<RuleDto> {
-    try {
-      const restoredRule = await this.rulesService.restoreRuleVersion(+id, +version)
-      if (!restoredRule) {
-        throw new HttpException('Rule or version not found', HttpStatus.NOT_FOUND)
-      }
-      return restoredRule
-    } catch (error) {
-      console.error('Error in restoreRuleVersion controller:', error)
-      throw new HttpException('Failed to restore rule version', HttpStatus.INTERNAL_SERVER_ERROR)
-    }
+  remove(@Param('courseId') courseId: string, @Param('id') id: string): Promise<void> {
+    return this.rulesService.remove(+courseId, +id)
   }
 }

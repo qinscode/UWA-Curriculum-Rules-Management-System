@@ -2,35 +2,40 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm'
-import { RuleHistory } from './rule-history.entity'
+import { Course } from '../../courses/entities/course.entity'
+import { Requirement } from './requirement.entity'
 
 @Entity('rules')
 export class Rule {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ length: 10, unique: true })
+  @Column()
   code: string
 
   @Column()
   name: string
 
-  @Column({ type: 'enum', enum: ['conversion', 'core', 'option'] })
+  @Column()
   type: string
 
   @Column('text')
   description: string
+
+  @ManyToOne(() => Course, (course) => course.rules)
+  course: Course
+
+  @OneToMany(() => Requirement, (requirement) => requirement.rule)
+  requirements: Requirement[]
 
   @CreateDateColumn()
   created_at: Date
 
   @UpdateDateColumn()
   updated_at: Date
-
-  @OneToMany(() => RuleHistory, (history) => history.rule)
-  history: RuleHistory[]
 }
