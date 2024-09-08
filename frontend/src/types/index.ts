@@ -1,5 +1,16 @@
 import React from 'react'
 
+export interface Course {
+  id: number
+  code: string
+  name: string
+  type: string
+  versions: string[]
+  version: string
+  category: string
+  lastUpdated: string
+}
+
 export interface Rule {
   id: number
   name: string
