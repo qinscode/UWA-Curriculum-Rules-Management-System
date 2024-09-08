@@ -1,27 +1,30 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Repository, DataSource } from 'typeorm'
 import { Rule } from './entities/rule.entity'
-import { Requirement } from './entities/requirement.entity'
 import { Course } from '../courses/entities/course.entity'
-import { CreateRuleDto, UpdateRuleDto } from './dto'
+import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
 
 @Injectable()
 export class RulesService {
+  private readonly logger = new Logger(RulesService.name)
+
   constructor(
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>,
-    @InjectRepository(Requirement)
-    private requirementsRepository: Repository<Requirement>,
     @InjectRepository(Course)
-    private coursesRepository: Repository<Course>
+    private coursesRepository: Repository<Course>,
+    private dataSource: DataSource
   ) {}
 
   async findAll(courseId: number): Promise<Rule[]> {
-    return this.rulesRepository.find({
-      where: { course: { id: courseId } },
-      relations: ['requirements'],
-    })
+    return this.rulesRepository
+      .createQueryBuilder('rule')
+      .leftJoinAndSelect('rule.requirements', 'requirement')
+      .where('rule.courseId = :courseId', { courseId })
+      .orderBy('rule.id', 'ASC')
+      .addOrderBy('requirement.order_index', 'ASC')
+      .getMany()
   }
 
   async findOne(courseId: number, id: number): Promise<Rule> {
@@ -30,56 +33,88 @@ export class RulesService {
       relations: ['requirements'],
     })
     if (!rule) {
+      this.logger.warn(`Rule with ID "${id}" not found in course "${courseId}"`)
       throw new NotFoundException(`Rule with ID "${id}" not found in course "${courseId}"`)
     }
     return rule
   }
 
   async create(courseId: number, createRuleDto: CreateRuleDto): Promise<Rule> {
-    const course = await this.coursesRepository.findOne({ where: { id: courseId } })
-    if (!course) {
-      throw new NotFoundException(`Course with ID "${courseId}" not found`)
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+
+    try {
+      const course = await this.coursesRepository.findOne({ where: { id: courseId } })
+      if (!course) {
+        throw new NotFoundException(`Course with ID "${courseId}" not found`)
+      }
+
+      const rule = this.rulesRepository.create({
+        ...createRuleDto,
+        course,
+      })
+
+      const savedRule = await queryRunner.manager.save(rule)
+
+      await queryRunner.commitTransaction()
+
+      this.logger.log(`Created new rule with ID ${savedRule.id} for course ${courseId}`)
+      return this.findOne(courseId, savedRule.id)
+    } catch (err) {
+      this.logger.error(`Failed to create rule for course ${courseId}`, err.stack)
+      await queryRunner.rollbackTransaction()
+      throw err
+    } finally {
+      await queryRunner.release()
     }
-
-    const rule = this.rulesRepository.create({
-      ...createRuleDto,
-      course,
-    })
-
-    const savedRule = await this.rulesRepository.save(rule)
-
-    if (createRuleDto.requirements) {
-      const requirements = createRuleDto.requirements.map((req) =>
-        this.requirementsRepository.create({ ...req, rule: savedRule })
-      )
-      await this.requirementsRepository.save(requirements)
-    }
-
-    return this.findOne(courseId, savedRule.id)
   }
 
   async update(courseId: number, id: number, updateRuleDto: UpdateRuleDto): Promise<Rule> {
-    const rule = await this.findOne(courseId, id)
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
 
-    Object.assign(rule, updateRuleDto)
+    try {
+      const rule = await this.findOne(courseId, id)
 
-    if (updateRuleDto.requirements) {
-      // Remove existing requirements
-      await this.requirementsRepository.delete({ rule: { id } })
+      Object.assign(rule, updateRuleDto)
 
-      // Create new requirements
-      const requirements = updateRuleDto.requirements.map((req) =>
-        this.requirementsRepository.create({ ...req, rule })
-      )
-      await this.requirementsRepository.save(requirements)
+      await queryRunner.manager.save(rule)
+      await queryRunner.commitTransaction()
+
+      this.logger.log(`Updated rule with ID ${id} for course ${courseId}`)
+      return this.findOne(courseId, id)
+    } catch (err) {
+      this.logger.error(`Failed to update rule ${id} for course ${courseId}`, err.stack)
+      await queryRunner.rollbackTransaction()
+      throw err
+    } finally {
+      await queryRunner.release()
     }
-
-    await this.rulesRepository.save(rule)
-    return this.findOne(courseId, id)
   }
 
   async remove(courseId: number, id: number): Promise<void> {
-    const rule = await this.findOne(courseId, id)
-    await this.rulesRepository.remove(rule)
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+
+    try {
+      const rule = await this.findOne(courseId, id)
+      if (!rule) {
+        throw new NotFoundException(`Rule with ID "${id}" not found in course "${courseId}"`)
+      }
+
+      await queryRunner.manager.remove(rule)
+
+      await queryRunner.commitTransaction()
+      this.logger.log(`Removed rule with ID ${id} from course ${courseId}`)
+    } catch (err) {
+      this.logger.error(`Failed to remove rule ${id} from course ${courseId}`, err.stack)
+      await queryRunner.rollbackTransaction()
+      throw err
+    } finally {
+      await queryRunner.release()
+    }
   }
 }

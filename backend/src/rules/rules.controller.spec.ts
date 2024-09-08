@@ -4,7 +4,7 @@ import { RulesService } from './rules.service'
 import { CreateRuleDto, UpdateRuleDto } from './dto'
 import { Rule } from './entities/rule.entity'
 import { Course } from '../courses/entities/course.entity'
-import { Requirement } from './entities/requirement.entity'
+import { Requirement } from '../requirements/entities/requirement.entity'
 
 describe('RulesController', () => {
   let controller: RulesController

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { AdmissionSelectionProps } from '@/types'
+import { AdmissionSelectionProps, NumberingStyle } from '@/types'
 
 const Deferrals: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
   const [showDeferralRules, setShowDeferralRules] = useState(false)
@@ -39,7 +39,11 @@ const Deferrals: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
           <NestedRequirementsList
             initialRequirements={data.deferralRules}
             onChange={(requirements) => updateData({ deferralRules: requirements })}
-            defaultStyles={['numeric', 'alphabetic', 'roman']}
+            defaultStyles={[
+              NumberingStyle.Numeric,
+              NumberingStyle.Alphabetic,
+              NumberingStyle.Roman,
+            ]}
             showControls={true}
             showHelpPanel={true}
           />

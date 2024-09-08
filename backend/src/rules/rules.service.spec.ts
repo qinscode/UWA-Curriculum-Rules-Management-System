@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { RulesService } from './rules.service'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Rule } from './entities/rule.entity'
-import { Requirement } from './entities/requirement.entity'
+import { Requirement } from '../requirements/entities/requirement.entity'
 import { Course } from '../courses/entities/course.entity'
 
 describe('RulesService', () => {
