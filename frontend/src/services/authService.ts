@@ -20,10 +20,6 @@ export const login = async (email: string, password: string): Promise<string> =>
 
   const { access_token } = await res.json()
   localStorage.setItem('token', access_token)
-  console.log('token', access_token)
-  console.log('res.json()', res.json())
-
-  console.log('`${API_URL}/auth/login`,', `${API_URL}/auth/login`)
   return access_token
 }
 
