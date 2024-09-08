@@ -1,7 +1,7 @@
 import React from 'react'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { AdmissionSelectionProps } from '@/types'
+import { AdmissionSelectionProps, NumberingStyle } from '@/types'
 
 const ProgressStatus: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
   return (
@@ -11,7 +11,7 @@ const ProgressStatus: React.FC<AdmissionSelectionProps> = ({ data, updateData })
         <NestedRequirementsList
           initialRequirements={data.progressStatus}
           onChange={(requirements) => updateData({ progressStatus: requirements })}
-          defaultStyles={['numeric', 'alphabetic', 'roman']}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
         />

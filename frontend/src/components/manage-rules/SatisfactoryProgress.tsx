@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { AdmissionSelectionProps } from '@/types'
+import { AdmissionSelectionProps, NumberingStyle } from '@/types'
 
 const SatisfactoryProgress: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
   const [showSatisfactoryProgress, setShowSatisfactoryProgress] = useState(false)
@@ -28,7 +28,11 @@ const SatisfactoryProgress: React.FC<AdmissionSelectionProps> = ({ data, updateD
           <NestedRequirementsList
             initialRequirements={data.satisfactoryProgress}
             onChange={(requirements) => updateData({ satisfactoryProgress: requirements })}
-            defaultStyles={['numeric', 'alphabetic', 'roman']}
+            defaultStyles={[
+              NumberingStyle.Numeric,
+              NumberingStyle.Alphabetic,
+              NumberingStyle.Roman,
+            ]}
             showControls={true}
             showHelpPanel={true}
           />

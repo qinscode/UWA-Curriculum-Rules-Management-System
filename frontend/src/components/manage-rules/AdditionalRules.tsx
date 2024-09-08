@@ -1,6 +1,6 @@
 import React from 'react'
 import { Label } from '@/components/ui/label'
-import { AdmissionSelectionProps } from '@/types'
+import { AdmissionSelectionProps, NumberingStyle } from '@/types'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 
 const AdditionalRules: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
@@ -11,7 +11,7 @@ const AdditionalRules: React.FC<AdmissionSelectionProps> = ({ data, updateData }
         <NestedRequirementsList
           presetRules={data.admissionRequirements}
           onChange={(requirements) => updateData({ admissionRequirements: requirements })}
-          defaultStyles={['numeric', 'alphabetic', 'roman']}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
         />
