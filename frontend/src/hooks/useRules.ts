@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
-import { apiClient } from '../lib/api-client'
-import { Rule, CreateRuleDTO, UpdateRuleDTO } from '../types'
+import { apiClient } from '@/lib/api-client'
+import { Rule, CreateRuleDTO, UpdateRuleDTO } from '@/types'
 
 export function useRules() {
   const [rules, setRules] = useState<Rule[]>([])

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 import ManageRules from '@/components/ManageRules'
 import { getCourseByCodeAndVersion } from '@/services/courseService'
-import { CourseContext } from '@/context/CourseContext'
+import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 
@@ -26,12 +26,9 @@ export default function ManageRulesPage({
       }
 
       try {
-        // Fetch the token asynchronously if needed
         const token = await getToken()
-
         console.log('token', token)
 
-        // Fetch course data
         const data = await getCourseByCodeAndVersion(
           code.toString(),
           version.toString(),
@@ -57,8 +54,8 @@ export default function ManageRulesPage({
   }
 
   return (
-    <CourseContext.Provider value={courseData}>
+    <CourseProvider initialCourse={courseData}>
       <ManageRules />
-    </CourseContext.Provider>
+    </CourseProvider>
   )
 }

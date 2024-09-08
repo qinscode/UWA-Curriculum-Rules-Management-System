@@ -1,5 +1,27 @@
 import React from 'react'
 
+// Enums
+export enum NumberingStyle {
+  Numeric = 'numeric',
+  Alphabetic = 'alphabetic',
+  Roman = 'roman',
+  None = 'none',
+}
+
+export enum RuleType {
+  ENGLISH_ELIGIBILITY = 'ENGLISH_ELIGIBILITY',
+  ADMISSIONS = 'ADMISSIONS',
+  PROGRESS = 'PROGRESS',
+  PROGRESS_STATUS = 'PROGRESS_STATUS',
+  DISTINCTION = 'DISTINCTION',
+  DEFERRALS = 'DEFERRALS',
+  ADDITIONAL = 'ADDITIONAL',
+  AQF_OUTCOMES = 'AQF_OUTCOMES',
+  SKILLS = 'SKILLS',
+  KNOWLEDGE_APPLICATION = 'KNOWLEDGE_APPLICATION',
+}
+
+// Interfaces
 export interface Course {
   id: number
   code: string
@@ -9,45 +31,37 @@ export interface Course {
   version: string
   category: string
   lastUpdated: string
+  rules: Rule[]
 }
 
 export interface Rule {
   id: number
   name: string
   code: string
-  type: string
+  type: RuleType
   description: string
+  requirements: Requirement[]
+}
+
+export interface Requirement {
+  id: number
+  content: string
+  style: NumberingStyle
+  numbering?: string
+  children: Requirement[]
+  isConnector?: boolean
 }
 
 export interface StyleOption {
-  value: string
+  value: NumberingStyle
   label: string
 }
 
-export const styleOptions: StyleOption[] = [
-  { value: 'numeric', label: '1, 2, 3' },
-  { value: 'alphabetic', label: 'a, b, c' },
-  { value: 'roman', label: 'i, ii, iii' },
-  { value: 'none', label: 'No numbering' },
-]
-
-export const numberingStyles = {
-  numeric: (index: number, level: number) => (level === 1 ? `${index + 1}` : `(${index + 1})`),
-  alphabetic: (index: number, level: number) =>
-    level === 1 ? String.fromCharCode(97 + index) : `(${String.fromCharCode(97 + index)})`,
-  roman: (index: number, level: number) => {
-    const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
-    return level === 1
-      ? romanNumerals[index]
-      : `(${romanNumerals[index] || (index + 1).toString()})`
-  },
-  none: () => '',
-}
-
+// Props interfaces
 export interface NestedRequirementsListProps {
   initialRequirements?: Requirement[]
   onChange?: (requirements: Requirement[]) => void
-  defaultStyles?: string[]
+  defaultStyles?: NumberingStyle[]
   showControls?: boolean
   showHelpPanel?: boolean
   addMainButtonText?: string
@@ -62,17 +76,17 @@ export interface AdmissionSelectionProps {
     satisfactoryProgress?: Requirement[]
     progressStatus?: Requirement[]
     awardWithDistinction?: Requirement[]
-    deferralAllowed?: Requirement[]
+    deferralAllowed?: false
     deferralRules?: Requirement[]
   }
-  updateData: (data: Partial<AdmissionSelectionProps['data']>) => void
+  updateData: (data: { deferralRules: Requirement[] }) => void
 }
 
 export interface RequirementTreeNodeProps {
   req: Requirement
   index: number
   parentIndexes: number[]
-  defaultStyles: string[]
+  defaultStyles: NumberingStyle[]
   onUpdateRequirement: (id: number, content: string) => void
   onRemoveRequirement: (id: number) => void
   onAddRequirement: (parentId: number | null, level: number) => void
@@ -83,27 +97,49 @@ export interface RequirementTreeNodeProps {
     parentIndexes: number[]
   ) => React.ReactNode
 }
+
 export interface SelectMenuProps {
-  value: string
-  onChange: (value: string) => void
+  value: NumberingStyle
+  onChange: (value: NumberingStyle) => void
   options: StyleOption[]
 }
 
-export type CreateRuleDTO = Omit<Rule, 'id'>
-export type UpdateRuleDTO = Partial<Omit<Rule, 'id'>>
-
-export enum NumberingStyle {
-  Numeric = 'numeric',
-  Alphabetic = 'alphabetic',
-  Roman = 'roman',
-  None = 'none',
+// DTOs
+export interface CreateRuleDTO {
+  name: string
+  code: string
+  type: RuleType
+  description: string
+  requirements: Requirement[]
 }
 
-export interface Requirement {
-  id: number
-  content: string
-  style: NumberingStyle
-  numbering?: string
-  children: Requirement[]
-  isConnector?: boolean
+export interface UpdateRuleDTO {
+  name?: string
+  code?: string
+  type?: RuleType
+  description?: string
+  requirements?: Requirement[]
+}
+
+// Constants
+export const styleOptions: StyleOption[] = [
+  { value: NumberingStyle.Numeric, label: '1, 2, 3' },
+  { value: NumberingStyle.Alphabetic, label: 'a, b, c' },
+  { value: NumberingStyle.Roman, label: 'i, ii, iii' },
+  { value: NumberingStyle.None, label: 'No numbering' },
+]
+
+// Utility functions
+export const numberingStyles = {
+  [NumberingStyle.Numeric]: (index: number, level: number) =>
+    level === 1 ? `${index + 1}` : `(${index + 1})`,
+  [NumberingStyle.Alphabetic]: (index: number, level: number) =>
+    level === 1 ? String.fromCharCode(97 + index) : `(${String.fromCharCode(97 + index)})`,
+  [NumberingStyle.Roman]: (index: number, level: number) => {
+    const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
+    return level === 1
+      ? romanNumerals[index]
+      : `(${romanNumerals[index] || (index + 1).toString()})`
+  },
+  [NumberingStyle.None]: () => '',
 }
