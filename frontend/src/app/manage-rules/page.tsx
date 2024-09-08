@@ -1,10 +1,12 @@
-import React from 'react'
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 import ManageRules from '@/components/ManageRules'
-
-export const metadata = {
-  title: 'Manage Rules',
-}
+import { getCourseByCodeAndVersion } from '@/services/courseService'
+import { CourseContext } from '@/context/CourseContext'
+import { getToken } from '@/services/authService'
+import { Course } from '@/types'
 
 export default function ManageRulesPage({
   searchParams,
@@ -13,9 +15,50 @@ export default function ManageRulesPage({
 }) {
   const { code, version } = searchParams
 
-  if (!code || !version) {
-    redirect('/manage-course')
+  const [courseData, setCourseData] = useState<Course | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      if (!code || !version) {
+        redirect('/manage-course')
+        return
+      }
+
+      try {
+        // Fetch the token asynchronously if needed
+        const token = await getToken()
+
+        console.log('token', token)
+
+        // Fetch course data
+        const data = await getCourseByCodeAndVersion(
+          code.toString(),
+          version.toString(),
+          token as string
+        )
+        setCourseData(data)
+      } catch (error) {
+        console.error('Error fetching course data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCourse()
+  }, [code, version])
+
+  if (loading) {
+    return <div>Loading...</div>
   }
 
-  return <ManageRules courseCode={code} version={version} />
+  if (!courseData) {
+    return <div>Error loading course data</div>
+  }
+
+  return (
+    <CourseContext.Provider value={courseData}>
+      <ManageRules />
+    </CourseContext.Provider>
+  )
 }

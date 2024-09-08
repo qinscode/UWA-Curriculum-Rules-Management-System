@@ -1,4 +1,4 @@
-import { Course } from '../types'
+import { Course } from '@/types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
@@ -20,20 +20,27 @@ export const getCourses = async (token: string | null): Promise<Course[]> => {
   return data
 }
 
-export const getCourseById = async (token: string | null, id: number): Promise<Course[]> => {
-  const response = await fetch(`${BASE_URL}/course/id`, {
+export const getCourseByCodeAndVersion = async (
+  code: string,
+  version: string,
+  token: string | null
+): Promise<Course> => {
+  const response = await fetch(`${BASE_URL}/courses/${code}/${version}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`, // Include Bearer token here
     },
   })
 
-  if (!response.ok) {
-    console.log('token', token)
+  console.log('token', token)
+  console.log('code', code)
+  console.log('version', version)
+  console.log('`${BASE_URL}/course/${code}/${version}`', `${BASE_URL}/course/${code}/${version}`)
 
+  if (!response.ok) {
     throw new Error('Failed to fetch courses')
   }
 
-  const data: Course[] = await response.json()
+  const data: Course = await response.json()
   return data
 }

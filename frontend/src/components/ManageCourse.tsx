@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useState, useEffect } from 'react'
 import { getCourses } from '@/services/courseService'
 import { useRouter } from 'next/navigation'
@@ -91,7 +90,7 @@ const CourseManage: React.FC = () => {
     })
 
   const handleEdit = (course: Course) => {
-    router.push(`/manage-rules?code=${course.id}&version=${course.version}`)
+    router.push(`/manage-rules?code=${course.code}&version=${course.version}`)
   }
 
   const handleVersionChange = (courseId: number, newVersion: string) => {
