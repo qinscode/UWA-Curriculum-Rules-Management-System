@@ -1,15 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
 import { Rule } from '../../rules/entities/rule.entity'
-
+// import { NumberingStyle } from './style.enum'
 @Entity()
 export class Requirement {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column('text')
+  @Column()
   content: string
 
-  @Column()
+  @Column({ default: 'aa' })
   style: string
 
   @ManyToOne(() => Requirement, (requirement) => requirement.children, { nullable: true })
@@ -21,9 +21,9 @@ export class Requirement {
   @ManyToOne(() => Rule, (rule) => rule.requirements)
   rule: Rule
 
-  @Column({ default: false })
-  is_connector: boolean
+  @Column({ name: 'is_connector' })
+  isConnector: boolean
 
-  @Column()
+  @Column({ name: 'order_index' })
   order_index: number
 }

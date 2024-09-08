@@ -65,12 +65,13 @@ const ManageRules: React.FC = () => {
 
     // @ts-ignore
     // create englishRequirements dto
-    await ruleService.createRule(course.id, {
-      requirements: formData.englishRequirements || [],
-      name: RuleType.ENGLISH_ELIGIBILITY,
-      description: `${RuleType.ENGLISH_ELIGIBILITY} rule`,
-      type: RuleType.ENGLISH_ELIGIBILITY,
-    })
+    // await ruleService.createRule(course.id, {
+    //   requirement: formData.englishRequirements || [],
+    //   name: RuleType.ENGLISH_ELIGIBILITY,
+    //   description: `${RuleType.ENGLISH_ELIGIBILITY} rule`,
+    //   type: RuleType.ENGLISH_ELIGIBILITY,
+    // })
+    await ruleService.createRule(course.id, formData.englishRequirements || [])
 
     // await updateOrCreateRule(RuleType.ADMISSIONS, formData.englishRequirements || [])
     // await updateOrCreateRule(RuleType.ADMISSIONS, formData.rankingSelection || [])

@@ -35,10 +35,14 @@ export class RequirementsController {
   async createRequirement(
     @Param('courseId', ParseIntPipe) courseId: number,
     @Param('ruleId', ParseIntPipe) ruleId: number,
-    @Body() createRequirementDto: CreateRequirementDto
-  ): Promise<Requirement> {
-    this.logger.log(`Creating new requirement for rule ${ruleId} in course ${courseId}`)
-    return this.requirementsService.createRequirement(courseId, ruleId, createRequirementDto)
+    @Body() createRequirementDtos: CreateRequirementDto[]
+  ): Promise<Requirement[]> {
+    this.logger.log(`收到创建要求请求：${JSON.stringify(createRequirementDtos)}`)
+    return Promise.all(
+      createRequirementDtos.map((dto) =>
+        this.requirementsService.createRequirement(courseId, ruleId, dto)
+      )
+    )
   }
 
   @Put(':requirementId')
