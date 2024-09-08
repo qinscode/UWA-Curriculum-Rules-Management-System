@@ -56,13 +56,13 @@ const CourseManage: React.FC = () => {
   const router = useRouter()
 
   useEffect(() => {
-    const storedToken = getToken() // 从 localStorage 中获取 token
+    const storedToken = getToken() // get token from local storage
     setToken(storedToken)
   }, [])
 
   useEffect(() => {
     const fetchCourses = async () => {
-      if (!token) return // 确保有 token 才继续
+      if (!token) return // ensure token is available before fetching courses
       try {
         const fetchedCourses = await getCourses(token)
         setCourses(fetchedCourses)
@@ -90,8 +90,8 @@ const CourseManage: React.FC = () => {
       }
     })
 
-  const handleEdit = (courseId: number, version: string) => {
-    router.push(`/manage-rules?code=${courseId}&version=${version}`)
+  const handleEdit = (course: Course) => {
+    router.push(`/manage-rules?code=${course.id}&version=${course.version}`)
   }
 
   const handleVersionChange = (courseId: number, newVersion: string) => {
@@ -237,11 +237,7 @@ const CourseManage: React.FC = () => {
                   </TableCell>
                   <TableCell>{course.lastUpdated}</TableCell>
                   <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(course.id, course.version)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(course)}>
                       Edit
                     </Button>
                   </TableCell>
