@@ -18,7 +18,7 @@ export class Requirement {
   @ManyToOne(() => Rule, (rule) => rule.requirements)
   rule: Rule
 
-  @Column()
+  @Column({ default: false })
   is_connector: boolean
 
   @Column()

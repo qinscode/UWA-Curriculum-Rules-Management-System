@@ -16,9 +16,6 @@ export class Rule {
   id: number
 
   @Column()
-  code: string
-
-  @Column()
   name: string
 
   @Column()
