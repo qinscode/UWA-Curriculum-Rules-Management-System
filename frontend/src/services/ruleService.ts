@@ -36,16 +36,8 @@ export const ruleService = {
     return handleResponse(res)
   },
 
-  createRule: async (
-    courseId: number,
-    ruleData: {
-      requirements: Requirement[]
-      name: RuleType
-      description: `${RuleType} rule`
-      type: RuleType
-    }
-  ): Promise<Rule> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules`, {
+  createRule: async (courseId: number, ruleData: any): Promise<Rule> => {
+    const res = await fetch(`${API_URL}/courses/${courseId}/rules/104/requirements`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -57,7 +49,7 @@ export const ruleService = {
   },
 
   updateRule: async (courseId: number, ruleId: number, ruleData: UpdateRuleDTO): Promise<Rule> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}`, {
+    const res = await fetch(`${API_URL}/courses/${courseId}/rules/104/requirements`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
