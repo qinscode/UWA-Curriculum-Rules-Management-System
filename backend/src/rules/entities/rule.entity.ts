@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Course } from '../../courses/entities/course.entity'
-import { Requirement } from './requirement.entity'
+import { Requirement } from '../../requirements/entities/requirement.entity'
 import { RuleType } from './rule.enum'
 
 @Entity('rules')

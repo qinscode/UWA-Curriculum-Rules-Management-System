@@ -1,22 +1,25 @@
-// rule.dto.ts
+import { RuleType } from '../entities/rule.enum'
+
 export class CreateRuleDto {
-  code: string
   name: string
-  type: string
+  type: RuleType
   description: string
+  requirements?: {
+    content: string
+    style: string
+    is_connector: boolean
+    order_index: number
+  }[]
 }
 
 export class UpdateRuleDto {
-  code?: string
   name?: string
-  type?: string
+  type?: RuleType
   description?: string
-}
-
-export class RuleDto {
-  id: number
-  code: string
-  name: string
-  type: string
-  description?: string
+  requirements?: {
+    content: string
+    style: string
+    is_connector: boolean
+    order_index: number
+  }[]
 }
