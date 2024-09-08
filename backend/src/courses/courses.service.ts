@@ -16,7 +16,7 @@ export class CoursesService {
     const courses = await this.coursesRepository.find()
 
     // 动态生成每个课程的 versions 字段
-    const coursesWithVersions = await Promise.all(
+    return await Promise.all(
       courses.map(async (course) => {
         const relatedCourses = await this.coursesRepository.find({
           where: { code: course.code },
@@ -31,8 +31,6 @@ export class CoursesService {
         }
       })
     )
-
-    return coursesWithVersions
   }
 
   // 根据 ID 查找单个课程，并动态生成 versions 字段
