@@ -16,8 +16,7 @@ export const getCourses = async (token: string | null): Promise<Course[]> => {
     throw new Error('Failed to fetch courses')
   }
 
-  const data: Course[] = await response.json()
-  return data
+  return await response.json()
 }
 
 export const getCourseByCodeAndVersion = async (
@@ -41,6 +40,5 @@ export const getCourseByCodeAndVersion = async (
     throw new Error('Failed to fetch courses')
   }
 
-  const data: Course = await response.json()
-  return data
+  return await response.json()
 }
