@@ -2,10 +2,33 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { AdmissionSelectionProps } from '@/types'
+import { NumberingStyle, Requirement } from '@/types'
+
+export interface AdmissionSelectionProps {
+  data: {
+    englishRequirements: Requirement[]
+    admissionRequirements: Requirement[]
+    rankingSelection?: Requirement[]
+  }
+  updateData: (data: Partial<AdmissionSelectionProps['data']>) => void
+}
 
 const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
-  const [showRankingRequirements, setShowRankingRequirements] = useState(false)
+  const [showRankingRequirements, setShowRankingRequirements] = useState(
+    !!data.rankingSelection && data.rankingSelection.length > 0
+  )
+
+  const handleEnglishRequirementsChange = (requirements: Requirement[]) => {
+    updateData({ englishRequirements: requirements })
+  }
+
+  const handleAdmissionRequirementsChange = (requirements: Requirement[]) => {
+    updateData({ admissionRequirements: requirements })
+  }
+
+  const handleRankingSelectionChange = (requirements: Requirement[]) => {
+    updateData({ rankingSelection: requirements })
+  }
 
   return (
     <div className="space-y-6">
@@ -15,19 +38,19 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateDat
         </Label>
         <NestedRequirementsList
           initialRequirements={data.englishRequirements}
-          onChange={(requirements) => updateData({ englishRequirements: requirements })}
-          defaultStyles={['numeric', 'alphabetic', 'roman']}
+          onChange={handleEnglishRequirementsChange}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
         />
       </div>
 
       <div>
-        <Label className="mb-1 block text-lg font-medium">Admissions</Label>
+        <Label className="mb-1 block text-lg font-medium">Admission requirements</Label>
         <NestedRequirementsList
-          presetRules={data.admissionRequirements}
-          onChange={(requirements) => updateData({ admissionRequirements: requirements })}
-          defaultStyles={['numeric', 'alphabetic', 'roman']}
+          initialRequirements={data.admissionRequirements}
+          onChange={handleAdmissionRequirementsChange}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
         />
@@ -37,7 +60,12 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateDat
         <Switch
           id="showRankingRequirements"
           checked={showRankingRequirements}
-          onCheckedChange={setShowRankingRequirements}
+          onCheckedChange={(checked) => {
+            setShowRankingRequirements(checked)
+            if (!checked) {
+              updateData({ rankingSelection: [] })
+            }
+          }}
         />
         <Label htmlFor="showRankingRequirements">
           There are specific ranking and selection tools or requirements for this course.
@@ -50,9 +78,13 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateDat
             Ranking and selection for admission
           </Label>
           <NestedRequirementsList
-            initialRequirements={data.rankingSelection}
-            onChange={(requirements) => updateData({ rankingSelection: requirements })}
-            defaultStyles={['numeric', 'alphabetic', 'roman']}
+            initialRequirements={data.rankingSelection || []}
+            onChange={handleRankingSelectionChange}
+            defaultStyles={[
+              NumberingStyle.Numeric,
+              NumberingStyle.Alphabetic,
+              NumberingStyle.Roman,
+            ]}
             showControls={true}
             showHelpPanel={true}
           />

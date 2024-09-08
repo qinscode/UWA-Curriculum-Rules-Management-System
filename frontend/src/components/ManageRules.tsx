@@ -61,30 +61,47 @@ const ManageRules: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Form data submitted:', formData)
+    console.log('Form submitted. Current form data:', formData)
 
-    // @ts-ignore
-    // create englishRequirements dto
-    // await ruleService.createRule(course.id, {
-    //   requirement: formData.englishRequirements || [],
-    //   name: RuleType.ENGLISH_ELIGIBILITY,
-    //   description: `${RuleType.ENGLISH_ELIGIBILITY} rule`,
-    //   type: RuleType.ENGLISH_ELIGIBILITY,
-    // })
-    await ruleService.createRule(course.id, formData.englishRequirements || [])
+    const updateRuleIfChanged = async (ruleType: RuleType, requirements: Requirement[]) => {
+      const rule = categorizedRules[ruleType]
+      if (rule && JSON.stringify(rule.requirements) !== JSON.stringify(requirements)) {
+        console.log(`Updating ${ruleType} rule:`, rule.id)
+        await ruleService.updateRule(course.id, rule.id, { requirements })
+        console.log(`${ruleType} rule updated successfully`)
+      }
+    }
 
-    // await updateOrCreateRule(RuleType.ADMISSIONS, formData.englishRequirements || [])
-    // await updateOrCreateRule(RuleType.ADMISSIONS, formData.rankingSelection || [])
-    // await updateOrCreateRule(RuleType.PROGRESS, formData.satisfactoryProgress || [])
-    // await updateOrCreateRule(RuleType.PROGRESS_STATUS, formData.progressStatus || [])
-    // await updateOrCreateRule(RuleType.DISTINCTION, formData.awardWithDistinction || [])
-    // await updateOrCreateRule(RuleType.DEFERRALS, formData.deferralAllowed || [])
-    // await updateOrCreateRule(RuleType.DEFERRALS, formData.deferralRules || [])
+    try {
+      await Promise.all([
+        updateRuleIfChanged(RuleType.ENGLISH_ELIGIBILITY, formData.englishRequirements),
+        updateRuleIfChanged(RuleType.ADMISSIONS, formData.admissionRequirements),
+        updateRuleIfChanged(RuleType.PROGRESS, formData.progressRequirements),
+        updateRuleIfChanged(RuleType.PROGRESS_STATUS, formData.progressStatusRequirements),
+        updateRuleIfChanged(RuleType.DISTINCTION, formData.distinctionRequirements),
+        updateRuleIfChanged(RuleType.DEFERRALS, formData.deferralRequirements),
+        updateRuleIfChanged(RuleType.ADDITIONAL, formData.additionalRequirements),
+        updateRuleIfChanged(RuleType.AQF_OUTCOMES, formData.aqfOutcomesRequirements),
+        updateRuleIfChanged(RuleType.SKILLS, formData.skillsRequirements),
+        updateRuleIfChanged(
+          RuleType.KNOWLEDGE_APPLICATION,
+          formData.knowledgeApplicationRequirements
+        ),
+      ])
 
-    toast({
-      title: 'Rules updated',
-      description: 'All rules have been successfully updated.',
-    })
+      console.log('All rules updated successfully')
+      toast({
+        title: 'Rules updated',
+        description: 'All rules have been successfully updated.',
+      })
+    } catch (error) {
+      console.error('Error updating rules:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to update rules. Please try again.',
+        variant: 'destructive',
+      })
+    }
   }
   const handleSaveAsNewVersion = () => {
     if (newVersion) {
