@@ -77,4 +77,17 @@ export class CoursesService {
     const course = await this.findOne(id)
     await this.coursesRepository.remove(course)
   }
+
+  async findByCodeAndVersion(code: string, version: string): Promise<Course> {
+    const course = await this.coursesRepository.findOne({
+      where: { code, version: +version },
+    })
+
+    if (!course) {
+      throw new NotFoundException(`Course with code "${code}" and version "${version}" not found`)
+    }
+
+    // 只返回匹配的课程信息，不附带 versions
+    return course
+  }
 }
