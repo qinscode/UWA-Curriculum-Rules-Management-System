@@ -8,8 +8,6 @@ import {
   Plus,
   Trash,
   HelpCircle,
-  FileText,
-  Link,
   ArrowDownLeft,
   Sparkles,
 } from 'lucide-react'
@@ -24,7 +22,6 @@ import {
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
 
