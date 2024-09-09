@@ -25,12 +25,23 @@ export class RequirementsService {
 
   async findAllRequirements(courseId: number, ruleId: number): Promise<Requirement[]> {
     this.logger.log(`Fetching all requirements for rule ${ruleId} in course ${courseId}`)
-    return this.requirementsRepository.find({
-      where: { rule: { id: ruleId, course: { id: courseId } } },
-      order: { order_index: 'ASC' },
+    const requirements = await this.requirementsRepository.find({
+      where: { rule: { id: ruleId, course: { id: courseId } }, parent: null },
+      relations: ['children'],
+      order: { id: 'ASC' },
     })
+
+    return this.loadChildrenRecursively(requirements)
   }
 
+  private async loadChildrenRecursively(requirements: Requirement[]): Promise<Requirement[]> {
+    for (const requirement of requirements) {
+      if (requirement.children && requirement.children.length > 0) {
+        requirement.children = await this.loadChildrenRecursively(requirement.children)
+      }
+    }
+    return requirements.sort((a, b) => a.id - b.id)
+  }
   async createRequirement(
     courseId: number,
     ruleId: number,
