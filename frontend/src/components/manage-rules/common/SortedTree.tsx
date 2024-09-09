@@ -32,6 +32,8 @@ interface BasePageProps {
     value: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
   ) => void
   onAddChildNode?: (parentId: number) => void
+  showControls?: boolean
+  showHelpPanel?: boolean
 }
 
 export default function BasePage({
@@ -39,6 +41,8 @@ export default function BasePage({
   presetRequirements,
   onUpdateRequirement,
   onAddChildNode,
+  showControls = true, // 提供默认值
+  showHelpPanel = true, // 提供默认值
 }: BasePageProps) {
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
   const [data, setData] = useState<any[]>([])

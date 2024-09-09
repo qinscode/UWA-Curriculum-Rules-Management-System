@@ -11,11 +11,26 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 }) => {
   const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements)
 
-  const handleUpdateRequirement = (newRequirements: Requirement[]) => {
-    setRequirements(newRequirements)
-    if (onUpdate) {
-      onUpdate(newRequirements)
-    }
+  const handleUpdateRequirement = (
+    newRequirementsOrUpdater: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
+  ) => {
+    setRequirements((prevRequirements) => {
+      const newRequirements =
+        typeof newRequirementsOrUpdater === 'function'
+          ? newRequirementsOrUpdater(prevRequirements)
+          : newRequirementsOrUpdater
+
+      console.log(
+        'NestedRequirementsList - Updating requirements:',
+        JSON.stringify(newRequirements, null, 2)
+      )
+
+      if (onUpdate) {
+        onUpdate(newRequirements)
+      }
+
+      return newRequirements
+    })
   }
 
   const handleAddChildNodeInParent = (parentId: number) => {
@@ -28,7 +43,13 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
     <div className="space-y-4">
       <SortedTree
         initialData={requirements}
-        onUpdateRequirement={handleUpdateRequirement}
+        onUpdateRequirement={(newReqsOrUpdater) => {
+          const newReqs =
+            typeof newReqsOrUpdater === 'function'
+              ? newReqsOrUpdater(requirements)
+              : newReqsOrUpdater
+          handleUpdateRequirement(newReqs)
+        }}
         onAddChildNode={handleAddChildNodeInParent}
         presetRequirements={presetRules}
         showControls={showControls}
