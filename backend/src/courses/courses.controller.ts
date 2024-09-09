@@ -39,17 +39,12 @@ export class CoursesController {
   }
 
   @Get('code/:code/version/:version')
-  async findByCodeAndVersion(
+  findByCodeAndVersion(
     @Param('code') code: string,
     @Param('version') version: string
   ): Promise<Course> {
-    const course = await this.coursesService.findByCodeAndVersion(code, version)
-    if (!course) {
-      throw new NotFoundException(`Course with code "${code}" and version "${version}" not found`)
-    }
-    return course
+    return this.coursesService.findByCodeAndVersion(code, version)
   }
-
   @Post()
   async create(@Body(ValidationPipe) createCourseDto: CreateCourseDto): Promise<Course> {
     return this.coursesService.create(createCourseDto)
@@ -76,6 +71,8 @@ export class CoursesController {
 
   @Get(':id/rules')
   async findAllRules(@Param('id', ParseIntPipe) id: number): Promise<Rule[]> {
+    console.log('Fetching all rules')
+
     return this.coursesService.findAllRules(id)
   }
 

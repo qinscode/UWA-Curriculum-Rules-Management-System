@@ -24,7 +24,7 @@ export const getCourseByCodeAndVersion = async (
   version: string,
   token: string | null
 ): Promise<Course> => {
-  const response = await fetch(`${BASE_URL}/courses/${code}/${version}`, {
+  const response = await fetch(`${BASE_URL}/courses/code/${code}/version/${version}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`, // Include Bearer token here

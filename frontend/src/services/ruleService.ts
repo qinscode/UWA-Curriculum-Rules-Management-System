@@ -27,8 +27,27 @@ export const ruleService = {
     return handleResponse(res)
   },
 
-  getRule: async (courseId: number, ruleId: number): Promise<Rule> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}`, {
+  getRequirement: async (courseId: number, ruleId: number): Promise<Requirement> => {
+    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    return handleResponse(res)
+  },
+
+  getRules: async (courseId: number, ruleId: number): Promise<Rule> => {
+    const res = await fetch(`${API_URL}/courses/${courseId}/rules/`, {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
+    })
+    return handleResponse(res)
+  },
+
+  updateRequirementByRuleId: async (courseId: number, ruleId: number): Promise<Requirement> => {
+    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirement`, {
+      method: 'PUT',
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },

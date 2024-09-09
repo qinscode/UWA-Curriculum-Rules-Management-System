@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { RulesController } from './rules.controller'
 import { RulesService } from './rules.service'
-import { CreateRuleDto, UpdateRuleDto } from './dto'
+import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
 import { Rule } from './entities/rule.entity'
 import { Course } from '../courses/entities/course.entity'
 import { Requirement } from '../requirements/entities/requirement.entity'

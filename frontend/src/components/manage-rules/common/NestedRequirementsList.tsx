@@ -11,30 +11,30 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 }) => {
   const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements)
 
-  useEffect(() => {
-    console.log(
-      'NestedRequirementsList - initialRequirements:',
-      JSON.stringify(initialRequirements, null, 2)
-    )
-    console.log('NestedRequirementsList - presetRules:', JSON.stringify(presetRules, null, 2))
+  // useEffect(() => {
+  //   console.log(
+  //     'NestedRequirementsList - initialRequirements:',
+  //     JSON.stringify(initialRequirements, null, 2)
+  //   )
+  //   console.log('NestedRequirementsList - presetRules:', JSON.stringify(presetRules, null, 2))
+  //
+  //   if (initialRequirements.length > 0) {
+  //     console.log('Setting requirements from initialRequirements')
+  //     setRequirements(initialRequirements)
+  //   } else if (presetRules.length > 0) {
+  //     console.log('Setting requirements from presetRules')
+  //     setRequirements(presetRules)
+  //   } else {
+  //     console.log('No initial requirements or preset rules provided')
+  //   }
+  // }, [initialRequirements, presetRules])
 
-    if (initialRequirements.length > 0) {
-      console.log('Setting requirements from initialRequirements')
-      setRequirements(initialRequirements)
-    } else if (presetRules.length > 0) {
-      console.log('Setting requirements from presetRules')
-      setRequirements(presetRules)
-    } else {
-      console.log('No initial requirements or preset rules provided')
-    }
-  }, [initialRequirements, presetRules])
-
-  useEffect(() => {
-    console.log(
-      'NestedRequirementsList - Current requirements:',
-      JSON.stringify(requirements, null, 2)
-    )
-  }, [requirements])
+  // useEffect(() => {
+  //   console.log(
+  //     'NestedRequirementsList - Current requirements:',
+  //     JSON.stringify(requirements, null, 2)
+  //   )
+  // }, [requirements])
 
   const handleUpdateRequirement = (newRequirements: Requirement[]) => {
     console.log(

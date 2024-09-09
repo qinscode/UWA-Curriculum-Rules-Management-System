@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
@@ -23,71 +21,160 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { AdmissionSelectionProps, Course, Requirement, RuleType } from '@/types'
+import { AdmissionSelectionProps, Course, Requirement, Rule, RuleType } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
+
+interface CategorizedRules {
+  englishEligibility: Rule | null
+  admissions: Rule | null
+  progress: Rule | null
+  progressStatus: Rule | null
+  distinction: Rule | null
+  deferrals: Rule | null
+  additional: Rule | null
+  aqfOutcomes: Rule | null
+  skills: Rule | null
+  knowledgeApplication: Rule | null
+}
 
 const ManageRules: React.FC = () => {
   const { course, updateCourse } = useCourse()
   const courseCode = course?.code
   const version = course?.version
 
+  console.log('Course information:', { courseCode, version })
+
   const [courseName, setCourseName] = useState<string>('')
   const [formData, setFormData] = useState<AdmissionSelectionProps['data']>({
-    // Initialize with your default form data
+    englishRequirements: [],
+  })
+  const [categorizedRules, setCategorizedRules] = useState<CategorizedRules>({
+    englishEligibility: null,
+    admissions: null,
+    progress: null,
+    progressStatus: null,
+    distinction: null,
+    deferrals: null,
+    additional: null,
+    aqfOutcomes: null,
+    skills: null,
+    knowledgeApplication: null,
   })
   const [newVersion, setNewVersion] = useState<string>('')
   const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
-    // Fetch course details and rules data
-    // This is a mock implementation. Replace with actual API call.
-    const fetchCourseDetails = async () => {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setCourseName(course?.name || '')
-      // Set initial form data here
+    if (course?.id) {
+      console.log('Fetching rules for course ID:', course.id)
+      fetchAndCategorizeRules(course.id)
     }
-    fetchCourseDetails()
-  }, [courseCode, version])
+  }, [course])
+
+  const fetchAndCategorizeRules = async (courseId: number) => {
+    try {
+      const rules = await ruleService.getAllRules(courseId)
+      console.log('Fetched rules:', rules)
+      const categorized = categorizeRules(rules)
+      console.log('Categorized rules:', categorized)
+      setCategorizedRules(categorized)
+      updateFormDataFromRules(categorized)
+      console.log('Form data updated from rules', formData)
+    } catch (error) {
+      console.error('Error fetching rules:', error)
+    }
+  }
+
+  const categorizeRules = (rules: Rule[]): CategorizedRules => {
+    const categorized: CategorizedRules = {
+      englishEligibility: null,
+      admissions: null,
+      progress: null,
+      progressStatus: null,
+      distinction: null,
+      deferrals: null,
+      additional: null,
+      aqfOutcomes: null,
+      skills: null,
+      knowledgeApplication: null,
+    }
+
+    rules.forEach((rule) => {
+      switch (rule.type) {
+        case RuleType.ENGLISH_ELIGIBILITY:
+          categorized.englishEligibility = rule
+          break
+        case RuleType.ADMISSIONS:
+          categorized.admissions = rule
+          break
+        case RuleType.SATISFACTORY_PROGRESS:
+          categorized.progress = rule
+          break
+        case RuleType.PROGRESS_STATUS:
+          categorized.progressStatus = rule
+          break
+        case RuleType.AWARD_WITH_DISTINCTION:
+          categorized.distinction = rule
+          break
+        case RuleType.DEFERRALS:
+          categorized.deferrals = rule
+          break
+        case RuleType.ADDITIONAL_RULES:
+          categorized.additional = rule
+          break
+        case RuleType.AQF_OUTCOMES:
+          categorized.aqfOutcomes = rule
+          break
+        case RuleType.SKILLS:
+          categorized.skills = rule
+          break
+        case RuleType.KNOWLEDGE_APPLICATION:
+          categorized.knowledgeApplication = rule
+          break
+      }
+    })
+
+    return categorized
+  }
+
+  const updateFormDataFromRules = (categorized: CategorizedRules) => {
+    setFormData((prevData) => {
+      const newData = {
+        ...prevData,
+        englishRequirements: categorized.englishEligibility?.requirements || [],
+        // Update other form data fields based on categorized rules
+      }
+      console.log('22222Updated form data:', newData)
+      return newData
+    })
+    console.log('111111Form data updated from rules:', formData)
+  }
 
   const updateFormData = (data: Partial<AdmissionSelectionProps['data']>) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      ...data,
-    }))
+    setFormData((prevData) => {
+      const newData = {
+        ...prevData,
+        ...data,
+      }
+      console.log('Form data updated:', newData)
+      return newData
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Form submitted. Current form data:', formData)
 
-    const updateRuleIfChanged = async (ruleType: RuleType, requirements: Requirement[]) => {
-      const rule = categorizedRules[ruleType]
-      if (rule && JSON.stringify(rule.requirements) !== JSON.stringify(requirements)) {
-        console.log(`Updating ${ruleType} rule:`, rule.id)
-        await ruleService.updateRule(course.id, rule.id, { requirements })
-        console.log(`${ruleType} rule updated successfully`)
-      }
-    }
-
     try {
-      await Promise.all([
-        updateRuleIfChanged(RuleType.ENGLISH_ELIGIBILITY, formData.englishRequirements),
-        updateRuleIfChanged(RuleType.ADMISSIONS, formData.admissionRequirements),
-        updateRuleIfChanged(RuleType.PROGRESS, formData.progressRequirements),
-        updateRuleIfChanged(RuleType.PROGRESS_STATUS, formData.progressStatusRequirements),
-        updateRuleIfChanged(RuleType.DISTINCTION, formData.distinctionRequirements),
-        updateRuleIfChanged(RuleType.DEFERRALS, formData.deferralRequirements),
-        updateRuleIfChanged(RuleType.ADDITIONAL, formData.additionalRequirements),
-        updateRuleIfChanged(RuleType.AQF_OUTCOMES, formData.aqfOutcomesRequirements),
-        updateRuleIfChanged(RuleType.SKILLS, formData.skillsRequirements),
-        updateRuleIfChanged(
-          RuleType.KNOWLEDGE_APPLICATION,
-          formData.knowledgeApplicationRequirements
-        ),
-      ])
+      if (categorizedRules.englishEligibility) {
+        console.log('Updating English Eligibility rule:', categorizedRules.englishEligibility.id)
+        // @ts-ignore
+        await ruleService.updateRule(course.id, categorizedRules.englishEligibility.id, {
+          requirements: formData.englishRequirements,
+        })
+      }
+      // Add similar update calls for other rule types
 
       console.log('All rules updated successfully')
       toast({
@@ -103,6 +190,7 @@ const ManageRules: React.FC = () => {
       })
     }
   }
+
   const handleSaveAsNewVersion = () => {
     if (newVersion) {
       console.log('Saving as new version:', newVersion)
@@ -117,6 +205,8 @@ const ManageRules: React.FC = () => {
     }
   }
 
+  console.log('Rendering ManageRules component')
+
   return (
     <Layout>
       <div className="mx-auto max-w-7xl p-6 sm:px-6 lg:px-8">
@@ -125,7 +215,6 @@ const ManageRules: React.FC = () => {
             Manage Rules - {courseCode}: {courseName} (Version: {version})
           </h1>
         </div>
-        <Button onClick={() => console.log('Current Requirements:', formData)}>SSS</Button>
         <form onSubmit={handleSubmit}>
           <div className="space-y-6">
             <RuleSection title="Admission and selection">
@@ -195,8 +284,6 @@ const ManageRules: React.FC = () => {
           </div>
 
           <SaveButton handleSaveButton={handleSubmit} />
-
-          <Button onClick={() => console.log('Current Requirements:', formData)}>SSS</Button>
         </form>
       </div>
       <Footer />
