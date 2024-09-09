@@ -16,9 +16,10 @@ export enum RuleType {
   AWARD_WITH_DISTINCTION = 'Award with Distinction',
   DEFERRALS = 'Deferrals',
   ADDITIONAL_RULES = 'Additional Rules',
-  AQF_OUTCOMES = 'AQF Outcomes',
   SKILLS = 'Skills',
   KNOWLEDGE_APPLICATION = 'Knowledge Application',
+  KNOWLEDGE = 'Knowledge',
+  RANKING_AND_SELECTION = 'Ranking and selection for admission',
 }
 
 // Interfaces

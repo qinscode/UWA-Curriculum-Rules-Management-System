@@ -62,6 +62,11 @@ export const ruleService = {
     ruleId: number,
     ruleData: any
   ): Promise<Rule> => {
+    console.log(
+      'Fetching data from:',
+      `${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`
+    )
+    console.log('Rule data:', ruleData)
     const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
       method: 'PUT',
       headers: {
@@ -70,7 +75,7 @@ export const ruleService = {
       },
       body: JSON.stringify(ruleData),
     })
-    console.log('FFFFFFFUUUUUUCCCCCCKKKK', ruleData)
+
     return handleResponse(res)
   },
 

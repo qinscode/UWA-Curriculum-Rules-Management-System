@@ -20,11 +20,6 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
           ? newRequirementsOrUpdater(prevRequirements)
           : newRequirementsOrUpdater
 
-      console.log(
-        'NestedRequirementsList - Updating requirements:',
-        JSON.stringify(newRequirements, null, 2)
-      )
-
       if (onUpdate) {
         onUpdate(newRequirements)
       }

@@ -33,8 +33,8 @@ interface CategorizedRules {
   distinction: Rule | null
   deferrals: Rule | null
   additional: Rule | null
-  aqfOutcomes: Rule | null
   skills: Rule | null
+  knowledge: Rule | null
   knowledgeApplication: Rule | null
 }
 
@@ -43,8 +43,6 @@ const ManageRules: React.FC = () => {
   const courseCode = course?.code
   const version = course?.version
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-
-  console.log('Course information:', { courseCode, version })
 
   const [courseName, setCourseName] = useState<string>('')
   const [formData, setFormData] = useState<GeneralProps['data']>({
@@ -58,7 +56,6 @@ const ManageRules: React.FC = () => {
     deferralRules: [],
     additionalRules: [],
     deferrals: [],
-    aqfOutcomes: [],
     knowledgeApplication: [],
     skills: [],
     knowledge: [],
@@ -73,8 +70,8 @@ const ManageRules: React.FC = () => {
     distinction: null,
     deferrals: null,
     additional: null,
-    aqfOutcomes: null,
     skills: null,
+    knowledge: null,
     knowledgeApplication: null,
   })
   const [newVersion, setNewVersion] = useState<string>('')
@@ -111,9 +108,9 @@ const ManageRules: React.FC = () => {
       distinction: null,
       deferrals: null,
       additional: null,
-      aqfOutcomes: null,
       skills: null,
       knowledgeApplication: null,
+      knowledge: null,
     }
 
     rules.forEach((rule) => {
@@ -139,8 +136,8 @@ const ManageRules: React.FC = () => {
         case RuleType.ADDITIONAL_RULES:
           categorized.additional = rule
           break
-        case RuleType.AQF_OUTCOMES:
-          categorized.aqfOutcomes = rule
+        case RuleType.KNOWLEDGE:
+          categorized.knowledge = rule
           break
         case RuleType.SKILLS:
           categorized.skills = rule
@@ -162,27 +159,23 @@ const ManageRules: React.FC = () => {
         englishRequirements: categorized.englishEligibility?.requirements || [],
         // Update other form data fields based on categorized rules
       }
-      console.log('22222Updated form data:', newData)
       return newData
     })
-    console.log('111111Form data updated from rules:', formData)
   }
 
   const updateFormData = (data: Partial<ManageRulesProps['data']>) => {
-    console.log('updateFormData called with:', data)
     setFormData((prevData) => {
       const newData = {
         ...prevData,
         ...data,
       }
       setHasUnsavedChanges(true)
-      console.log('New form data:', newData)
       return newData
     })
   }
 
   const handleSave = async () => {
-    if (!hasUnsavedChanges) return // 如果没有未保存的更改，直接返回
+    if (!hasUnsavedChanges) return // if no changes, do nothing
 
     console.log('Saving form data:', formData)
 
@@ -241,11 +234,11 @@ const ManageRules: React.FC = () => {
         )
       }
 
-      if (categorizedRules.aqfOutcomes) {
-        console.log('Updating aqfOutcomes rule:', categorizedRules.aqfOutcomes.id)
+      if (categorizedRules.knowledge) {
+        console.log('Updating aqfOutcomes rule:', categorizedRules.knowledge.id)
         await ruleService.updateRequirementByRuleId(
           course!.id,
-          categorizedRules.aqfOutcomes.id,
+          categorizedRules.knowledge.id,
           formData.aqfOutcomes
         )
       }
@@ -265,6 +258,15 @@ const ManageRules: React.FC = () => {
           course!.id,
           categorizedRules.knowledgeApplication.id,
           formData.knowledgeApplication
+        )
+      }
+
+      if (categorizedRules.progressStatus) {
+        console.log('Updating knowledgeApplication:', categorizedRules.progressStatus.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.progressStatus.id,
+          formData.progressStatus
         )
       }
 
@@ -297,8 +299,6 @@ const ManageRules: React.FC = () => {
       router.push(`/manage-rules?code=${courseCode}&version=${newVersion}`)
     }
   }
-
-  console.log('Rendering ManageRules component')
 
   return (
     <Layout>
