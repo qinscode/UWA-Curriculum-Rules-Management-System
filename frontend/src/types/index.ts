@@ -135,7 +135,7 @@ export interface GeneralProps {
     satisfactoryProgress?: Requirement[]
     progressStatus?: Requirement[]
     awardWithDistinction?: Requirement[]
-    deferralAllowed?: false
+    deferralAllowed?: boolean
     additionalRules?: Requirement[]
     deferrals?: Requirement[]
     aqfOutcomes?: Requirement[]
