@@ -1,5 +1,3 @@
-// requirement.dto.ts
-
 export class CreateRequirementDto {
   content: string
   style: string
@@ -9,6 +7,7 @@ export class CreateRequirementDto {
 }
 
 export class UpdateRequirementDto {
+  id?: number // Add this line
   content?: string
   style?: string
   is_connector?: boolean

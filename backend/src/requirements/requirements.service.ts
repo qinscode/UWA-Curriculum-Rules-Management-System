@@ -1,6 +1,12 @@
-import { Injectable, NotFoundException, Logger, InternalServerErrorException } from '@nestjs/common'
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  InternalServerErrorException,
+  BadRequestException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository, DataSource } from 'typeorm'
+import { Repository, DataSource, QueryRunner, In } from 'typeorm'
 import { Requirement } from './entities/requirement.entity'
 import { Rule } from '../rules/entities/rule.entity'
 import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dto'
@@ -77,7 +83,7 @@ export class RequirementsService {
   private async createChildren(
     parentRequirement: Requirement,
     children: CreateRequirementDto[],
-    queryRunner: any
+    queryRunner: QueryRunner
   ): Promise<void> {
     for (const childDto of children) {
       const childRequirement = this.requirementsRepository.create({
@@ -102,7 +108,7 @@ export class RequirementsService {
   async updateRequirements(
     courseId: number,
     ruleId: number,
-    updateRequirementDtos: UpdateRequirementDto[]
+    updateRequirementDtos: UpdateRequirementDto | UpdateRequirementDto[]
   ): Promise<Requirement[]> {
     const queryRunner = this.dataSource.createQueryRunner()
     await queryRunner.connect()
@@ -116,83 +122,125 @@ export class RequirementsService {
         throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${courseId}"`)
       }
 
+      // Ensure updateRequirementDtos is an array
+      const dtos = Array.isArray(updateRequirementDtos)
+        ? updateRequirementDtos
+        : [updateRequirementDtos]
+
       // Fetch all existing requirements for this rule
       const existingRequirements = await this.requirementsRepository.find({
         where: { rule: { id: ruleId } },
         relations: ['children'],
       })
 
-      // Delete existing requirements
-      await this.deleteRequirementsRecursively(existingRequirements, queryRunner)
-
-      // Create new requirements
-      const newRequirements = await this.createRequirementsRecursively(
+      // Update or create requirements
+      const updatedRequirements = await this.updateOrCreateRequirements(
         rule,
-        updateRequirementDtos,
+        dtos,
+        existingRequirements,
         null,
         queryRunner
       )
 
+      // Delete requirements that are no longer needed
+      await this.deleteUnusedRequirements(existingRequirements, dtos, queryRunner)
+
       await queryRunner.commitTransaction()
       this.logger.log(`Updated requirements for rule ${ruleId}`)
 
-      return newRequirements
+      return updatedRequirements
     } catch (err) {
       this.logger.error(`Failed to update requirements for rule ${ruleId}`, err.stack)
       await queryRunner.rollbackTransaction()
+      if (err instanceof BadRequestException) {
+        throw err
+      }
       throw new InternalServerErrorException('Failed to update requirements')
     } finally {
       await queryRunner.release()
     }
   }
 
-  private async deleteRequirementsRecursively(
-    requirements: Requirement[],
-    queryRunner: any
-  ): Promise<void> {
-    for (const requirement of requirements) {
-      if (requirement.children && requirement.children.length > 0) {
-        await this.deleteRequirementsRecursively(requirement.children, queryRunner)
-      }
-      await queryRunner.manager.remove(Requirement, requirement)
-    }
-  }
-
-  private async createRequirementsRecursively(
+  private async updateOrCreateRequirements(
     rule: Rule,
     requirementDtos: UpdateRequirementDto[],
+    existingRequirements: Requirement[],
     parent: Requirement | null,
-    queryRunner: any
+    queryRunner: QueryRunner
   ): Promise<Requirement[]> {
-    const createdRequirements: Requirement[] = []
+    if (!Array.isArray(requirementDtos)) {
+      throw new BadRequestException('Invalid input: requirementDtos must be an array')
+    }
+
+    const updatedRequirements: Requirement[] = []
 
     for (const dto of requirementDtos) {
-      const requirement = this.requirementsRepository.create({
-        content: dto.content,
-        style: dto.style,
-        isConnector: dto.is_connector,
-        order_index: dto.order_index,
-        rule,
-        parent,
-      })
+      let requirement = dto.id ? existingRequirements.find((r) => r.id === dto.id) : null
+
+      if (requirement) {
+        // Update existing requirement
+        requirement.content = dto.content ?? requirement.content
+        requirement.style = dto.style ?? requirement.style
+        requirement.isConnector = dto.is_connector ?? requirement.isConnector
+        requirement.order_index = dto.order_index ?? requirement.order_index
+      } else {
+        // Create new requirement
+        requirement = this.requirementsRepository.create({
+          content: dto.content,
+          style: dto.style,
+          isConnector: dto.is_connector,
+          order_index: dto.order_index,
+          rule,
+          parent,
+        })
+      }
 
       const savedRequirement = await queryRunner.manager.save(requirement)
-      this.logger.log(`Created requirement: ${JSON.stringify(savedRequirement)}`)
+      this.logger.log(`Updated/Created requirement: ${JSON.stringify(savedRequirement)}`)
 
       if (dto.children && dto.children.length > 0) {
-        const children = await this.createRequirementsRecursively(
+        const children = await this.updateOrCreateRequirements(
           rule,
           dto.children,
+          requirement.children || [],
           savedRequirement,
           queryRunner
         )
         savedRequirement.children = children
       }
 
-      createdRequirements.push(savedRequirement)
+      updatedRequirements.push(savedRequirement)
     }
 
-    return createdRequirements
+    return updatedRequirements
+  }
+  private async deleteUnusedRequirements(
+    existingRequirements: Requirement[],
+    updateRequirementDtos: UpdateRequirementDto[],
+    queryRunner: QueryRunner
+  ): Promise<void> {
+    const updatedIds = new Set(
+      updateRequirementDtos.map((dto) => dto.id).filter((id) => id !== undefined)
+    )
+    const requirementsToDelete = existingRequirements.filter((req) => !updatedIds.has(req.id))
+
+    if (requirementsToDelete.length > 0) {
+      const idsToDelete = requirementsToDelete.map((req) => req.id)
+      await queryRunner.manager.delete(Requirement, { id: In(idsToDelete) })
+      this.logger.log(`Deleted requirements with IDs: ${idsToDelete.join(', ')}`)
+    }
+  }
+
+  private async deleteRequirementRecursively(
+    requirement: Requirement,
+    queryRunner: QueryRunner
+  ): Promise<void> {
+    if (requirement.children && requirement.children.length > 0) {
+      for (const child of requirement.children) {
+        await this.deleteRequirementRecursively(child, queryRunner)
+      }
+    }
+    await queryRunner.manager.remove(Requirement, requirement)
   }
 
   async removeRequirement(courseId: number, ruleId: number, requirementId: number): Promise<void> {

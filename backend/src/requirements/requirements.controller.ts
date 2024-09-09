@@ -52,11 +52,13 @@ export class RequirementsController {
     @Body() updateRequirementData: UpdateRequirementDto | UpdateRequirementDto[]
   ): Promise<Requirement[]> {
     this.logger.log(`Updating requirements for rule ${ruleId} in course ${courseId}`)
+    // Ensure we're always passing an array to the service
     const updateRequirementDtos = Array.isArray(updateRequirementData)
       ? updateRequirementData
       : [updateRequirementData]
     return this.requirementsService.updateRequirements(courseId, ruleId, updateRequirementDtos)
   }
+
   @Delete(':requirementId')
   async removeRequirement(
     @Param('courseId', ParseIntPipe) courseId: number,
