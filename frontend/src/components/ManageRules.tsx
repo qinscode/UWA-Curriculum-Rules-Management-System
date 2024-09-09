@@ -21,7 +21,7 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { ManageRulesProps, Rule, RuleType } from '@/types'
+import { GeneralProps, ManageRulesProps, Rule, RuleType } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 
@@ -47,9 +47,24 @@ const ManageRules: React.FC = () => {
   console.log('Course information:', { courseCode, version })
 
   const [courseName, setCourseName] = useState<string>('')
-  const [formData, setFormData] = useState<ManageRulesProps['data']>({
+  const [formData, setFormData] = useState<GeneralProps['data']>({
     englishRequirements: [],
+    admissionRequirements: [],
+    rankingSelection: [],
+    satisfactoryProgress: [],
+    progressStatus: [],
+    awardWithDistinction: [],
+    deferralAllowed: false,
+    deferralRules: [],
+    additionalRules: [],
+    deferrals: [],
+    aqfOutcomes: [],
+    knowledgeApplication: [],
+    skills: [],
+    knowledge: [],
+    applicationOfKnowledge: [],
   })
+
   const [categorizedRules, setCategorizedRules] = useState<CategorizedRules>({
     englishEligibility: null,
     admissions: null,
