@@ -10,13 +10,15 @@ import {
   ParseIntPipe,
   Logger,
   NotFoundException,
+  Query,
 } from '@nestjs/common'
 import { RulesService } from './rules.service'
 import { Rule } from './entities/rule.entity'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
+import { RuleType } from './entities/rule.enum'
 
-@Controller('courses/:courseId/rules')
+@Controller('rules')
 @UseGuards(JwtAuthGuard)
 export class RulesController {
   private readonly logger = new Logger(RulesController.name)
@@ -24,53 +26,49 @@ export class RulesController {
   constructor(private readonly rulesService: RulesService) {}
 
   @Get()
-  async findAll(@Param('courseId', ParseIntPipe) courseId: number): Promise<Rule[]> {
-    this.logger.log(`Fetching all rules for course ${courseId}`)
-    return this.rulesService.findAll(courseId)
+  async findAll(): Promise<Rule[]> {
+    this.logger.log('Fetching all rules')
+    return this.rulesService.findAll()
   }
 
   @Get(':id')
-  async findOne(
-    @Param('courseId', ParseIntPipe) courseId: number,
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<Rule> {
-    this.logger.log(`Fetching rule ${id} for course ${courseId}`)
-    const rule = await this.rulesService.findOne(courseId, id)
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Rule> {
+    this.logger.log(`Fetching rule ${id}`)
+    const rule = await this.rulesService.findOne(id)
     if (!rule) {
-      throw new NotFoundException(`Rule with ID "${id}" not found in course "${courseId}"`)
+      throw new NotFoundException(`Rule with ID "${id}" not found`)
     }
     return rule
   }
 
+  @Get('by-type/:type')
+  async findByType(@Param('type') type: RuleType): Promise<Rule[]> {
+    this.logger.log(`Fetching rules with type ${type}`)
+    return this.rulesService.findByType(type)
+  }
+
   @Post()
-  async create(
-    @Param('courseId', ParseIntPipe) courseId: number,
-    @Body() createRuleDto: CreateRuleDto
-  ): Promise<Rule> {
-    this.logger.log(`Creating new rule for course ${courseId}`)
-    return this.rulesService.create(courseId, createRuleDto)
+  async create(@Body() createRuleDto: CreateRuleDto): Promise<Rule> {
+    this.logger.log('Creating new rule')
+    return this.rulesService.create(createRuleDto)
   }
 
   @Put(':id')
   async update(
-    @Param('courseId', ParseIntPipe) courseId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRuleDto: UpdateRuleDto
   ): Promise<Rule> {
-    this.logger.log(`Updating rule ${id} for course ${courseId}`)
-    const updatedRule = await this.rulesService.update(courseId, id, updateRuleDto)
+    this.logger.log(`Updating rule ${id}`)
+    const updatedRule = await this.rulesService.update(id, updateRuleDto)
     if (!updatedRule) {
-      throw new NotFoundException(`Rule with ID "${id}" not found in course "${courseId}"`)
+      throw new NotFoundException(`Rule with ID "${id}" not found`)
     }
     return updatedRule
   }
 
   @Delete(':id')
-  async remove(
-    @Param('courseId', ParseIntPipe) courseId: number,
-    @Param('id', ParseIntPipe) id: number
-  ): Promise<void> {
-    this.logger.log(`Removing rule ${id} from course ${courseId}`)
-    await this.rulesService.remove(courseId, id)
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    this.logger.log(`Removing rule ${id}`)
+    await this.rulesService.remove(id)
   }
 }

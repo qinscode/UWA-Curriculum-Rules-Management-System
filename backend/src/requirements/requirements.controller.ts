@@ -45,24 +45,18 @@ export class RequirementsController {
     )
   }
 
-  @Put(':requirementId')
-  async updateRequirement(
+  @Put()
+  async updateRequirements(
     @Param('courseId', ParseIntPipe) courseId: number,
     @Param('ruleId', ParseIntPipe) ruleId: number,
-    @Param('requirementId', ParseIntPipe) requirementId: number,
-    @Body() updateRequirementDto: UpdateRequirementDto
-  ): Promise<Requirement> {
-    this.logger.log(
-      `Updating requirement ${requirementId} for rule ${ruleId} in course ${courseId}`
-    )
-    return this.requirementsService.updateRequirement(
-      courseId,
-      ruleId,
-      requirementId,
-      updateRequirementDto
-    )
+    @Body() updateRequirementData: UpdateRequirementDto | UpdateRequirementDto[]
+  ): Promise<Requirement[]> {
+    this.logger.log(`Updating requirements for rule ${ruleId} in course ${courseId}`)
+    const updateRequirementDtos = Array.isArray(updateRequirementData)
+      ? updateRequirementData
+      : [updateRequirementData]
+    return this.requirementsService.updateRequirements(courseId, ruleId, updateRequirementDtos)
   }
-
   @Delete(':requirementId')
   async removeRequirement(
     @Param('courseId', ParseIntPipe) courseId: number,

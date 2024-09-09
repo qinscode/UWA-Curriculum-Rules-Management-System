@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Rule } from './entities/rule.entity'
 import { Requirement } from '../requirements/entities/requirement.entity'
@@ -7,7 +7,10 @@ import { RulesController } from './rules.controller'
 import { CoursesModule } from '../courses/courses.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rule, Requirement]), CoursesModule],
+  imports: [
+    TypeOrmModule.forFeature([Rule, Requirement]),
+    forwardRef(() => CoursesModule), // 使用 forwardRef 来处理循环依赖
+  ],
   providers: [RulesService],
   controllers: [RulesController],
   exports: [TypeOrmModule, RulesService],

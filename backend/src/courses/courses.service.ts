@@ -2,90 +2,116 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Course } from './entities/course.entity'
-import { CreateCourseDto, UpdateCourseDto } from './dto'
+import { Rule } from '../rules/entities/rule.entity'
+import { CreateCourseDto, UpdateCourseDto } from './dto/'
+import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto'
+import { RuleType } from '../rules/entities/rule.enum'
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course)
-    private coursesRepository: Repository<Course>
+    private coursesRepository: Repository<Course>,
+    @InjectRepository(Rule)
+    private rulesRepository: Repository<Rule>
   ) {}
 
-  // 获取所有课程，并动态生成 versions 字段
-  async findAll(): Promise<any[]> {
-    const courses = await this.coursesRepository.find()
-
-    // 动态生成每个课程的 versions 字段
-    return await Promise.all(
-      courses.map(async (course) => {
-        const relatedCourses = await this.coursesRepository.find({
-          where: { code: course.code },
-          order: { version: 'DESC' },
-        })
-
-        const versions = relatedCourses.map((c) => c.version.toString())
-
-        return {
-          ...course,
-          versions, // 动态生成的 versions 数组
-        }
-      })
-    )
+  async findAll(): Promise<Course[]> {
+    return this.coursesRepository.find()
   }
 
-  // 根据 ID 查找单个课程，并动态生成 versions 字段
-  async findOne(id: number): Promise<any> {
+  async findOne(id: number): Promise<Course> {
     const course = await this.coursesRepository.findOne({ where: { id } })
-
     if (!course) {
       throw new NotFoundException(`Course with ID "${id}" not found`)
     }
-
-    // 查询与当前课程 code 相同的所有版本
-    const relatedCourses = await this.coursesRepository.find({
-      where: { code: course.code },
-      order: { version: 'DESC' },
-    })
-
-    // 动态生成 versions 数组
-    const versions = relatedCourses.map((c) => c.version.toString())
-
-    // 返回课程信息，并附带生成的 versions 数组
-    return {
-      ...course,
-      versions, // 动态生成的版本数组
-    }
+    return course
   }
 
-  // 创建新课程
+  async findByCodeAndVersion(code: string, version: string): Promise<Course> {
+    const course = await this.coursesRepository.findOne({
+      where: { code, version },
+    })
+    if (!course) {
+      throw new NotFoundException(`Course with code "${code}" and version "${version}" not found`)
+    }
+    return course
+  }
+
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const course = this.coursesRepository.create(createCourseDto)
     return this.coursesRepository.save(course)
   }
 
-  // 更新课程信息
   async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const course = await this.findOne(id)
     Object.assign(course, updateCourseDto)
     return this.coursesRepository.save(course)
   }
 
-  // 删除课程
   async remove(id: number): Promise<void> {
     const course = await this.findOne(id)
     await this.coursesRepository.remove(course)
   }
 
-  async findByCodeAndVersion(code: string, version: string): Promise<Course> {
-    const course = await this.coursesRepository.findOne({
-      where: { code, version: +version },
+  // Rule-related methods
+
+  async findAllRules(courseId: number): Promise<Rule[]> {
+    const course = await this.findOne(courseId)
+    return this.rulesRepository.find({ where: { course: { id: course.id } } })
+  }
+
+  async findOneRule(courseId: number, ruleId: number): Promise<Rule> {
+    const course = await this.findOne(courseId)
+    const rule = await this.rulesRepository.findOne({
+      where: { id: ruleId, course: { id: course.id } },
     })
-
-    if (!course) {
-      throw new NotFoundException(`Course with code "${code}" and version "${version}" not found`)
+    if (!rule) {
+      throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${courseId}"`)
     }
+    return rule
+  }
 
-    // 只返回匹配的课程信息，不附带 versions
-    return course
+  async findRuleByType(courseId: number, type: RuleType): Promise<Rule> {
+    const course = await this.findOne(courseId)
+    const rule = await this.rulesRepository.findOne({
+      where: { type, course: { id: course.id } },
+    })
+    if (!rule) {
+      throw new NotFoundException(`Rule with type "${type}" not found in course "${courseId}"`)
+    }
+    return rule
+  }
+
+  async createRule(courseId: number, createRuleDto: CreateRuleDto): Promise<Rule> {
+    const course = await this.findOne(courseId)
+    const rule = this.rulesRepository.create({ ...createRuleDto, course })
+    return this.rulesRepository.save(rule)
+  }
+
+  async updateRule(courseId: number, ruleId: number, updateRuleDto: UpdateRuleDto): Promise<Rule> {
+    const rule = await this.findOneRule(courseId, ruleId)
+    Object.assign(rule, updateRuleDto)
+    return this.rulesRepository.save(rule)
+  }
+
+  async updateRuleByType(
+    courseId: number,
+    type: RuleType,
+    updateRuleDto: UpdateRuleDto
+  ): Promise<Rule> {
+    const rule = await this.findRuleByType(courseId, type)
+    Object.assign(rule, updateRuleDto)
+    return this.rulesRepository.save(rule)
+  }
+
+  async removeRule(courseId: number, ruleId: number): Promise<void> {
+    const rule = await this.findOneRule(courseId, ruleId)
+    await this.rulesRepository.remove(rule)
+  }
+
+  async removeRuleByType(courseId: number, type: RuleType): Promise<void> {
+    const rule = await this.findRuleByType(courseId, type)
+    await this.rulesRepository.remove(rule)
   }
 }
