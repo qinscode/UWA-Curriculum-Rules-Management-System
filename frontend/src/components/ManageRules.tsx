@@ -173,103 +173,33 @@ const ManageRules: React.FC = () => {
   }
 
   const handleSave = async () => {
-    if (!hasUnsavedChanges) return // if no changes, do nothing
+    if (!hasUnsavedChanges) return
 
     console.log('Saving form data:', formData)
 
     try {
-      if (categorizedRules.englishEligibility) {
-        console.log('Updating English Eligibility rule:', categorizedRules.englishEligibility.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.englishEligibility.id,
-          formData.englishRequirements
-        )
-      }
+      const rulesToUpdate = [
+        { rule: categorizedRules.englishEligibility, data: formData.englishRequirements },
+        { rule: categorizedRules.admissions, data: formData.admissionRequirements },
+        { rule: categorizedRules.progress, data: formData.satisfactoryProgress },
+        { rule: categorizedRules.distinction, data: formData.awardWithDistinction },
+        { rule: categorizedRules.deferrals, data: formData.deferrals },
+        { rule: categorizedRules.additional, data: formData.additionalRules },
+        { rule: categorizedRules.knowledge, data: formData.aqfOutcomes },
+        { rule: categorizedRules.skills, data: formData.skills },
+        { rule: categorizedRules.knowledgeApplication, data: formData.knowledgeApplication },
+        { rule: categorizedRules.progressStatus, data: formData.progressStatus },
+      ]
 
-      if (categorizedRules.admissions) {
-        console.log('Updating admissions rule:', categorizedRules.admissions.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.admissions.id,
-          formData.admissionRequirements
-        )
-      }
-
-      if (categorizedRules.progress) {
-        console.log('Updating satisfactoryProgress rule:', categorizedRules.progress.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.progress.id,
-          formData.satisfactoryProgress
-        )
-      }
-
-      if (categorizedRules.distinction) {
-        console.log('Updating awardWithDistinction rule:', categorizedRules.distinction.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.distinction.id,
-          formData.awardWithDistinction
-        )
-      }
-
-      if (categorizedRules.deferrals) {
-        console.log('Updating deferrals rule:', categorizedRules.deferrals.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.deferrals.id,
-          formData.deferrals
-        )
-      }
-
-      if (categorizedRules.additional) {
-        console.log('Updating additionalRules rule:', categorizedRules.additional.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.additional.id,
-          formData.additionalRules
-        )
-      }
-
-      if (categorizedRules.knowledge) {
-        console.log('Updating aqfOutcomes rule:', categorizedRules.knowledge.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.knowledge.id,
-          formData.aqfOutcomes
-        )
-      }
-
-      if (categorizedRules.skills) {
-        console.log('Updating skills rule:', categorizedRules.skills.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.skills.id,
-          formData.skills
-        )
-      }
-
-      if (categorizedRules.knowledgeApplication) {
-        console.log('Updating knowledgeApplication:', categorizedRules.knowledgeApplication.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.knowledgeApplication.id,
-          formData.knowledgeApplication
-        )
-      }
-
-      if (categorizedRules.progressStatus) {
-        console.log('Updating knowledgeApplication:', categorizedRules.progressStatus.id)
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.progressStatus.id,
-          formData.progressStatus
-        )
+      for (const { rule, data } of rulesToUpdate) {
+        if (rule) {
+          console.log(`Updating ${rule.type} rule:`, rule.id)
+          await ruleService.updateRequirementByRuleId(course!.id, rule.id, data)
+        }
       }
 
       console.log('All rules updated successfully')
-      setHasUnsavedChanges(false) // 重置未保存更改状态
+      setHasUnsavedChanges(false)
       toast({
         title: 'Rules saved',
         description: 'All rules have been successfully saved.',
