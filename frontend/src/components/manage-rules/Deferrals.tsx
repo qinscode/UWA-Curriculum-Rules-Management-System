@@ -37,8 +37,8 @@ const Deferrals: React.FC<GeneralProps> = ({ data, updateData }) => {
         <div>
           <Label className="mb-1 block text-lg font-medium">Custom deferral rules</Label>
           <NestedRequirementsList
-            initialRequirements={data.deferralRules}
-            onUpdate={(requirements) => updateData({ deferralRules: requirements })}
+            initialRequirements={data.deferrals}
+            onUpdate={(requirements) => updateData({ deferrals: requirements })}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,

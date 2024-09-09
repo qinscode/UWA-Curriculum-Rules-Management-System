@@ -31,8 +31,8 @@ const OutcomesAQF: React.FC<GeneralProps> = ({ data, updateData }) => {
       <div>
         <Label className="mb-1 block text-lg font-medium">Application of knowledge to skills</Label>
         <NestedRequirementsList
-          initialRequirements={data.applicationOfKnowledge || []}
-          onUpdate={(requirements) => updateData({ applicationOfKnowledge: requirements })}
+          initialRequirements={data.knowledgeApplication || []}
+          onUpdate={(requirements) => updateData({ knowledgeApplication: requirements })}
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}

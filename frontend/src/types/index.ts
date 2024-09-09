@@ -129,7 +129,6 @@ export interface UpdateRuleDTO {
 export interface GeneralProps {
   data: {
     knowledge: Requirement[]
-    applicationOfKnowledge: Requirement[]
     englishRequirements?: Requirement[]
     admissionRequirements?: Requirement[]
     rankingSelection?: Requirement[]
@@ -137,7 +136,6 @@ export interface GeneralProps {
     progressStatus?: Requirement[]
     awardWithDistinction?: Requirement[]
     deferralAllowed?: false
-    deferralRules?: Requirement[]
     additionalRules?: Requirement[]
     deferrals?: Requirement[]
     aqfOutcomes?: Requirement[]
