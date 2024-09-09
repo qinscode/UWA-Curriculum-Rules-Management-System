@@ -2,28 +2,9 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { NumberingStyle, Requirement } from '@/types'
+import { GeneralProps, NumberingStyle, Requirement } from '@/types'
 
-export interface AdmissionSelectionProps {
-  data: {
-    englishRequirements?: Requirement[]
-    admissionRequirements?: Requirement[]
-    rankingSelection?: Requirement[]
-    satisfactoryProgress?: Requirement[]
-    progressStatus?: Requirement[]
-    awardWithDistinction?: Requirement[]
-    deferralAllowed?: false
-    deferralRules?: Requirement[]
-    additionalRules?: Requirement[]
-    deferrals?: Requirement[]
-    aqfOutcomes?: Requirement[]
-    knowledgeApplication?: Requirement[]
-    skills?: Requirement[]
-  }
-  updateData: (data: Partial<AdmissionSelectionProps['data']>) => void
-}
-
-const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
+const AdmissionSelection: React.FC<GeneralProps> = ({ data, updateData }) => {
   const [showRankingRequirements, setShowRankingRequirements] = useState(
     !!data.rankingSelection && data.rankingSelection.length > 0
   )

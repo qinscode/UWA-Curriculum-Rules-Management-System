@@ -21,7 +21,7 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { GeneralProps, ManageRulesProps, Rule, RuleType } from '@/types'
+import { GeneralProps, Rule, RuleType } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 
@@ -53,13 +53,11 @@ const ManageRules: React.FC = () => {
     progressStatus: [],
     awardWithDistinction: [],
     deferralAllowed: false,
-    deferralRules: [],
     additionalRules: [],
     deferrals: [],
     knowledgeApplication: [],
     skills: [],
     knowledge: [],
-    applicationOfKnowledge: [],
   })
 
   const [categorizedRules, setCategorizedRules] = useState<CategorizedRules>({
@@ -163,7 +161,7 @@ const ManageRules: React.FC = () => {
     })
   }
 
-  const updateFormData = (data: Partial<ManageRulesProps['data']>) => {
+  const updateFormData = (data: Partial<GeneralProps['data']>) => {
     setFormData((prevData) => {
       const newData = {
         ...prevData,
