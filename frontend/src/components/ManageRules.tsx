@@ -21,7 +21,7 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { AdmissionSelectionProps, Course, Requirement, Rule, RuleType } from '@/types'
+import { ManageRulesProps, Course, Requirement, Rule, RuleType } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 
@@ -42,11 +42,12 @@ const ManageRules: React.FC = () => {
   const { course, updateCourse } = useCourse()
   const courseCode = course?.code
   const version = course?.version
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   console.log('Course information:', { courseCode, version })
 
   const [courseName, setCourseName] = useState<string>('')
-  const [formData, setFormData] = useState<AdmissionSelectionProps['data']>({
+  const [formData, setFormData] = useState<ManageRulesProps['data']>({
     englishRequirements: [],
   })
   const [categorizedRules, setCategorizedRules] = useState<CategorizedRules>({
@@ -135,6 +136,7 @@ const ManageRules: React.FC = () => {
       }
     })
 
+    console.log('Categorized rules:', categorized)
     return categorized
   }
 
@@ -151,7 +153,7 @@ const ManageRules: React.FC = () => {
     console.log('111111Form data updated from rules:', formData)
   }
 
-  const updateFormData = (data: Partial<AdmissionSelectionProps['data']>) => {
+  const updateFormData = (data: Partial<ManageRulesProps['data']>) => {
     setFormData((prevData) => {
       const newData = {
         ...prevData,
@@ -171,14 +173,104 @@ const ManageRules: React.FC = () => {
         console.log('Updating English Eligibility rule:', categorizedRules.englishEligibility.id)
 
         // @ts-ignore
-        await ruleService.updateRule(course.id, categorizedRules.englishEligibility.id, {
-          name: 'English language eligibility requirements',
-          description: 'Requirements for English language proficiency',
-          type: RuleType.ENGLISH_ELIGIBILITY,
-          requirements: formData.englishRequirements,
-        })
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.englishEligibility.id,
+
+          formData.englishRequirements
+        )
       }
-      // Add similar update calls for other rule types
+      if (categorizedRules.admissions) {
+        console.log('Updating admissions rule:', categorizedRules.admissions.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.admissions.id,
+
+          formData.admissionRequirements
+        )
+      }
+      if (categorizedRules.progress) {
+        console.log('Updating satisfactoryProgress rule:', categorizedRules.progress.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.progress.id,
+
+          formData.satisfactoryProgress
+        )
+      }
+      if (categorizedRules.distinction) {
+        console.log('Updating awardWithDistinction rule:', categorizedRules.distinction.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.distinction.id,
+
+          formData.awardWithDistinction
+        )
+      }
+      if (categorizedRules.deferrals) {
+        console.log('Updating deferrals rule:', categorizedRules.deferrals.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.deferrals.id,
+
+          formData.deferrals
+        )
+      }
+      if (categorizedRules.additional) {
+        console.log('Updating additionalRules rule:', categorizedRules.additional.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.additional.id,
+
+          formData.additionalRules
+        )
+      }
+
+      if (categorizedRules.aqfOutcomes) {
+        console.log('Updating aqfOutcomes rule:', categorizedRules.aqfOutcomes.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.aqfOutcomes.id,
+
+          formData.aqfOutcomes
+        )
+      }
+
+      if (categorizedRules.skills) {
+        console.log('Updating skills rule:', categorizedRules.skills.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.skills.id,
+
+          formData.skills
+        )
+      }
+
+      if (categorizedRules.knowledgeApplication) {
+        console.log('Updating knowledgeApplication:', categorizedRules.knowledgeApplication.id)
+
+        // @ts-ignore
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.knowledgeApplication.id,
+
+          formData.knowledgeApplication
+        )
+      }
 
       console.log('All rules updated successfully')
       toast({

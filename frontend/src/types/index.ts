@@ -68,7 +68,7 @@ export interface NestedRequirementsListProps {
   presetRules?: Requirement[]
 }
 
-export interface AdmissionSelectionProps {
+export interface ManageRulesProps {
   data: {
     englishRequirements?: Requirement[]
     admissionRequirements?: Requirement[]
@@ -78,6 +78,11 @@ export interface AdmissionSelectionProps {
     awardWithDistinction?: Requirement[]
     deferralAllowed?: false
     deferralRules?: Requirement[]
+    additionalRules?: Requirement[]
+    deferrals?: Requirement[]
+    aqfOutcomes?: Requirement[]
+    knowledgeApplication?: Requirement[]
+    skills?: Requirement[]
   }
   updateData: (data: { deferralRules: Requirement[] }) => void
 }
@@ -118,27 +123,4 @@ export interface UpdateRuleDTO {
   type?: RuleType
   description?: string
   requirements?: Requirement[]
-}
-
-// Constants
-export const styleOptions: StyleOption[] = [
-  { value: NumberingStyle.Numeric, label: '1, 2, 3' },
-  { value: NumberingStyle.Alphabetic, label: 'a, b, c' },
-  { value: NumberingStyle.Roman, label: 'i, ii, iii' },
-  { value: NumberingStyle.None, label: 'No numbering' },
-]
-
-// Utility functions
-export const numberingStyles = {
-  [NumberingStyle.Numeric]: (index: number, level: number) =>
-    level === 1 ? `${index + 1}` : `(${index + 1})`,
-  [NumberingStyle.Alphabetic]: (index: number, level: number) =>
-    level === 1 ? String.fromCharCode(97 + index) : `(${String.fromCharCode(97 + index)})`,
-  [NumberingStyle.Roman]: (index: number, level: number) => {
-    const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
-    return level === 1
-      ? romanNumerals[index]
-      : `(${romanNumerals[index] || (index + 1).toString()})`
-  },
-  [NumberingStyle.None]: () => '',
 }

@@ -6,9 +6,19 @@ import { NumberingStyle, Requirement } from '@/types'
 
 export interface AdmissionSelectionProps {
   data: {
-    englishRequirements: Requirement[]
-    admissionRequirements: Requirement[]
+    englishRequirements?: Requirement[]
+    admissionRequirements?: Requirement[]
     rankingSelection?: Requirement[]
+    satisfactoryProgress?: Requirement[]
+    progressStatus?: Requirement[]
+    awardWithDistinction?: Requirement[]
+    deferralAllowed?: false
+    deferralRules?: Requirement[]
+    additionalRules?: Requirement[]
+    deferrals?: Requirement[]
+    aqfOutcomes?: Requirement[]
+    knowledgeApplication?: Requirement[]
+    skills?: Requirement[]
   }
   updateData: (data: Partial<AdmissionSelectionProps['data']>) => void
 }

@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { AdmissionSelectionProps, NumberingStyle } from '@/types'
+import { ManageR, NumberingStyle } from '@/types'
 
-const SatisfactoryProgress: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
+const SatisfactoryProgress: React.FC<ManageR> = ({ data, updateData }) => {
   const [showSatisfactoryProgress, setShowSatisfactoryProgress] = useState(false)
 
   return (

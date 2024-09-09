@@ -1,9 +1,9 @@
 import React from 'react'
 import { Label } from '@/components/ui/label'
-import { AdmissionSelectionProps, NumberingStyle } from '@/types'
+import { ManageR, NumberingStyle } from '@/types'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 
-const AdditionalRules: React.FC<AdmissionSelectionProps> = ({ data, updateData }) => {
+const AdditionalRules: React.FC<ManageR> = ({ data, updateData }) => {
   return (
     <div className="space-y-6">
       <div>

@@ -64,17 +64,6 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
         showControls={showControls}
         showHelpPanel={showHelpPanel}
       />
-      <button
-        onClick={() =>
-          console.log(
-            'NestedRequirementsList - Current Requirements:',
-            JSON.stringify(requirements, null, 2)
-          )
-        }
-        className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-      >
-        Print Current Requirements
-      </button>
     </div>
   )
 }

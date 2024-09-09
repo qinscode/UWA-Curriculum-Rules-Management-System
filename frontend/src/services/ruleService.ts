@@ -45,16 +45,6 @@ export const ruleService = {
     return handleResponse(res)
   },
 
-  updateRequirementByRuleId: async (courseId: number, ruleId: number): Promise<Requirement> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirement`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    })
-    return handleResponse(res)
-  },
-
   createRule: async (courseId: number, ruleData: any): Promise<Rule> => {
     const res = await fetch(`${API_URL}/courses/${courseId}/rules/104/requirements`, {
       method: 'POST',
@@ -67,8 +57,12 @@ export const ruleService = {
     return handleResponse(res)
   },
 
-  updateRule: async (courseId: number, ruleId: number, ruleData: UpdateRuleDTO): Promise<Rule> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/104/requirements`, {
+  updateRequirementByRuleId: async (
+    courseId: number,
+    ruleId: number,
+    ruleData: any
+  ): Promise<Rule> => {
+    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -76,6 +70,7 @@ export const ruleService = {
       },
       body: JSON.stringify(ruleData),
     })
+    console.log('FFFFFFFUUUUUUCCCCCCKKKK', ruleData)
     return handleResponse(res)
   },
 

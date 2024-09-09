@@ -9,4 +9,5 @@ export enum RuleType {
   AQF_OUTCOMES = 'AQF Outcomes',
   SKILLS = 'Skills',
   KNOWLEDGE_APPLICATION = 'Knowledge Application',
+  KNOWLEDGE = 'Knowledge',
 }
