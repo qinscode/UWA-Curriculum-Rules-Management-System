@@ -69,41 +69,6 @@ export interface NestedRequirementsListProps {
   presetRules?: Requirement[]
 }
 
-export interface ManageRulesProps {
-  data: {
-    englishRequirements?: Requirement[]
-    admissionRequirements?: Requirement[]
-    rankingSelection?: Requirement[]
-    satisfactoryProgress?: Requirement[]
-    progressStatus?: Requirement[]
-    awardWithDistinction?: Requirement[]
-    deferralAllowed?: false
-    deferralRules?: Requirement[]
-    additionalRules?: Requirement[]
-    deferrals?: Requirement[]
-    aqfOutcomes?: Requirement[]
-    knowledgeApplication?: Requirement[]
-    skills?: Requirement[]
-  }
-  updateData: (data: { deferralRules: Requirement[] }) => void
-}
-
-export interface RequirementTreeNodeProps {
-  req: Requirement
-  index: number
-  parentIndexes: number[]
-  defaultStyles: NumberingStyle[]
-  onUpdateRequirement: (id: number, content: string) => void
-  onRemoveRequirement: (id: number) => void
-  onAddRequirement: (parentId: number | null, level: number) => void
-  onAddConnector: (parentId: number, level: number) => void
-  renderRequirementNode: (
-    req: Requirement,
-    index: number,
-    parentIndexes: number[]
-  ) => React.ReactNode
-}
-
 export interface SelectMenuProps {
   value: NumberingStyle
   onChange: (value: NumberingStyle) => void

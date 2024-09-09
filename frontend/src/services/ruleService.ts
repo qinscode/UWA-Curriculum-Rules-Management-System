@@ -60,23 +60,25 @@ export const ruleService = {
   updateRequirementByRuleId: async (
     courseId: number,
     ruleId: number,
-    ruleData: any
-  ): Promise<Rule> => {
-    console.log(
-      'Fetching data from:',
-      `${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`
-    )
-    console.log('Rule data:', ruleData)
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`,
-      },
-      body: JSON.stringify(ruleData),
-    })
-
-    return handleResponse(res)
+    requirements: Requirement[]
+  ) => {
+    console.log(`Updating rule ${ruleId} for course ${courseId}:`, requirements)
+    try {
+      const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify(requirements), // 直接发送 requirements 数组
+      })
+      const data = await handleResponse(res)
+      console.log(`Update response for rule ${ruleId}:`, data)
+      return data
+    } catch (error) {
+      console.error(`Error updating rule ${ruleId}:`, error)
+      throw error
+    }
   },
 
   deleteRule: async (courseId: number, ruleId: number): Promise<void> => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { NestedRequirementsListProps, Requirement } from '@/types'
 import SortedTree from '@/components/manage-rules/common/SortedTree'
 
@@ -9,42 +9,26 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   showControls = true,
   showHelpPanel = true,
 }) => {
-  const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements)
-
-  useEffect(() => {
-    console.log('NestedRequirementsList: initialRequirements changed:', initialRequirements)
-    console.log('NestedRequirementsList: Current requirements:', requirements)
-    if (JSON.stringify(initialRequirements) !== JSON.stringify(requirements)) {
-      console.log('NestedRequirementsList: Updating requirements with initialRequirements')
-      setRequirements(initialRequirements)
-    }
-  }, [initialRequirements, requirements])
-
   const handleUpdateRequirement = useCallback((
-    newRequirementsOrUpdater: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
+    newRequirementsOrUpdater: Requirement[] | ((prevState: Requirement[]) => Requirement[])
   ) => {
-    setRequirements((prevRequirements) => {
-      const newRequirements =
-        typeof newRequirementsOrUpdater === 'function'
-          ? newRequirementsOrUpdater(prevRequirements)
-          : newRequirementsOrUpdater
-
-      console.log('NestedRequirementsList: Updating requirements:', newRequirements)
-
-      if (onUpdate) {
-        onUpdate(newRequirements)
+    console.log('NestedRequirementsList: Updating requirements:', newRequirementsOrUpdater)
+    if (onUpdate) {
+      if (typeof newRequirementsOrUpdater === 'function') {
+        onUpdate((prevRequirements) => {
+          const updatedRequirements = newRequirementsOrUpdater(prevRequirements);
+          return updatedRequirements;
+        })
+      } else {
+        onUpdate(newRequirementsOrUpdater)
       }
-
-      return newRequirements
-    })
+    }
   }, [onUpdate])
-
-  console.log('NestedRequirementsList: Rendering with requirements:', requirements)
 
   return (
     <div className="space-y-4">
       <SortedTree
-        initialData={requirements}
+        initialData={initialRequirements}
         onUpdateRequirement={handleUpdateRequirement}
         onAddChildNode={(parentId: number) => {
           console.log('NestedRequirementsList - Adding child node to parent ID:', parentId)

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import Footer from '@/components/Footer'
@@ -77,6 +77,7 @@ const ManageRules: React.FC = () => {
   const [newVersion, setNewVersion] = useState<string>('')
   const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
   const router = useRouter()
+  const [showRankingRequirements, setShowRankingRequirements] = useState(false)
 
   useEffect(() => {
     if (course?.id) {
@@ -84,10 +85,6 @@ const ManageRules: React.FC = () => {
       fetchAndCategorizeRules(course.id)
     }
   }, [course])
-
-  useEffect(() => {
-    console.log('ManageRules: formData updated:', formData)
-  }, [formData])
 
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
@@ -150,6 +147,9 @@ const ManageRules: React.FC = () => {
         case RuleType.KNOWLEDGE_APPLICATION:
           categorized.knowledgeApplication = rule
           break
+        case RuleType.RANKING_AND_SELECTION:
+          categorized.rankingSelection = rule
+          break
       }
     })
 
@@ -174,24 +174,36 @@ const ManageRules: React.FC = () => {
         knowledgeApplication: categorized.knowledgeApplication?.requirements || [],
       }
       console.log('ManageRules: Updated formData:', newData)
+      console.log('ManageRules: Ranking and selection:', newData.rankingSelection)
+      // 根据 rankingSelection 是否为空来设置 showRankingRequirements
+      setShowRankingRequirements(newData.rankingSelection.length > 0)
+      // 添加这些日志来检查每个字段的结构
+      Object.entries(newData).forEach(([key, value]) => {
+        console.log(`ManageRules: ${key} structure:`, value)
+      })
       return newData
     })
   }
 
-  const updateFormData = (data: Partial<GeneralProps['data']>) => {
+  const updateFormData = useCallback((data: Partial<GeneralProps['data']>) => {
     setFormData((prevData) => {
       const newData = {
         ...prevData,
         ...data,
       }
       console.log('ManageRules: Updating form data', newData)
+      console.log('ManageRules: New ranking selection data', newData.rankingSelection)
       setHasUnsavedChanges(true)
       return newData
     })
-  }
+  }, [])
 
   const handleSave = async () => {
-    if (!hasUnsavedChanges) return
+    console.log('handleSave called')
+    if (!hasUnsavedChanges) {
+      console.log('No unsaved changes, returning')
+      return
+    }
 
     console.log('Saving form data:', formData)
 
@@ -212,8 +224,15 @@ const ManageRules: React.FC = () => {
 
       for (const { rule, data } of rulesToUpdate) {
         if (rule) {
-          console.log(`Updating ${rule.type} rule:`, rule.id)
-          await ruleService.updateRequirementByRuleId(course!.id, rule.id, data)
+          console.log(`Updating ${rule.type} rule:`, rule.id, data)
+          try {
+            const result = await ruleService.updateRequirementByRuleId(course!.id, rule.id, data)
+            console.log(`Update result for ${rule.type}:`, result)
+          } catch (error) {
+            console.error(`Error updating ${rule.type} rule:`, error)
+          }
+        } else {
+          console.log(`No rule found for data:`, data)
         }
       }
 
@@ -265,6 +284,8 @@ const ManageRules: React.FC = () => {
                   rankingSelection: formData.rankingSelection || [],
                 }}
                 updateData={updateFormData}
+                showRankingRequirements={showRankingRequirements}
+                setShowRankingRequirements={setShowRankingRequirements}
               />
             </RuleSection>
 
@@ -275,10 +296,6 @@ const ManageRules: React.FC = () => {
                 }}
                 updateData={updateFormData}
               />
-              {console.log(
-                'ManageRules: Rendering SatisfactoryProgress',
-                formData.satisfactoryProgress
-              )}
             </RuleSection>
 
             <RuleSection title="Progress Status">

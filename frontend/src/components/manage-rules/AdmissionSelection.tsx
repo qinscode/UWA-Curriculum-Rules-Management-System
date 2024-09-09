@@ -11,23 +11,21 @@ interface AdmissionSelectionProps {
     rankingSelection: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
+  showRankingRequirements: boolean
+  setShowRankingRequirements: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const AdmissionSelection: React.FC<AdmissionSelectionProps> = React.memo(({ data, updateData }) => {
-  const [showRankingRequirements, setShowRankingRequirements] = useState(false)
-
-  useEffect(() => {
-    console.log('AdmissionSelection: Ranking data changed', data.rankingSelection)
-    setShowRankingRequirements(data.rankingSelection.length > 0)
-  }, [data.rankingSelection])
-
+const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
+  data,
+  updateData,
+  showRankingRequirements,
+  setShowRankingRequirements,
+}) => {
   const handleEnglishRequirementsChange = useCallback((requirements: Requirement[]) => {
-    console.log('AdmissionSelection: Updating English requirements', requirements)
     updateData({ englishRequirements: requirements })
   }, [updateData])
 
   const handleAdmissionRequirementsChange = useCallback((requirements: Requirement[]) => {
-    console.log('AdmissionSelection: Updating Admission requirements', requirements)
     updateData({ admissionRequirements: requirements })
   }, [updateData])
 
@@ -37,18 +35,15 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = React.memo(({ data
   }, [updateData])
 
   const handleToggleRankingRequirements = useCallback((checked: boolean) => {
-    console.log('AdmissionSelection: Toggle ranking requirements', checked)
     setShowRankingRequirements(checked)
     if (!checked) {
       updateData({ rankingSelection: [] })
     }
   }, [updateData])
 
-  console.log('AdmissionSelection: Rendering', {
-    showRankingRequirements,
-    rankingSelectionLength: data.rankingSelection.length,
-    rankingSelectionData: data.rankingSelection
-  })
+  useEffect(() => {
+    console.log('AdmissionSelection: Data changed', data)
+  }, [data])
 
   return (
     <div className="space-y-6">
@@ -103,12 +98,11 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = React.memo(({ data
             showControls={true}
             showHelpPanel={true}
           />
-          {console.log('AdmissionSelection: Passing ranking data to NestedRequirementsList', data.rankingSelection)}
         </div>
       )}
     </div>
   )
-})
+}
 
 AdmissionSelection.displayName = 'AdmissionSelection'
 
