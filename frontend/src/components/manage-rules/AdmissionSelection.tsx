@@ -48,7 +48,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateDat
         </Label>
         <NestedRequirementsList
           initialRequirements={data.englishRequirements}
-          onChange={handleEnglishRequirementsChange}
+          onUpdate={handleEnglishRequirementsChange}
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
@@ -59,7 +59,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateDat
         <Label className="mb-1 block text-lg font-medium">Admission requirements</Label>
         <NestedRequirementsList
           initialRequirements={data.admissionRequirements}
-          onChange={handleAdmissionRequirementsChange}
+          onUpdate={handleAdmissionRequirementsChange}
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}

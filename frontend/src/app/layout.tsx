@@ -3,6 +3,7 @@ import './globals.css'
 import Providers from './providers'
 import { Inter, Lexend } from 'next/font/google'
 import clsx from 'clsx'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'Course Rules Management System',
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className={`${inter.className} h-full scroll-smooth bg-white antialiased`}>
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   )

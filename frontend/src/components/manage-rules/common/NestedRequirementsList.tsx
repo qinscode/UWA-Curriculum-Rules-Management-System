@@ -5,46 +5,16 @@ import SortedTree from '@/components/manage-rules/common/SortedTree'
 const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   initialRequirements = [],
   presetRules = [],
-  onChange,
+  onUpdate,
   showControls = true,
   showHelpPanel = true,
 }) => {
   const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements)
 
-  // useEffect(() => {
-  //   console.log(
-  //     'NestedRequirementsList - initialRequirements:',
-  //     JSON.stringify(initialRequirements, null, 2)
-  //   )
-  //   console.log('NestedRequirementsList - presetRules:', JSON.stringify(presetRules, null, 2))
-  //
-  //   if (initialRequirements.length > 0) {
-  //     console.log('Setting requirements from initialRequirements')
-  //     setRequirements(initialRequirements)
-  //   } else if (presetRules.length > 0) {
-  //     console.log('Setting requirements from presetRules')
-  //     setRequirements(presetRules)
-  //   } else {
-  //     console.log('No initial requirements or preset rules provided')
-  //   }
-  // }, [initialRequirements, presetRules])
-
-  // useEffect(() => {
-  //   console.log(
-  //     'NestedRequirementsList - Current requirements:',
-  //     JSON.stringify(requirements, null, 2)
-  //   )
-  // }, [requirements])
-
   const handleUpdateRequirement = (newRequirements: Requirement[]) => {
-    console.log(
-      'NestedRequirementsList - Updating requirements:',
-      JSON.stringify(newRequirements, null, 2)
-    )
     setRequirements(newRequirements)
-
-    if (onChange) {
-      onChange(newRequirements)
+    if (onUpdate) {
+      onUpdate(newRequirements)
     }
   }
 

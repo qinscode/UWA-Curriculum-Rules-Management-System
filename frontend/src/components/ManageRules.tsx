@@ -154,14 +154,119 @@ const ManageRules: React.FC = () => {
   }
 
   const updateFormData = (data: Partial<ManageRulesProps['data']>) => {
+    console.log('updateFormData called with:', data)
     setFormData((prevData) => {
       const newData = {
         ...prevData,
         ...data,
       }
-      console.log('Form data updated:', newData)
+      setHasUnsavedChanges(true)
+      console.log('New form data:', newData)
       return newData
     })
+  }
+
+  const handleSave = async () => {
+    if (!hasUnsavedChanges) return // 如果没有未保存的更改，直接返回
+
+    console.log('Saving form data:', formData)
+
+    try {
+      if (categorizedRules.englishEligibility) {
+        console.log('Updating English Eligibility rule:', categorizedRules.englishEligibility.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.englishEligibility.id,
+          formData.englishRequirements
+        )
+      }
+
+      if (categorizedRules.admissions) {
+        console.log('Updating admissions rule:', categorizedRules.admissions.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.admissions.id,
+          formData.admissionRequirements
+        )
+      }
+
+      if (categorizedRules.progress) {
+        console.log('Updating satisfactoryProgress rule:', categorizedRules.progress.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.progress.id,
+          formData.satisfactoryProgress
+        )
+      }
+
+      if (categorizedRules.distinction) {
+        console.log('Updating awardWithDistinction rule:', categorizedRules.distinction.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.distinction.id,
+          formData.awardWithDistinction
+        )
+      }
+
+      if (categorizedRules.deferrals) {
+        console.log('Updating deferrals rule:', categorizedRules.deferrals.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.deferrals.id,
+          formData.deferrals
+        )
+      }
+
+      if (categorizedRules.additional) {
+        console.log('Updating additionalRules rule:', categorizedRules.additional.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.additional.id,
+          formData.additionalRules
+        )
+      }
+
+      if (categorizedRules.aqfOutcomes) {
+        console.log('Updating aqfOutcomes rule:', categorizedRules.aqfOutcomes.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.aqfOutcomes.id,
+          formData.aqfOutcomes
+        )
+      }
+
+      if (categorizedRules.skills) {
+        console.log('Updating skills rule:', categorizedRules.skills.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.skills.id,
+          formData.skills
+        )
+      }
+
+      if (categorizedRules.knowledgeApplication) {
+        console.log('Updating knowledgeApplication:', categorizedRules.knowledgeApplication.id)
+        await ruleService.updateRequirementByRuleId(
+          course!.id,
+          categorizedRules.knowledgeApplication.id,
+          formData.knowledgeApplication
+        )
+      }
+
+      console.log('All rules updated successfully')
+      setHasUnsavedChanges(false) // 重置未保存更改状态
+      toast({
+        title: 'Rules saved',
+        description: 'All rules have been successfully saved.',
+      })
+    } catch (error) {
+      console.error('Error saving rules:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to save rules. Please try again.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -311,7 +416,15 @@ const ManageRules: React.FC = () => {
             Manage Rules - {courseCode}: {courseName} (Version: {version})
           </h1>
         </div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
+          {/*
+          *******WARNING: Do not remove the e.preventDefault() call in the form's onSubmit handler.******
+    Prevent the default form submission behavior.
+    This ensures that clicking buttons or pressing enter in input fields
+    within the form does not trigger an unintended form submission.
+    It allows us to handle data updates and submissions manually,
+    giving full control over when and how data is processed or sent to the server.
+  */}
           <div className="space-y-6">
             <RuleSection title="Admission and selection">
               <AdmissionSelection data={formData} updateData={updateFormData} />
@@ -379,7 +492,7 @@ const ManageRules: React.FC = () => {
             </Dialog>
           </div>
 
-          <SaveButton handleSaveButton={handleSubmit} />
+          <SaveButton handleSaveButton={handleSave} disabled={!hasUnsavedChanges} />
         </form>
       </div>
       <Footer />
