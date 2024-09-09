@@ -19,7 +19,10 @@ export class RulesService {
   }
 
   async findOne(id: number): Promise<Rule> {
-    const rule = await this.rulesRepository.findOne({ where: { id }, relations: ['course'] })
+    const rule = await this.rulesRepository.findOne({
+      where: { id },
+      relations: ['course', 'requirements'],
+    })
     if (!rule) {
       this.logger.warn(`Rule with ID "${id}" not found`)
       throw new NotFoundException(`Rule with ID "${id}" not found`)
@@ -28,7 +31,7 @@ export class RulesService {
   }
 
   async findByType(type: RuleType): Promise<Rule[]> {
-    return this.rulesRepository.find({ where: { type }, relations: ['course'] })
+    return this.rulesRepository.find({ where: { type }, relations: ['course', 'requirements'] })
   }
 
   async create(createRuleDto: CreateRuleDto): Promise<Rule> {

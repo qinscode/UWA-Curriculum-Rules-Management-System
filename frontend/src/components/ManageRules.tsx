@@ -169,8 +169,12 @@ const ManageRules: React.FC = () => {
     try {
       if (categorizedRules.englishEligibility) {
         console.log('Updating English Eligibility rule:', categorizedRules.englishEligibility.id)
+
         // @ts-ignore
         await ruleService.updateRule(course.id, categorizedRules.englishEligibility.id, {
+          name: 'English language eligibility requirements',
+          description: 'Requirements for English language proficiency',
+          type: RuleType.ENGLISH_ELIGIBILITY,
           requirements: formData.englishRequirements,
         })
       }

@@ -31,7 +31,7 @@ export class Rule {
   @ManyToOne(() => Course, (course) => course.rules)
   course: Course
 
-  @OneToMany(() => Requirement, (requirement) => requirement.rule)
+  @OneToMany(() => Requirement, (requirement) => requirement.rule, { eager: true })
   requirements: Requirement[]
 
   @CreateDateColumn()

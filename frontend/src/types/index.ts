@@ -115,7 +115,6 @@ export interface CreateRuleDTO {
 
 export interface UpdateRuleDTO {
   name?: string
-  code?: string
   type?: RuleType
   description?: string
   requirements?: Requirement[]
