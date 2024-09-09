@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { NestedRequirementsListProps, Requirement } from '@/types'
 import SortedTree from '@/components/manage-rules/common/SortedTree'
 
@@ -11,7 +11,16 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 }) => {
   const [requirements, setRequirements] = useState<Requirement[]>(initialRequirements)
 
-  const handleUpdateRequirement = (
+  useEffect(() => {
+    console.log('NestedRequirementsList: initialRequirements changed:', initialRequirements)
+    console.log('NestedRequirementsList: Current requirements:', requirements)
+    if (JSON.stringify(initialRequirements) !== JSON.stringify(requirements)) {
+      console.log('NestedRequirementsList: Updating requirements with initialRequirements')
+      setRequirements(initialRequirements)
+    }
+  }, [initialRequirements, requirements])
+
+  const handleUpdateRequirement = useCallback((
     newRequirementsOrUpdater: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
   ) => {
     setRequirements((prevRequirements) => {
@@ -20,30 +29,26 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
           ? newRequirementsOrUpdater(prevRequirements)
           : newRequirementsOrUpdater
 
+      console.log('NestedRequirementsList: Updating requirements:', newRequirements)
+
       if (onUpdate) {
         onUpdate(newRequirements)
       }
 
       return newRequirements
     })
-  }
+  }, [onUpdate])
 
-  const handleAddChildNodeInParent = (parentId: number) => {
-    console.log('NestedRequirementsList - Adding child node to parent ID:', parentId)
-  }
+  console.log('NestedRequirementsList: Rendering with requirements:', requirements)
 
   return (
     <div className="space-y-4">
       <SortedTree
         initialData={requirements}
-        onUpdateRequirement={(newReqsOrUpdater) => {
-          const newReqs =
-            typeof newReqsOrUpdater === 'function'
-              ? newReqsOrUpdater(requirements)
-              : newReqsOrUpdater
-          handleUpdateRequirement(newReqs)
+        onUpdateRequirement={handleUpdateRequirement}
+        onAddChildNode={(parentId: number) => {
+          console.log('NestedRequirementsList - Adding child node to parent ID:', parentId)
         }}
-        onAddChildNode={handleAddChildNodeInParent}
         presetRequirements={presetRules}
         showControls={showControls}
         showHelpPanel={showHelpPanel}
@@ -52,4 +57,4 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   )
 }
 
-export default NestedRequirementsList
+export default React.memo(NestedRequirementsList)

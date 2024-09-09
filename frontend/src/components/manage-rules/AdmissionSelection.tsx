@@ -1,25 +1,54 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
 
-const AdmissionSelection: React.FC<GeneralProps> = ({ data, updateData }) => {
-  const [showRankingRequirements, setShowRankingRequirements] = useState(
-    !!data.rankingSelection && data.rankingSelection.length > 0
-  )
+interface AdmissionSelectionProps {
+  data: {
+    englishRequirements: Requirement[]
+    admissionRequirements: Requirement[]
+    rankingSelection: Requirement[]
+  }
+  updateData: (data: Partial<GeneralProps['data']>) => void
+}
 
-  const handleEnglishRequirementsChange = (requirements: Requirement[]) => {
+const AdmissionSelection: React.FC<AdmissionSelectionProps> = React.memo(({ data, updateData }) => {
+  const [showRankingRequirements, setShowRankingRequirements] = useState(false)
+
+  useEffect(() => {
+    console.log('AdmissionSelection: Ranking data changed', data.rankingSelection)
+    setShowRankingRequirements(data.rankingSelection.length > 0)
+  }, [data.rankingSelection])
+
+  const handleEnglishRequirementsChange = useCallback((requirements: Requirement[]) => {
+    console.log('AdmissionSelection: Updating English requirements', requirements)
     updateData({ englishRequirements: requirements })
-  }
+  }, [updateData])
 
-  const handleAdmissionRequirementsChange = (requirements: Requirement[]) => {
+  const handleAdmissionRequirementsChange = useCallback((requirements: Requirement[]) => {
+    console.log('AdmissionSelection: Updating Admission requirements', requirements)
     updateData({ admissionRequirements: requirements })
-  }
+  }, [updateData])
 
-  const handleRankingSelectionChange = (requirements: Requirement[]) => {
+  const handleRankingSelectionChange = useCallback((requirements: Requirement[]) => {
+    console.log('AdmissionSelection: Updating ranking requirements', requirements)
     updateData({ rankingSelection: requirements })
-  }
+  }, [updateData])
+
+  const handleToggleRankingRequirements = useCallback((checked: boolean) => {
+    console.log('AdmissionSelection: Toggle ranking requirements', checked)
+    setShowRankingRequirements(checked)
+    if (!checked) {
+      updateData({ rankingSelection: [] })
+    }
+  }, [updateData])
+
+  console.log('AdmissionSelection: Rendering', {
+    showRankingRequirements,
+    rankingSelectionLength: data.rankingSelection.length,
+    rankingSelectionData: data.rankingSelection
+  })
 
   return (
     <div className="space-y-6">
@@ -51,12 +80,7 @@ const AdmissionSelection: React.FC<GeneralProps> = ({ data, updateData }) => {
         <Switch
           id="showRankingRequirements"
           checked={showRankingRequirements}
-          onCheckedChange={(checked) => {
-            setShowRankingRequirements(checked)
-            if (!checked) {
-              updateData({ rankingSelection: [] })
-            }
-          }}
+          onCheckedChange={handleToggleRankingRequirements}
         />
         <Label htmlFor="showRankingRequirements">
           There are specific ranking and selection tools or requirements for this course.
@@ -69,7 +93,7 @@ const AdmissionSelection: React.FC<GeneralProps> = ({ data, updateData }) => {
             Ranking and selection for admission
           </Label>
           <NestedRequirementsList
-            initialRequirements={data.rankingSelection || []}
+            initialRequirements={data.rankingSelection}
             onUpdate={handleRankingSelectionChange}
             defaultStyles={[
               NumberingStyle.Numeric,
@@ -79,10 +103,13 @@ const AdmissionSelection: React.FC<GeneralProps> = ({ data, updateData }) => {
             showControls={true}
             showHelpPanel={true}
           />
+          {console.log('AdmissionSelection: Passing ranking data to NestedRequirementsList', data.rankingSelection)}
         </div>
       )}
     </div>
   )
-}
+})
+
+AdmissionSelection.displayName = 'AdmissionSelection'
 
 export default AdmissionSelection

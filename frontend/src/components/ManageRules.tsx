@@ -36,6 +36,7 @@ interface CategorizedRules {
   skills: Rule | null
   knowledge: Rule | null
   knowledgeApplication: Rule | null
+  rankingSelection: Rule | null
 }
 
 const ManageRules: React.FC = () => {
@@ -69,8 +70,9 @@ const ManageRules: React.FC = () => {
     deferrals: null,
     additional: null,
     skills: null,
-    knowledge: null,
     knowledgeApplication: null,
+    knowledge: null,
+    rankingSelection: null,
   })
   const [newVersion, setNewVersion] = useState<string>('')
   const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
@@ -78,22 +80,26 @@ const ManageRules: React.FC = () => {
 
   useEffect(() => {
     if (course?.id) {
-      console.log('Fetching rules for course ID:', course.id)
+      console.log('ManageRules: Fetching rules for course ID:', course.id)
       fetchAndCategorizeRules(course.id)
     }
   }, [course])
 
+  useEffect(() => {
+    console.log('ManageRules: formData updated:', formData)
+  }, [formData])
+
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
       const rules = await ruleService.getAllRules(courseId)
-      console.log('Fetched rules:', rules)
+      console.log('ManageRules: Fetched rules:', rules)
       const categorized = categorizeRules(rules)
-      console.log('Categorized rules:', categorized)
+      console.log('ManageRules: Categorized rules:', categorized)
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
-      console.log('Form data updated from rules', formData)
+      console.log('ManageRules: Form data updated from rules', formData)
     } catch (error) {
-      console.error('Error fetching rules:', error)
+      console.error('ManageRules: Error fetching rules:', error)
     }
   }
 
@@ -109,6 +115,7 @@ const ManageRules: React.FC = () => {
       skills: null,
       knowledgeApplication: null,
       knowledge: null,
+      rankingSelection: null,
     }
 
     rules.forEach((rule) => {
@@ -146,7 +153,7 @@ const ManageRules: React.FC = () => {
       }
     })
 
-    console.log('Categorized rules:', categorized)
+    console.log('ManageRules: Categorized rules:', categorized)
     return categorized
   }
 
@@ -155,8 +162,18 @@ const ManageRules: React.FC = () => {
       const newData = {
         ...prevData,
         englishRequirements: categorized.englishEligibility?.requirements || [],
-        // Update other form data fields based on categorized rules
+        admissionRequirements: categorized.admissions?.requirements || [],
+        rankingSelection: categorized.rankingSelection?.requirements || [],
+        satisfactoryProgress: categorized.progress?.requirements || [],
+        progressStatus: categorized.progressStatus?.requirements || [],
+        awardWithDistinction: categorized.distinction?.requirements || [],
+        deferrals: categorized.deferrals?.requirements || [],
+        additionalRules: categorized.additional?.requirements || [],
+        knowledge: categorized.knowledge?.requirements || [],
+        skills: categorized.skills?.requirements || [],
+        knowledgeApplication: categorized.knowledgeApplication?.requirements || [],
       }
+      console.log('ManageRules: Updated formData:', newData)
       return newData
     })
   }
@@ -167,6 +184,7 @@ const ManageRules: React.FC = () => {
         ...prevData,
         ...data,
       }
+      console.log('ManageRules: Updating form data', newData)
       setHasUnsavedChanges(true)
       return newData
     })
@@ -185,10 +203,11 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.distinction, data: formData.awardWithDistinction },
         { rule: categorizedRules.deferrals, data: formData.deferrals },
         { rule: categorizedRules.additional, data: formData.additionalRules },
-        { rule: categorizedRules.knowledge, data: formData.aqfOutcomes },
+        { rule: categorizedRules.knowledge, data: formData.knowledge },
         { rule: categorizedRules.skills, data: formData.skills },
         { rule: categorizedRules.knowledgeApplication, data: formData.knowledgeApplication },
         { rule: categorizedRules.progressStatus, data: formData.progressStatus },
+        { rule: categorizedRules.rankingSelection, data: formData.rankingSelection },
       ]
 
       for (const { rule, data } of rulesToUpdate) {
@@ -237,21 +256,29 @@ const ManageRules: React.FC = () => {
           </h1>
         </div>
         <form onSubmit={(e) => e.preventDefault()}>
-          {/*
-          *******WARNING: Do not remove the e.preventDefault() call in the form's onSubmit handler.******
-    Prevent the default form submission behavior.
-    This ensures that clicking buttons or pressing enter in input fields
-    within the form does not trigger an unintended form submission.
-    It allows us to handle data updates and submissions manually,
-    giving full control over when and how data is processed or sent to the server.
-  */}
           <div className="space-y-6">
             <RuleSection title="Admission and selection">
-              <AdmissionSelection data={formData} updateData={updateFormData} />
+              <AdmissionSelection
+                data={{
+                  englishRequirements: formData.englishRequirements || [],
+                  admissionRequirements: formData.admissionRequirements || [],
+                  rankingSelection: formData.rankingSelection || [],
+                }}
+                updateData={updateFormData}
+              />
             </RuleSection>
 
             <RuleSection title="Satisfactory Progress">
-              <SatisfactoryProgress data={formData} updateData={updateFormData} />
+              <SatisfactoryProgress
+                data={{
+                  satisfactoryProgress: formData.satisfactoryProgress || [],
+                }}
+                updateData={updateFormData}
+              />
+              {console.log(
+                'ManageRules: Rendering SatisfactoryProgress',
+                formData.satisfactoryProgress
+              )}
             </RuleSection>
 
             <RuleSection title="Progress Status">
@@ -259,11 +286,22 @@ const ManageRules: React.FC = () => {
             </RuleSection>
 
             <RuleSection title="Award with distinction">
-              <AwardWithDistinction data={formData} updateData={updateFormData} />
+              <AwardWithDistinction
+                data={{
+                  awardWithDistinction: formData.awardWithDistinction || [],
+                }}
+                updateData={updateFormData}
+              />
             </RuleSection>
 
             <RuleSection title="Deferrals">
-              <Deferrals data={formData} updateData={updateFormData} />
+              <Deferrals
+                data={{
+                  deferrals: formData.deferrals || [],
+                  deferralAllowed: formData.deferralAllowed || false,
+                }}
+                updateData={updateFormData}
+              />
             </RuleSection>
 
             <RuleSection title="Additional rules">
@@ -271,7 +309,14 @@ const ManageRules: React.FC = () => {
             </RuleSection>
 
             <RuleSection title="Outcomes & Australian Qualifications Framework">
-              <OutcomesAQF data={formData} updateData={updateFormData} />
+              <OutcomesAQF
+                data={{
+                  knowledge: formData.knowledge || [],
+                  skills: formData.skills || [],
+                  knowledgeApplication: formData.knowledgeApplication || [],
+                }}
+                updateData={updateFormData}
+              />
             </RuleSection>
           </div>
           <div className="mt-8 flex justify-end">
