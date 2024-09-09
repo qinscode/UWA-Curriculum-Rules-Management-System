@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { ManageR, NumberingStyle } from '@/types'
+import { GeneralProps, NumberingStyle } from '@/types'
 
-const AwardWithDistinction: React.FC<ManageR> = ({ data, updateData }) => {
+const AwardWithDistinction: React.FC<GeneralProps> = ({ data, updateData }) => {
   const [showAwardWithDistinction, setShowAwardWithDistinction] = useState(false)
 
   return (
@@ -27,7 +27,7 @@ const AwardWithDistinction: React.FC<ManageR> = ({ data, updateData }) => {
           </Label>
           <NestedRequirementsList
             initialRequirements={data.awardWithDistinction}
-            onChange={(requirements) => updateData({ awardWithDistinction: requirements })}
+            onUpdate={(requirements) => updateData({ awardWithDistinction: requirements })}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,

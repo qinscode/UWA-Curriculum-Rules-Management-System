@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { ManageR, NumberingStyle } from '@/types'
+import { GeneralProps, NumberingStyle } from '@/types'
 
-const SatisfactoryProgress: React.FC<ManageR> = ({ data, updateData }) => {
+const SatisfactoryProgress: React.FC<GeneralProps> = ({ data, updateData }) => {
   const [showSatisfactoryProgress, setShowSatisfactoryProgress] = useState(false)
 
   return (
@@ -27,7 +27,7 @@ const SatisfactoryProgress: React.FC<ManageR> = ({ data, updateData }) => {
           </Label>
           <NestedRequirementsList
             initialRequirements={data.satisfactoryProgress}
-            onChange={(requirements) => updateData({ satisfactoryProgress: requirements })}
+            onUpdate={(requirements) => updateData({ satisfactoryProgress: requirements })}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,

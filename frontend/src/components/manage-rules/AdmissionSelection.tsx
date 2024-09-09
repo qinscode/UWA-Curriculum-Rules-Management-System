@@ -89,7 +89,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({ data, updateDat
           </Label>
           <NestedRequirementsList
             initialRequirements={data.rankingSelection || []}
-            onChange={handleRankingSelectionChange}
+            onUpdate={handleRankingSelectionChange}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,

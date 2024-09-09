@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { ManageR, NumberingStyle } from '@/types'
+import { GeneralProps, NumberingStyle } from '@/types'
 
-const Deferrals: React.FC<ManageR> = ({ data, updateData }) => {
+const Deferrals: React.FC<GeneralProps> = ({ data, updateData }) => {
   const [showDeferralRules, setShowDeferralRules] = useState(false)
 
   return (
@@ -38,7 +38,7 @@ const Deferrals: React.FC<ManageR> = ({ data, updateData }) => {
           <Label className="mb-1 block text-lg font-medium">Custom deferral rules</Label>
           <NestedRequirementsList
             initialRequirements={data.deferralRules}
-            onChange={(requirements) => updateData({ deferralRules: requirements })}
+            onUpdate={(requirements) => updateData({ deferralRules: requirements })}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,

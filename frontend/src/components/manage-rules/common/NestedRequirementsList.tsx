@@ -35,8 +35,6 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 
   const handleAddChildNodeInParent = (parentId: number) => {
     console.log('NestedRequirementsList - Adding child node to parent ID:', parentId)
-    // Implement the logic to add a child node here
-    // You might want to update the requirements state and call onChange
   }
 
   return (

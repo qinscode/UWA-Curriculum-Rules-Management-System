@@ -124,3 +124,24 @@ export interface UpdateRuleDTO {
   description?: string
   requirements?: Requirement[]
 }
+
+export interface GeneralProps {
+  data: {
+    knowledge: Requirement[]
+    applicationOfKnowledge: Requirement[]
+    englishRequirements?: Requirement[]
+    admissionRequirements?: Requirement[]
+    rankingSelection?: Requirement[]
+    satisfactoryProgress?: Requirement[]
+    progressStatus?: Requirement[]
+    awardWithDistinction?: Requirement[]
+    deferralAllowed?: false
+    deferralRules?: Requirement[]
+    additionalRules?: Requirement[]
+    deferrals?: Requirement[]
+    aqfOutcomes?: Requirement[]
+    knowledgeApplication?: Requirement[]
+    skills?: Requirement[]
+  }
+  updateData: (data: Partial<GeneralProps['data']>) => void
+}
