@@ -21,7 +21,7 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { ManageRulesProps, Course, Requirement, Rule, RuleType } from '@/types'
+import { ManageRulesProps, Rule, RuleType } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 
@@ -264,129 +264,6 @@ const ManageRules: React.FC = () => {
       toast({
         title: 'Error',
         description: 'Failed to save rules. Please try again.',
-        variant: 'destructive',
-      })
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Form submitted. Current form data:', formData)
-
-    try {
-      if (categorizedRules.englishEligibility) {
-        console.log('Updating English Eligibility rule:', categorizedRules.englishEligibility.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.englishEligibility.id,
-
-          formData.englishRequirements
-        )
-      }
-      if (categorizedRules.admissions) {
-        console.log('Updating admissions rule:', categorizedRules.admissions.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.admissions.id,
-
-          formData.admissionRequirements
-        )
-      }
-      if (categorizedRules.progress) {
-        console.log('Updating satisfactoryProgress rule:', categorizedRules.progress.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.progress.id,
-
-          formData.satisfactoryProgress
-        )
-      }
-      if (categorizedRules.distinction) {
-        console.log('Updating awardWithDistinction rule:', categorizedRules.distinction.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.distinction.id,
-
-          formData.awardWithDistinction
-        )
-      }
-      if (categorizedRules.deferrals) {
-        console.log('Updating deferrals rule:', categorizedRules.deferrals.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.deferrals.id,
-
-          formData.deferrals
-        )
-      }
-      if (categorizedRules.additional) {
-        console.log('Updating additionalRules rule:', categorizedRules.additional.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.additional.id,
-
-          formData.additionalRules
-        )
-      }
-
-      if (categorizedRules.aqfOutcomes) {
-        console.log('Updating aqfOutcomes rule:', categorizedRules.aqfOutcomes.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.aqfOutcomes.id,
-
-          formData.aqfOutcomes
-        )
-      }
-
-      if (categorizedRules.skills) {
-        console.log('Updating skills rule:', categorizedRules.skills.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.skills.id,
-
-          formData.skills
-        )
-      }
-
-      if (categorizedRules.knowledgeApplication) {
-        console.log('Updating knowledgeApplication:', categorizedRules.knowledgeApplication.id)
-
-        // @ts-ignore
-        await ruleService.updateRequirementByRuleId(
-          course!.id,
-          categorizedRules.knowledgeApplication.id,
-
-          formData.knowledgeApplication
-        )
-      }
-
-      console.log('All rules updated successfully')
-      toast({
-        title: 'Rules updated',
-        description: 'All rules have been successfully updated.',
-      })
-    } catch (error) {
-      console.error('Error updating rules:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to update rules. Please try again.',
         variant: 'destructive',
       })
     }

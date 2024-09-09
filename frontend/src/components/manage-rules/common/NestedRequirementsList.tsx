@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { NestedRequirementsListProps, Requirement } from '@/types'
 import SortedTree from '@/components/manage-rules/common/SortedTree'
 

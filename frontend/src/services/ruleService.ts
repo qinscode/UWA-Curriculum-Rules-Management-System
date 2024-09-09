@@ -1,4 +1,4 @@
-import { RuleType, Rule, UpdateRuleDTO, Requirement } from '@/types'
+import { Rule, Requirement } from '@/types'
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 if (!API_URL) {
