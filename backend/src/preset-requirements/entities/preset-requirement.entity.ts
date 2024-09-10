@@ -9,7 +9,7 @@ export class PresetRequirement {
   @Column({ default: 'content' })
   content: string
 
-  @Column({ default: 'aa' })
+  @Column({ default: 'aa.ts' })
   style: string
 
   @ManyToOne(() => PresetRequirement, (presetRequirement) => presetRequirement.children, {

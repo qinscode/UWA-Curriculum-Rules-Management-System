@@ -41,7 +41,7 @@ export class PresetRulesController {
       )
       presetRulesWithHierarchy.push({
         ...presetRule,
-        presetRequirements: this.mapPresetRequirementsToDto(
+        Requirements: this.mapPresetRequirementsToDto(
           presetRequirements.filter((req) => !req.parentId)
         ),
       })

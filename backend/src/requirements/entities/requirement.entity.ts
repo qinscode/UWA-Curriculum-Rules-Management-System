@@ -9,7 +9,7 @@ export class Requirement {
   @Column({ default: 'content' })
   content: string
 
-  @Column({ default: 'aa' })
+  @Column({ default: 'aa.ts' })
   style: string
 
   @ManyToOne(() => Requirement, (requirement) => requirement.children, {
