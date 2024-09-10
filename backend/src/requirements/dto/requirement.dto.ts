@@ -7,10 +7,10 @@ export class CreateRequirementDto {
 }
 
 export class UpdateRequirementDto {
-  id?: number // Add this line
+  id?: number
   content?: string
   style?: string
-  is_connector?: boolean
+  isConnector?: boolean // Changed from is_connector to isConnector
   order_index?: number
   children?: UpdateRequirementDto[]
 }

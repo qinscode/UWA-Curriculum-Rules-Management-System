@@ -21,17 +21,48 @@ export class RequirementsService {
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>,
     private dataSource: DataSource
-  ) {}
+  ) { }
 
-  async findAllRequirements(courseId: number, ruleId: number): Promise<Requirement[]> {
-    this.logger.log(`Fetching all requirements for rule ${ruleId} in course ${courseId}`)
-    const requirements = await this.requirementsRepository.find({
-      where: { rule: { id: ruleId, course: { id: courseId } }, parent: null },
-      relations: ['children'],
-      order: { id: 'ASC' },
+  async findAllRequirements(courseId: number, ruleId: number): Promise<Omit<Requirement, 'parentId'>[]> {
+    const rule = await this.rulesRepository.findOne({
+      where: { id: ruleId, course: { id: courseId } },
     })
 
-    return this.loadChildrenRecursively(requirements)
+    if (!rule) {
+      throw new NotFoundException(`Rule with ID ${ruleId} not found in course ${courseId}`)
+    }
+
+    const allRequirements = await this.requirementsRepository.find({
+      where: { rule: { id: ruleId } },
+      order: { order_index: 'ASC' },
+    })
+
+    // Build a tree structure
+    const requirementMap = new Map<number, Omit<Requirement, 'parentId'> & { children: Omit<Requirement, 'parentId'>[] }>()
+    const rootRequirements: (Omit<Requirement, 'parentId'> & { children: Omit<Requirement, 'parentId'>[] })[] = []
+
+    allRequirements.forEach(req => {
+      const { parentId, ...reqWithoutParentId } = req
+      requirementMap.set(req.id, {
+        ...reqWithoutParentId,
+        isConnector: Boolean(reqWithoutParentId.isConnector),
+        children: []
+      })
+    })
+
+    allRequirements.forEach(req => {
+      const requirement = requirementMap.get(req.id)
+      if (req.parentId) {
+        const parentReq = requirementMap.get(req.parentId)
+        if (parentReq) {
+          parentReq.children.push(requirement)
+        }
+      } else {
+        rootRequirements.push(requirement)
+      }
+    })
+
+    return rootRequirements
   }
 
   private async loadChildrenRecursively(requirements: Requirement[]): Promise<Requirement[]> {
@@ -62,7 +93,7 @@ export class RequirementsService {
       const requirement = this.requirementsRepository.create({
         content: createRequirementDto.content,
         style: createRequirementDto.style,
-        isConnector: createRequirementDto.is_connector,
+        isConnector: Boolean(createRequirementDto.is_connector), // Explicitly convert to boolean
         order_index: createRequirementDto.order_index,
         rule,
       })
@@ -102,7 +133,7 @@ export class RequirementsService {
         style: childDto.style,
         isConnector: childDto.is_connector,
         order_index: childDto.order_index,
-        parent: parentRequirement,
+        parentId: parentRequirement.id,
         rule: parentRequirement.rule,
       })
 
@@ -192,22 +223,23 @@ export class RequirementsService {
         // Update existing requirement
         requirement.content = dto.content ?? requirement.content
         requirement.style = dto.style ?? requirement.style
-        requirement.isConnector = dto.is_connector ?? requirement.isConnector
+        requirement.isConnector = dto.isConnector !== undefined ? dto.isConnector : requirement.isConnector
         requirement.order_index = dto.order_index ?? requirement.order_index
       } else {
         // Create new requirement
         requirement = this.requirementsRepository.create({
           content: dto.content,
           style: dto.style,
-          isConnector: dto.is_connector,
+          isConnector: dto.isConnector,
           order_index: dto.order_index,
           rule,
           parent,
         })
       }
 
+      this.logger.log(`Before saving, isConnector: ${requirement.isConnector}, dto.isConnector: ${dto.isConnector}`)
       const savedRequirement = await queryRunner.manager.save(requirement)
-      this.logger.log(`Updated/Created requirement: ${JSON.stringify(savedRequirement)}`)
+      this.logger.log(`After saving, isConnector: ${savedRequirement.isConnector}`)
 
       if (dto.children && dto.children.length > 0) {
         const children = await this.updateOrCreateRequirements(

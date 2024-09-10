@@ -20,13 +20,13 @@ import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dt
 export class RequirementsController {
   private readonly logger = new Logger(RequirementsController.name)
 
-  constructor(private readonly requirementsService: RequirementsService) {}
+  constructor(private readonly requirementsService: RequirementsService) { }
 
   @Get()
   async findAllRequirements(
     @Param('courseId', ParseIntPipe) courseId: number,
     @Param('ruleId', ParseIntPipe) ruleId: number
-  ): Promise<Requirement[]> {
+  ): Promise<Omit<Requirement, 'parentId'>[]> {
     this.logger.log(`Fetching all requirements for rule ${ruleId} in course ${courseId}`)
     return this.requirementsService.findAllRequirements(courseId, ruleId)
   }

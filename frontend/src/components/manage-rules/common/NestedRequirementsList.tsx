@@ -9,21 +9,19 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
   showControls = true,
   showHelpPanel = true,
 }) => {
-  const handleUpdateRequirement = useCallback((
-    newRequirementsOrUpdater: Requirement[] | ((prevState: Requirement[]) => Requirement[])
-  ) => {
-    console.log('NestedRequirementsList: Updating requirements:', newRequirementsOrUpdater)
-    if (onUpdate) {
-      if (typeof newRequirementsOrUpdater === 'function') {
-        onUpdate((prevRequirements) => {
-          const updatedRequirements = newRequirementsOrUpdater(prevRequirements);
-          return updatedRequirements;
-        })
-      } else {
-        onUpdate(newRequirementsOrUpdater)
+  const handleUpdateRequirement = useCallback(
+    (newRequirementsOrUpdater: Requirement[] | ((prevState: Requirement[]) => Requirement[])) => {
+      console.log('NestedRequirementsList: Updating requirements:', newRequirementsOrUpdater)
+      if (onUpdate) {
+        if (typeof newRequirementsOrUpdater === 'function') {
+          onUpdate(newRequirementsOrUpdater)
+        } else {
+          onUpdate(newRequirementsOrUpdater)
+        }
       }
-    }
-  }, [onUpdate])
+    },
+    [onUpdate]
+  )
 
   return (
     <div className="space-y-4">

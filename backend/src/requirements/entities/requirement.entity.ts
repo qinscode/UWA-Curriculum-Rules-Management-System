@@ -26,9 +26,20 @@ export class Requirement {
   @ManyToOne(() => Rule, (rule) => rule.requirements)
   rule: Rule
 
-  @Column({ name: 'is_connector', default: false })
+  @Column({
+    name: 'is_connector',
+    type: 'tinyint',
+    width: 1,
+    transformer: {
+      to: (value: boolean) => value ? 1 : 0,
+      from: (value: number) => value === 1
+    }
+  })
   isConnector: boolean
 
   @Column({ name: 'order_index', default: 0 })
   order_index: number
+
+  @Column({ nullable: true })
+  parentId: number
 }
