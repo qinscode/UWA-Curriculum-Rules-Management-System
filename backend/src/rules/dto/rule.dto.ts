@@ -28,7 +28,7 @@ export class RequirementHierarchyDto {
   id: number
   content: string
   style: string
-  is_connector: boolean  // Changed from isConnector to is_connector
+  is_connector: boolean // Changed from isConnector to is_connector
   order_index: number
   children: RequirementHierarchyDto[]
 }

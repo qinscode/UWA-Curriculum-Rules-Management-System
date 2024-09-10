@@ -31,9 +31,9 @@ export class Requirement {
     type: 'tinyint',
     width: 1,
     transformer: {
-      to: (value: boolean) => value ? 1 : 0,
-      from: (value: number) => value === 1
-    }
+      to: (value: boolean) => (value ? 1 : 0),
+      from: (value: number) => value === 1,
+    },
   })
   isConnector: boolean
 

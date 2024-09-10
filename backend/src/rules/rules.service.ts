@@ -15,7 +15,7 @@ export class RulesService {
     private rulesRepository: Repository<Rule>,
     @InjectRepository(Requirement)
     private requirementsRepository: Repository<Requirement>
-  ) { }
+  ) {}
 
   async findAll(): Promise<Rule[]> {
     return this.rulesRepository.find({ relations: ['course'] })

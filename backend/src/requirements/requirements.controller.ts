@@ -20,7 +20,7 @@ import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dt
 export class RequirementsController {
   private readonly logger = new Logger(RequirementsController.name)
 
-  constructor(private readonly requirementsService: RequirementsService) { }
+  constructor(private readonly requirementsService: RequirementsService) {}
 
   @Get()
   async findAllRequirements(

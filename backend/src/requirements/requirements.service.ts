@@ -21,9 +21,12 @@ export class RequirementsService {
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>,
     private dataSource: DataSource
-  ) { }
+  ) {}
 
-  async findAllRequirements(courseId: number, ruleId: number): Promise<Omit<Requirement, 'parentId'>[]> {
+  async findAllRequirements(
+    courseId: number,
+    ruleId: number
+  ): Promise<Omit<Requirement, 'parentId'>[]> {
     const rule = await this.rulesRepository.findOne({
       where: { id: ruleId, course: { id: courseId } },
     })
@@ -38,19 +41,24 @@ export class RequirementsService {
     })
 
     // Build a tree structure
-    const requirementMap = new Map<number, Omit<Requirement, 'parentId'> & { children: Omit<Requirement, 'parentId'>[] }>()
-    const rootRequirements: (Omit<Requirement, 'parentId'> & { children: Omit<Requirement, 'parentId'>[] })[] = []
+    const requirementMap = new Map<
+      number,
+      Omit<Requirement, 'parentId'> & { children: Omit<Requirement, 'parentId'>[] }
+    >()
+    const rootRequirements: (Omit<Requirement, 'parentId'> & {
+      children: Omit<Requirement, 'parentId'>[]
+    })[] = []
 
-    allRequirements.forEach(req => {
+    allRequirements.forEach((req) => {
       const { parentId, ...reqWithoutParentId } = req
       requirementMap.set(req.id, {
         ...reqWithoutParentId,
         isConnector: Boolean(reqWithoutParentId.isConnector),
-        children: []
+        children: [],
       })
     })
 
-    allRequirements.forEach(req => {
+    allRequirements.forEach((req) => {
       const requirement = requirementMap.get(req.id)
       if (req.parentId) {
         const parentReq = requirementMap.get(req.parentId)
@@ -223,7 +231,8 @@ export class RequirementsService {
         // Update existing requirement
         requirement.content = dto.content ?? requirement.content
         requirement.style = dto.style ?? requirement.style
-        requirement.isConnector = dto.isConnector !== undefined ? dto.isConnector : requirement.isConnector
+        requirement.isConnector =
+          dto.isConnector !== undefined ? dto.isConnector : requirement.isConnector
         requirement.order_index = dto.order_index ?? requirement.order_index
       } else {
         // Create new requirement
@@ -237,7 +246,9 @@ export class RequirementsService {
         })
       }
 
-      this.logger.log(`Before saving, isConnector: ${requirement.isConnector}, dto.isConnector: ${dto.isConnector}`)
+      this.logger.log(
+        `Before saving, isConnector: ${requirement.isConnector}, dto.isConnector: ${dto.isConnector}`
+      )
       const savedRequirement = await queryRunner.manager.save(requirement)
       this.logger.log(`After saving, isConnector: ${savedRequirement.isConnector}`)
 
