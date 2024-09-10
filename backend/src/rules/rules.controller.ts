@@ -15,8 +15,9 @@ import {
 import { RulesService } from './rules.service'
 import { Rule } from './entities/rule.entity'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
+import { CreateRuleDto, UpdateRuleDto, RuleWithHierarchyDto, RequirementHierarchyDto } from './dto/rule.dto'
 import { RuleType } from './entities/rule.enum'
+import { Requirement } from '../requirements/entities/requirement.entity'
 
 @Controller('courses/:courseId/rules')
 @UseGuards(JwtAuthGuard)
@@ -26,13 +27,30 @@ export class RulesController {
   constructor(private readonly rulesService: RulesService) { }
 
   @Get()
-  async findAllRules(@Param('courseId', ParseIntPipe) courseId: number) {
+  async findAllRules(@Param('courseId', ParseIntPipe) courseId: number): Promise<RuleWithHierarchyDto[]> {
     const rules = await this.rulesService.findAllRules(courseId)
-    // Load requirements with hierarchical structure for each rule
+    const rulesWithHierarchy: RuleWithHierarchyDto[] = []
+
     for (const rule of rules) {
-      rule.requirements = await this.rulesService.findRuleRequirementsHierarchy(rule.id)
+      const requirements = await this.rulesService.findRuleRequirementsHierarchy(rule.id)
+      rulesWithHierarchy.push({
+        ...rule,
+        requirements: this.mapRequirementsToDto(requirements.filter(req => !req.parentId)),
+      })
     }
-    return rules
+
+    return rulesWithHierarchy
+  }
+
+  private mapRequirementsToDto(requirements: Requirement[]): RequirementHierarchyDto[] {
+    return requirements.map(req => ({
+      id: req.id,
+      content: req.content,
+      style: req.style,
+      is_connector: req.isConnector,  // Map isConnector to is_connector
+      order_index: req.order_index,
+      children: req.children ? this.mapRequirementsToDto(req.children) : [],
+    }))
   }
 
   @Get(':id')

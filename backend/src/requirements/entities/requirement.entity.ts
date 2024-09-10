@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
 import { Rule } from '../../rules/entities/rule.entity'
 
-@Entity()
+@Entity('requirements')
 export class Requirement {
   @PrimaryGeneratedColumn()
   id: number

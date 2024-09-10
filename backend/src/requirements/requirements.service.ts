@@ -93,7 +93,7 @@ export class RequirementsService {
       const requirement = this.requirementsRepository.create({
         content: createRequirementDto.content,
         style: createRequirementDto.style,
-        isConnector: Boolean(createRequirementDto.is_connector), // Explicitly convert to boolean
+        isConnector: Boolean(createRequirementDto.isConnector), // Explicitly convert to boolean
         order_index: createRequirementDto.order_index,
         rule,
       })
@@ -131,7 +131,7 @@ export class RequirementsService {
       const childRequirement = this.requirementsRepository.create({
         content: childDto.content,
         style: childDto.style,
-        isConnector: childDto.is_connector,
+        isConnector: childDto.isConnector,
         order_index: childDto.order_index,
         parentId: parentRequirement.id,
         rule: parentRequirement.rule,
