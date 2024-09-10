@@ -30,6 +30,9 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
       <SortedTree
         initialData={initialRequirements}
         onUpdateRequirement={handleUpdateRequirement}
+        onAddChildNode={(parentId: number) => {
+          console.log('NestedRequirementsList - Adding child node to parent ID:', parentId)
+        }}
         presetRequirements={presetRules}
         showControls={showControls}
         showHelpPanel={showHelpPanel}
