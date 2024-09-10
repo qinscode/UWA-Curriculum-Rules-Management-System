@@ -41,7 +41,7 @@ export default function BasePage({
   presetRequirements,
   onUpdateRequirement,
   onAddChildNode,
-  showControls = true, // 提供默认值
+  showControls = true, // 提供默值
   showHelpPanel = true, // 提供默认值
 }: BasePageProps) {
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
@@ -115,9 +115,6 @@ export default function BasePage({
   }
 
   const handleAddChildNode = (parentId: number) => {
-    if (onAddChildNode) {
-      onAddChildNode(parentId)
-    }
     setData((prevData) => {
       const newNode = {
         id: Date.now(),
@@ -128,12 +125,12 @@ export default function BasePage({
         hasChildren: false,
       }
       const updatedData = [...prevData, newNode]
-      setTimeout(() => {
-        if (onUpdateRequirement) {
+      if (onUpdateRequirement) {
+        onUpdateRequirement((prevRequirements) => {
           const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
+          return requirements
+        })
+      }
       return updatedData
     })
     setExpandedNodes((prev) => new Set(prev).add(parentId))
@@ -251,9 +248,8 @@ export default function BasePage({
           </div>
         ) : (
           <Card
-            className={`transition-colors duration-200 ${
-              stat.node.isConnector ? 'bg-blue-50' : ''
-            }`}
+            className={`transition-colors duration-200 ${stat.node.isConnector ? 'bg-blue-50' : ''
+              }`}
           >
             <CardContent className="p-3">
               <div className="flex items-start p-2">

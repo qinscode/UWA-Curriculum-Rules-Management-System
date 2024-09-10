@@ -60,7 +60,7 @@ export const ruleService = {
   updateRequirementByRuleId: async (
     courseId: number,
     ruleId: number,
-    requirements: Requirement[]
+    requirements: Requirement[] | undefined
   ) => {
     console.log(`Updating rule ${ruleId} for course ${courseId}:`, requirements)
     try {
