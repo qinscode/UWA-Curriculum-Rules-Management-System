@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { Rule } from './entities/rule.entity'
 import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
 import { RuleType } from './entities/rule.enum'
+import { Requirement } from '../requirements/entities/requirement.entity'
 
 @Injectable()
 export class RulesService {
@@ -11,8 +12,10 @@ export class RulesService {
 
   constructor(
     @InjectRepository(Rule)
-    private rulesRepository: Repository<Rule>
-  ) {}
+    private rulesRepository: Repository<Rule>,
+    @InjectRepository(Requirement)
+    private requirementsRepository: Repository<Requirement>
+  ) { }
 
   async findAll(): Promise<Rule[]> {
     return this.rulesRepository.find({ relations: ['course'] })
@@ -48,5 +51,31 @@ export class RulesService {
   async remove(id: number): Promise<void> {
     const rule = await this.findOne(id)
     await this.rulesRepository.remove(rule)
+  }
+
+  async findAllRules(courseId: number): Promise<Rule[]> {
+    return this.rulesRepository.find({
+      where: { course: { id: courseId } },
+      order: { id: 'ASC' },
+    })
+  }
+
+  async findRuleRequirementsHierarchy(ruleId: number): Promise<Requirement[]> {
+    const requirements = await this.requirementsRepository.find({
+      where: { rule: { id: ruleId }, parent: null },
+      relations: ['children'],
+      order: { order_index: 'ASC' },
+    })
+
+    return this.loadChildrenRecursively(requirements)
+  }
+
+  private async loadChildrenRecursively(requirements: Requirement[]): Promise<Requirement[]> {
+    for (const requirement of requirements) {
+      if (requirement.children && requirement.children.length > 0) {
+        requirement.children = await this.loadChildrenRecursively(requirement.children)
+      }
+    }
+    return requirements.sort((a, b) => a.order_index - b.order_index)
   }
 }

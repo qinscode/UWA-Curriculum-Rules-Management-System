@@ -18,17 +18,21 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
 import { RuleType } from './entities/rule.enum'
 
-@Controller('rules')
+@Controller('courses/:courseId/rules')
 @UseGuards(JwtAuthGuard)
 export class RulesController {
   private readonly logger = new Logger(RulesController.name)
 
-  constructor(private readonly rulesService: RulesService) {}
+  constructor(private readonly rulesService: RulesService) { }
 
   @Get()
-  async findAll(): Promise<Rule[]> {
-    this.logger.log('Fetching all rules')
-    return this.rulesService.findAll()
+  async findAllRules(@Param('courseId', ParseIntPipe) courseId: number) {
+    const rules = await this.rulesService.findAllRules(courseId)
+    // Load requirements with hierarchical structure for each rule
+    for (const rule of rules) {
+      rule.requirements = await this.rulesService.findRuleRequirementsHierarchy(rule.id)
+    }
+    return rules
   }
 
   @Get(':id')
