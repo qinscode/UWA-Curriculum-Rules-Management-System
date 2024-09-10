@@ -42,7 +42,7 @@ const courseTypes = [
 ]
 
 const CourseManage: React.FC = () => {
-  const [selectedType, setSelectedType] = useState<string | null>(null) // 用于筛选的课程类型
+  const [selectedType, setSelectedType] = useState<string | null>(null)
   const [courses, setCourses] = useState<Course[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('newest')

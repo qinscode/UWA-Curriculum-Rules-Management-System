@@ -1,13 +1,15 @@
 'use client'
-import React, { useState, FC } from 'react'
+import React, { useState, useEffect, FC } from 'react'
 import Layout from '@/components/Layout'
 import { useDocuments } from '@/hooks/useDocuments'
-import { useRules } from '@/hooks/useRules'
 import Footer from '@/components/Footer'
 import HandbookGenerator from '@/components/generate-documents/HandbookGenerator'
 import RulesExporter from '@/components/generate-documents/RulesExporter'
 import LoadingOverlay from '@/components/generate-documents/LoadingOverlay'
 import CoursePDFGenerator from '@/components/generate-documents/CoursePDFGenerator'
+import { getCourses } from '@/services/courseService'
+import { getToken } from '@/services/authService'
+import { Course } from '@/types'
 
 const GenerateDocuments: FC = () => {
   const {
@@ -17,19 +19,52 @@ const GenerateDocuments: FC = () => {
     generateHandbook,
     exportRules,
   } = useDocuments()
-  const { rules, isLoading: rulesLoading, error: rulesError } = useRules()
-  const [selectedCourse, setSelectedCourse] = useState<string>('')
+  const [courses, setCourses] = useState<Course[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('')
+  const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [isPdfReady, setIsPdfReady] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [token, setToken] = useState<string | null>(null)
 
-  const handleCourseChange = (value: string | string[]) => {
-    setSelectedCourse(Array.isArray(value) ? value[0] : value)
+  useEffect(() => {
+    const storedToken = getToken()
+    setToken(storedToken)
+  }, [])
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      if (!token) return
+      setIsLoading(true)
+      try {
+        const fetchedCourses = await getCourses(token)
+        setCourses(Array.isArray(fetchedCourses) ? fetchedCourses : [])
+        setIsLoading(false)
+      } catch (error) {
+        console.error('Error fetching courses:', error)
+        setError('Failed to fetch courses')
+        setCourses([])
+        setIsLoading(false)
+      }
+    }
+
+    fetchCourses()
+  }, [token])
+
+  const handleCourseChange = (value: string) => {
+    setSelectedCourseId(value)
+    setSelectedVersion('') // Reset version when course changes
+  }
+
+  const handleVersionChange = (value: string) => {
+    setSelectedVersion(value)
   }
 
   const handleGenerateCoursePDF = async () => {
-    if (selectedCourse) {
+    if (selectedCourseId && selectedVersion) {
       try {
-        const url = await generateCoursePDF(selectedCourse)
+        const url = await generateCoursePDF(selectedCourseId, selectedVersion)
         setPdfUrl(url)
         setIsPdfReady(true)
       } catch (error) {
@@ -38,32 +73,34 @@ const GenerateDocuments: FC = () => {
     }
   }
 
+  const selectedCourse = courses.find((course) => course.id.toString() === selectedCourseId)
+  const versions = selectedCourse?.versions || []
+
   return (
-    <>
-      <Layout>
-        <h2 className="mb-8 text-2xl font-bold text-gray-900">Generate Documentation</h2>
-        {docError && <div className="mb-4 text-red-500">{docError}</div>}
-        {rulesError && <div className="mb-4 text-red-500">{rulesError}</div>}
-        <div className="-mx-6 mb-8 space-y-4 bg-white p-6 shadow sm:-mx-6 sm:rounded-lg lg:-mx-8">
-          <div className="space-y-12">
-            <CoursePDFGenerator
-              rules={rules}
-              rulesLoading={rulesLoading}
-              selectedCourse={selectedCourse}
-              handleCourseChange={handleCourseChange}
-              handleGenerateCoursePDF={handleGenerateCoursePDF}
-              isPdfReady={isPdfReady}
-              pdfUrl={pdfUrl}
-              isGenerating={isGenerating}
-            />
-            <HandbookGenerator generateHandbook={generateHandbook} isGenerating={isGenerating} />
-            <RulesExporter exportRules={exportRules} isGenerating={isGenerating} />
-          </div>
-        </div>
-        {isGenerating && <LoadingOverlay />}
-      </Layout>
+    <Layout>
+      <h2 className="mb-8 text-2xl font-bold text-gray-900">Generate Documentation</h2>
+      {docError && <div className="mb-4 text-red-500">{docError}</div>}
+      {error && <div className="mb-4 text-red-500">{error}</div>}
+      <div className="space-y-8">
+        <CoursePDFGenerator
+          courses={courses}
+          isLoading={isLoading}
+          selectedCourseId={selectedCourseId}
+          selectedVersion={selectedVersion}
+          handleCourseChange={handleCourseChange}
+          handleVersionChange={handleVersionChange}
+          handleGenerateCoursePDF={handleGenerateCoursePDF}
+          isPdfReady={isPdfReady}
+          pdfUrl={pdfUrl}
+          isGenerating={isGenerating}
+          versions={versions}
+        />
+        <HandbookGenerator generateHandbook={generateHandbook} isGenerating={isGenerating} />
+        <RulesExporter exportRules={exportRules} isGenerating={isGenerating} />
+      </div>
+      {isGenerating && <LoadingOverlay />}
       <Footer />
-    </>
+    </Layout>
   )
 }
 
