@@ -43,9 +43,9 @@ const ManageRules: React.FC = () => {
   const { course, updateCourse } = useCourse()
   const courseCode = course?.code
   const version = course?.version
+  const courseName = course?.name
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
-  const [courseName, setCourseName] = useState<string>('')
   const [formData, setFormData] = useState<GeneralProps['data']>({
     englishRequirements: [],
     admissionRequirements: [],

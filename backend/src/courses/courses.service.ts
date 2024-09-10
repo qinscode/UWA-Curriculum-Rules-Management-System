@@ -14,22 +14,22 @@ export class CoursesService {
     private coursesRepository: Repository<Course>,
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>
-  ) { }
+  ) {}
 
   async findAll(): Promise<any[]> {
     // 获取所有课程
     const allCourses = await this.coursesRepository.find({
-      order: { code: 'ASC', version: 'DESC' }
-    });
+      order: { code: 'ASC', version: 'DESC' },
+    })
 
     // 使用 Map 来存储每个课程代码的最新版本
-    const latestVersions = new Map<string, Course>();
+    const latestVersions = new Map<string, Course>()
 
-    allCourses.forEach(course => {
+    allCourses.forEach((course) => {
       if (!latestVersions.has(course.code)) {
-        latestVersions.set(course.code, course);
+        latestVersions.set(course.code, course)
       }
-    });
+    })
 
     // 为每个最新版本的课程添加 versions 字段
     const coursesWithVersions = await Promise.all(
@@ -39,16 +39,16 @@ export class CoursesService {
           .select('course.version', 'version')
           .where('course.code = :code', { code: course.code })
           .orderBy('course.version', 'DESC')
-          .getRawMany();
+          .getRawMany()
 
         return {
           ...course,
-          versions: versions.map(v => v.version.toString())
-        };
+          versions: versions.map((v) => v.version.toString()),
+        }
       })
-    );
+    )
 
-    return coursesWithVersions;
+    return coursesWithVersions
   }
 
   // 根据 ID 查找单个课程，并动态生成 versions 字段
