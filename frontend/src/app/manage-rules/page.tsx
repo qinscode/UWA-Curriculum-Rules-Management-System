@@ -7,12 +7,9 @@ import { getCourseByCodeAndVersion } from '@/services/courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
+import withAuth from '@/components/auth/withAuth'
 
-export default function ManageRulesPage({
-  searchParams,
-}: {
-  searchParams: { code?: string; version?: string }
-}) {
+function ManageRulesPage({ searchParams }: { searchParams: { code?: string; version?: string } }) {
   const { code, version } = searchParams
 
   const [courseData, setCourseData] = useState<Course | null>(null)
@@ -59,3 +56,5 @@ export default function ManageRulesPage({
     </CourseProvider>
   )
 }
+
+export default withAuth(ManageRulesPage)
