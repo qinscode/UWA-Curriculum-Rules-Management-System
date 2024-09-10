@@ -126,8 +126,10 @@ export default function BasePage({
       }
       const updatedData = [...prevData, newNode]
       if (onUpdateRequirement) {
-        const requirements = convertDataToRequirements(updatedData)
-        onUpdateRequirement(requirements)
+        onUpdateRequirement((prevRequirements) => {
+          const requirements = convertDataToRequirements(updatedData)
+          return requirements
+        })
       }
       return updatedData
     })
@@ -172,12 +174,9 @@ export default function BasePage({
   }
 
   const flattenRequirements = (
-    requirements: Requirement[] | undefined,
+    requirements: Requirement[],
     parentId: number | null = null
   ): any[] => {
-    if (!requirements || !Array.isArray(requirements)) {
-      return [];
-    }
     return requirements.reduce((acc: any[], req: Requirement) => {
       const flatNode = {
         id: req.id,
