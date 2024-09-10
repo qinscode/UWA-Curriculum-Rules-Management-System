@@ -15,25 +15,21 @@ interface OutcomesAQFProps {
 
 const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
   ({ data, updateData, initialPresetRules }) => {
-    const handleKnowledgeChange = useCallback(
-      (requirements: Requirement[]) => {
-        updateData({ knowledge: requirements })
-      },
-      [updateData]
-    )
-
-    const handleSkillsChange = useCallback(
-      (requirements: Requirement[]) => {
-        updateData({ skills: requirements })
-      },
-      [updateData]
-    )
-
-    const handleKnowledgeApplicationChange = useCallback(
-      (requirements: Requirement[]) => {
-        updateData({ knowledgeApplication: requirements })
-      },
-      [updateData]
+    const handleRequirementsChange = useCallback(
+      (key: 'knowledge' | 'skills' | 'knowledgeApplication') =>
+        (
+          requirementsOrUpdater:
+            | Requirement[]
+            | ((prevRequirements: Requirement[]) => Requirement[])
+        ) => {
+          if (typeof requirementsOrUpdater === 'function') {
+            const updatedRequirements = requirementsOrUpdater(data[key])
+            updateData({ [key]: updatedRequirements })
+          } else {
+            updateData({ [key]: requirementsOrUpdater })
+          }
+        },
+      [data, updateData]
     )
 
     return (
@@ -42,7 +38,7 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
           <Label className="mb-1 block text-lg font-medium">Knowledge</Label>
           <NestedRequirementsList
             initialRequirements={data.knowledge}
-            onUpdate={handleKnowledgeChange}
+            onUpdate={handleRequirementsChange('knowledge')}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,
@@ -62,7 +58,7 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
           <Label className="mb-1 block text-lg font-medium">Skills</Label>
           <NestedRequirementsList
             initialRequirements={data.skills}
-            onUpdate={handleSkillsChange}
+            onUpdate={handleRequirementsChange('skills')}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,
@@ -84,7 +80,7 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
           </Label>
           <NestedRequirementsList
             initialRequirements={data.knowledgeApplication}
-            onUpdate={handleKnowledgeApplicationChange}
+            onUpdate={handleRequirementsChange('knowledgeApplication')}
             defaultStyles={[
               NumberingStyle.Numeric,
               NumberingStyle.Alphabetic,

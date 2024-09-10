@@ -42,8 +42,8 @@ export default function BasePage({
   presetRequirements,
   onUpdateRequirement,
   onAddChildNode,
-  showControls = true, // 提供默认值
-  showHelpPanel = true, // 提供默认值
+  showControls = true,
+  showHelpPanel = true,
 }: BasePageProps) {
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
   const [data, setData] = useState<any[]>([])

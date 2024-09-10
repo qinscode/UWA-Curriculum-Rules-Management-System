@@ -23,11 +23,18 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
     }, [data.deferrals])
 
     const handleDeferralsChange = useCallback(
-      (requirements: Requirement[]) => {
-        console.log('Deferrals: Updating requirements', requirements)
-        updateData({ deferrals: requirements })
+      (
+        requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
+      ) => {
+        console.log('Deferrals: Updating requirements', requirementsOrUpdater)
+        if (typeof requirementsOrUpdater === 'function') {
+          const updatedDeferrals = requirementsOrUpdater(data.deferrals)
+          updateData({ deferrals: updatedDeferrals })
+        } else {
+          updateData({ deferrals: requirementsOrUpdater })
+        }
       },
-      [updateData]
+      [updateData, data.deferrals]
     )
 
     const handleToggleDeferralAllowed = (checked: boolean) => {

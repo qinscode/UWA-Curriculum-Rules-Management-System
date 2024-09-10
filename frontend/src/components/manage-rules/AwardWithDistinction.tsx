@@ -22,11 +22,18 @@ const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
     }, [data.awardWithDistinction])
 
     const handleAwardWithDistinctionChange = useCallback(
-      (requirements: Requirement[]) => {
-        console.log('AwardWithDistinction: Updating requirements', requirements)
-        updateData({ awardWithDistinction: requirements })
+      (
+        requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
+      ) => {
+        console.log('AwardWithDistinction: Updating requirements', requirementsOrUpdater)
+        if (typeof requirementsOrUpdater === 'function') {
+          const updatedRequirements = requirementsOrUpdater(data.awardWithDistinction)
+          updateData({ awardWithDistinction: updatedRequirements })
+        } else {
+          updateData({ awardWithDistinction: requirementsOrUpdater })
+        }
       },
-      [updateData]
+      [updateData, data.awardWithDistinction]
     )
 
     const handleToggleSwitch = (checked: boolean) => {
