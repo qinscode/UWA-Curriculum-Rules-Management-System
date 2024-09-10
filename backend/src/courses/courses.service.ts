@@ -14,28 +14,41 @@ export class CoursesService {
     private coursesRepository: Repository<Course>,
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>
-  ) {}
+  ) { }
 
-  // 获取所有课程，并动态生成 versions 字段
   async findAll(): Promise<any[]> {
-    const courses = await this.coursesRepository.find()
+    // 获取所有课程
+    const allCourses = await this.coursesRepository.find({
+      order: { code: 'ASC', version: 'DESC' }
+    });
 
-    // 动态生成每个课程的 versions 字段
-    return await Promise.all(
-      courses.map(async (course) => {
-        const relatedCourses = await this.coursesRepository.find({
-          where: { code: course.code },
-          order: { version: 'DESC' },
-        })
+    // 使用 Map 来存储每个课程代码的最新版本
+    const latestVersions = new Map<string, Course>();
 
-        const versions = relatedCourses.map((c) => c.version.toString())
+    allCourses.forEach(course => {
+      if (!latestVersions.has(course.code)) {
+        latestVersions.set(course.code, course);
+      }
+    });
+
+    // 为每个最新版本的课程添加 versions 字段
+    const coursesWithVersions = await Promise.all(
+      Array.from(latestVersions.values()).map(async (course) => {
+        const versions = await this.coursesRepository
+          .createQueryBuilder('course')
+          .select('course.version', 'version')
+          .where('course.code = :code', { code: course.code })
+          .orderBy('course.version', 'DESC')
+          .getRawMany();
 
         return {
           ...course,
-          versions, // 动态生成的 versions 数组
-        }
+          versions: versions.map(v => v.version.toString())
+        };
       })
-    )
+    );
+
+    return coursesWithVersions;
   }
 
   // 根据 ID 查找单个课程，并动态生成 versions 字段
