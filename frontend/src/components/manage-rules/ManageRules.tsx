@@ -12,15 +12,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { toast } from '@/hooks/use-toast'
-import RuleSection from '@/components/manage-rules/RuleSection'
-import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
-import SatisfactoryProgress from '@/components/manage-rules/SatisfactoryProgress'
-import ProgressStatus from '@/components/manage-rules/ProgressStatus'
-import AwardWithDistinction from '@/components/manage-rules/AwardWithDistinction'
-import Deferrals from '@/components/manage-rules/Deferrals'
-import AdditionalRules from '@/components/manage-rules/AdditionalRules'
-import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
-import SaveButton from '@/components/manage-rules/SaveButton'
+import RuleSection from '@/components/manage-rules/common/RuleSection'
+import AdmissionSelection from '@/components/manage-rules/RuleSection/AdmissionSelection'
+import SatisfactoryProgress from '@/components/manage-rules/RuleSection/SatisfactoryProgress'
+import ProgressStatus from '@/components/manage-rules/RuleSection/ProgressStatus'
+import AwardWithDistinction from '@/components/manage-rules/RuleSection/AwardWithDistinction'
+import Deferrals from '@/components/manage-rules/RuleSection/Deferrals'
+import AdditionalRules from '@/components/manage-rules/RuleSection/AdditionalRules'
+import OutcomesAQF from '@/components/manage-rules/RuleSection/OutcomesAQF'
+import SaveButton from '@/components/manage-rules/common/SaveButton'
 import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
@@ -341,7 +341,11 @@ const ManageRules: React.FC = () => {
             </RuleSection>
 
             <RuleSection title="Progress Status">
-              <ProgressStatus data={formData} updateData={updateFormData} />
+              <ProgressStatus
+                data={formData}
+                updateData={updateFormData}
+                initialPresetRules={allPresetRules}
+              />
             </RuleSection>
 
             <RuleSection title="Award with distinction">
@@ -350,6 +354,7 @@ const ManageRules: React.FC = () => {
                   awardWithDistinction: formData.awardWithDistinction || [],
                 }}
                 updateData={updateFormData}
+                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
@@ -360,11 +365,16 @@ const ManageRules: React.FC = () => {
                   deferralAllowed: formData.deferralAllowed || false,
                 }}
                 updateData={updateFormData}
+                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
             <RuleSection title="Additional rules">
-              <AdditionalRules data={formData} updateData={updateFormData} />
+              <AdditionalRules
+                data={formData}
+                updateData={updateFormData}
+                initialPresetRules={allPresetRules}
+              />
             </RuleSection>
 
             <RuleSection title="Outcomes & Australian Qualifications Framework">
@@ -375,6 +385,7 @@ const ManageRules: React.FC = () => {
                   knowledgeApplication: formData.knowledgeApplication || [],
                 }}
                 updateData={updateFormData}
+                initialPresetRules={allPresetRules}
               />
             </RuleSection>
           </div>

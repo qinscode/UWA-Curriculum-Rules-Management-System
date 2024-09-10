@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
-import ManageRules from '@/components/ManageRules'
+import ManageRules from '@/components/manage-rules/ManageRules'
 import { getCourseByCodeAndVersion } from '@/services/courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'

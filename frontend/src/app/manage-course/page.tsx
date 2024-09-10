@@ -1,5 +1,5 @@
 import React from 'react'
-import CourseManage from '@/components/ManageCourse'
+import CourseManage from '@/components/manage-course/ManageCourse'
 import Layout from '@/components/Layout'
 
 export const metadata = {
