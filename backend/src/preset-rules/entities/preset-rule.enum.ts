@@ -1,4 +1,4 @@
-export enum RuleType {
+export enum PresetRuleType {
   ENGLISH_ELIGIBILITY = 'English Eligibility',
   ADMISSIONS = 'Admissions',
   SATISFACTORY_PROGRESS = 'Satisfactory Progress',

@@ -15,7 +15,7 @@ import { Requirement } from './entities/requirement.entity'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dto'
 
-@Controller('courses/:courseId/rules/:ruleId/requirements')
+@Controller('/preset-rules/:ruleId/preset-requirements')
 @UseGuards(JwtAuthGuard)
 export class RequirementsController {
   private readonly logger = new Logger(RequirementsController.name)

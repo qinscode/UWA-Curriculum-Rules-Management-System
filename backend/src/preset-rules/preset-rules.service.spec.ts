@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { PresetService } from './preset.service'
+import { PresetRulesService } from './preset-rules.service'
 
-describe('PresetService', () => {
-  let service: PresetService
+describe('PresetRulesService', () => {
+  let service: PresetRulesService
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PresetService],
+      providers: [PresetRulesService],
     }).compile()
 
-    service = module.get<PresetService>(PresetService)
+    service = module.get<PresetRulesService>(PresetRulesService)
   })
 
   it('should be defined', () => {
