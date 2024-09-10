@@ -10,6 +10,9 @@ import CoursePDFGenerator from '@/components/generate-documents/CoursePDFGenerat
 import { getCourses } from '@/services/courseService'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
+import { config } from 'dotenv'
+
+config()
 
 const GenerateDocuments: FC = () => {
   const {
@@ -65,7 +68,8 @@ const GenerateDocuments: FC = () => {
     if (selectedCourseId && selectedVersion) {
       try {
         const url = await generateCoursePDF(selectedCourseId, selectedVersion)
-        setPdfUrl(url)
+        console.log('Generated PDF:', process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
+        setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
         setIsPdfReady(true)
       } catch (error) {
         console.error('Failed to generate PDF:', error)
