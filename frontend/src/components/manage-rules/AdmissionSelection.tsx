@@ -21,17 +21,17 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
   showRankingRequirements,
   setShowRankingRequirements,
 }) => {
-  const handleEnglishRequirementsChange = useCallback((requirements: Requirement[]) => {
-    updateData({ englishRequirements: requirements })
+  const handleEnglishRequirementsChange = useCallback((requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
+    updateData({ englishRequirements: requirements as Requirement[] })
   }, [updateData])
 
-  const handleAdmissionRequirementsChange = useCallback((requirements: Requirement[]) => {
-    updateData({ admissionRequirements: requirements })
+  const handleAdmissionRequirementsChange = useCallback((requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
+    updateData({ admissionRequirements: requirements as Requirement[] })
   }, [updateData])
 
-  const handleRankingSelectionChange = useCallback((requirements: Requirement[]) => {
+  const handleRankingSelectionChange = useCallback((requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
     console.log('AdmissionSelection: Updating ranking requirements', requirements)
-    updateData({ rankingSelection: requirements })
+    updateData({ rankingSelection: requirements as Requirement[] })
   }, [updateData])
 
   const handleToggleRankingRequirements = useCallback((checked: boolean) => {

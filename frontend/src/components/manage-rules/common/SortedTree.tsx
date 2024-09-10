@@ -10,6 +10,7 @@ import {
   HelpCircle,
   ArrowDownLeft,
   Sparkles,
+  ArrowRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -66,7 +67,7 @@ export default function BasePage({
         parent_id: null,
         name: 'New Root Requirement',
         style: NumberingStyle.Numeric,
-        isConnector: false,
+        is_connector: false,
         hasChildren: false,
       }
       const updatedData = [...prevData, newNode]
@@ -124,7 +125,7 @@ export default function BasePage({
         parent_id: parentId,
         name: 'New Requirement',
         style: NumberingStyle.Numeric,
-        isConnector: false,
+        is_connector: false,
         hasChildren: false,
       }
       const updatedData = [...prevData, newNode]
@@ -152,11 +153,9 @@ export default function BasePage({
   }
 
   const handleToggleConnector = (id: number) => {
-    // if node isConnector is true, set it to false, otherwise set it to true
-
     setData((prevData) => {
       const updatedData = prevData.map((node) =>
-        node.id === id ? { ...node, isConnector: !node.isConnector } : node
+        node.id === id ? { ...node, is_connector: !node.is_connector } : node
       )
       setTimeout(() => {
         if (onUpdateRequirement) {
@@ -186,7 +185,7 @@ export default function BasePage({
         parent_id: parentId,
         name: req.content,
         style: req.style || NumberingStyle.Numeric,
-        isConnector: req.isConnector || false,
+        is_connector: req.is_connector || false, // 只使用 is_connector
         hasChildren: req.children && req.children.length > 0,
       }
       acc.push(flatNode)
@@ -206,7 +205,7 @@ export default function BasePage({
         content: item.name,
         style: item.style,
         children: [],
-        isConnector: item.isConnector,
+        is_connector: item.is_connector, // 使用 is_connector
       }
       map.set(item.id, requirement)
     })
@@ -251,9 +250,8 @@ export default function BasePage({
           </div>
         ) : (
           <Card
-            className={`transition-colors duration-200 ${
-              stat.node.isConnector ? 'bg-blue-50' : ''
-            }`}
+            className={`transition-colors duration-200 ${stat.node.is_connector ? 'bg-blue-50' : ''
+              }`}
           >
             <CardContent className="p-3">
               <div className="flex items-start p-2">
@@ -278,7 +276,9 @@ export default function BasePage({
                   >
                     <GripVertical size={16} />
                   </span>
-                  {!stat.node.isConnector && (
+                  {stat.node.is_connector ? (
+                    <Sparkles size={16} className="mr-2 text-blue-500" />
+                  ) : (
                     <RequirementNumber
                       node={stat.node}
                       allNodes={data}
@@ -299,9 +299,10 @@ export default function BasePage({
                       variant="outline"
                       size="icon"
                       onClick={() => handleToggleConnector(stat.node.id)}
-                      className="mr-1"
+                      className={`mr-1 ${stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
+                        }`}
                     >
-                      <Sparkles size={16} />
+                      {stat.node.is_connector ? <ArrowRight size={16} /> : <Sparkles size={16} />}
                     </Button>
                   )}
                   <Button
@@ -312,7 +313,7 @@ export default function BasePage({
                   >
                     <Trash size={16} />
                   </Button>
-                  {!stat.node.isConnector && (
+                  {!stat.node.is_connector && (
                     <Button
                       variant="outline"
                       size="icon"

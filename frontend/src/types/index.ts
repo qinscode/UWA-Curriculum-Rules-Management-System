@@ -50,7 +50,7 @@ export interface Requirement {
   style: NumberingStyle
   numbering?: string
   children: Requirement[]
-  isConnector?: boolean
+  is_connector?: boolean // 使用 is_connector 而不是 isConnector
 }
 
 export interface StyleOption {
@@ -61,7 +61,7 @@ export interface StyleOption {
 // Props interfaces
 export interface NestedRequirementsListProps {
   initialRequirements?: Requirement[]
-  onUpdate: (requirements: Requirement[]) => void
+  onUpdate: (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => void
   defaultStyles?: NumberingStyle[]
   showControls?: boolean
   showHelpPanel?: boolean

@@ -21,7 +21,7 @@ import Deferrals from '@/components/manage-rules/Deferrals'
 import AdditionalRules from '@/components/manage-rules/AdditionalRules'
 import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
 import SaveButton from '@/components/manage-rules/SaveButton'
-import { GeneralProps, Rule, RuleType } from '@/types'
+import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 
@@ -90,6 +90,10 @@ const ManageRules: React.FC = () => {
     try {
       const rules = await ruleService.getAllRules(courseId)
       console.log('ManageRules: Fetched rules:', rules)
+      // 更新这行来检查 is_connector 字段
+      rules.forEach(rule => {
+        console.log(`Rule ${rule.id} requirements:`, rule.requirements.map(r => ({ id: r.id, content: r.content, is_connector: r.is_connector })))
+      })
       const categorized = categorizeRules(rules)
       console.log('ManageRules: Categorized rules:', categorized)
       setCategorizedRules(categorized)
@@ -173,7 +177,7 @@ const ManageRules: React.FC = () => {
         skills: categorized.skills?.requirements || [],
         knowledgeApplication: categorized.knowledgeApplication?.requirements || [],
       }
-      console.log('ManageRules: Updated formData:', newData)
+      console.log('ManageRules: Updated form data:', newData)
       console.log('ManageRules: Ranking and selection:', newData.rankingSelection)
       // 根据 rankingSelection 是否为空来设置 showRankingRequirements
       setShowRankingRequirements(newData.rankingSelection.length > 0)
@@ -223,16 +227,16 @@ const ManageRules: React.FC = () => {
       ]
 
       for (const { rule, data } of rulesToUpdate) {
-        if (rule) {
+        if (rule && data) {
           console.log(`Updating ${rule.type} rule:`, rule.id, data)
           try {
-            const result = await ruleService.updateRequirementByRuleId(course!.id, rule.id, data)
+            const result = await ruleService.updateRequirementByRuleId(course!.id, rule.id, data as Requirement[])
             console.log(`Update result for ${rule.type}:`, result)
           } catch (error) {
             console.error(`Error updating ${rule.type} rule:`, error)
           }
         } else {
-          console.log(`No rule found for data:`, data)
+          console.log(`No rule or data found for update`)
         }
       }
 
