@@ -250,8 +250,9 @@ export default function BasePage({
           </div>
         ) : (
           <Card
-            className={`transition-colors duration-200 ${stat.node.is_connector ? 'bg-blue-50' : ''
-              }`}
+            className={`transition-colors duration-200 ${
+              stat.node.is_connector ? 'bg-blue-50' : ''
+            }`}
           >
             <CardContent className="p-3">
               <div className="flex items-start p-2">
@@ -299,8 +300,9 @@ export default function BasePage({
                       variant="outline"
                       size="icon"
                       onClick={() => handleToggleConnector(stat.node.id)}
-                      className={`mr-1 ${stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
-                        }`}
+                      className={`mr-1 ${
+                        stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
+                      }`}
                     >
                       {stat.node.is_connector ? <ArrowRight size={16} /> : <Sparkles size={16} />}
                     </Button>

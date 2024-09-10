@@ -61,7 +61,9 @@ export interface StyleOption {
 // Props interfaces
 export interface NestedRequirementsListProps {
   initialRequirements?: Requirement[]
-  onUpdate: (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => void
+  onUpdate: (
+    requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
+  ) => void
   defaultStyles?: NumberingStyle[]
   showControls?: boolean
   showHelpPanel?: boolean

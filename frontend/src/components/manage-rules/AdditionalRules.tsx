@@ -10,7 +10,9 @@ const AdditionalRules: React.FC<GeneralProps> = ({ data, updateData }) => {
         <Label className="mb-1 block text-lg font-medium">Admissions</Label>
         <NestedRequirementsList
           initialRequirements={data.additionalRules}
-          onUpdate={(requirements) => updateData({ additionalRules: requirements as Requirement[] })}
+          onUpdate={(requirements) =>
+            updateData({ additionalRules: requirements as Requirement[] })
+          }
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}

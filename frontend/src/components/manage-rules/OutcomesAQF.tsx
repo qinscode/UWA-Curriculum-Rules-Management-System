@@ -13,17 +13,26 @@ interface OutcomesAQFProps {
 }
 
 const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(({ data, updateData }) => {
-  const handleKnowledgeChange = useCallback((requirements: Requirement[]) => {
-    updateData({ knowledge: requirements })
-  }, [updateData])
+  const handleKnowledgeChange = useCallback(
+    (requirements: Requirement[]) => {
+      updateData({ knowledge: requirements })
+    },
+    [updateData]
+  )
 
-  const handleSkillsChange = useCallback((requirements: Requirement[]) => {
-    updateData({ skills: requirements })
-  }, [updateData])
+  const handleSkillsChange = useCallback(
+    (requirements: Requirement[]) => {
+      updateData({ skills: requirements })
+    },
+    [updateData]
+  )
 
-  const handleKnowledgeApplicationChange = useCallback((requirements: Requirement[]) => {
-    updateData({ knowledgeApplication: requirements })
-  }, [updateData])
+  const handleKnowledgeApplicationChange = useCallback(
+    (requirements: Requirement[]) => {
+      updateData({ knowledgeApplication: requirements })
+    },
+    [updateData]
+  )
 
   return (
     <div className="space-y-6">
@@ -50,7 +59,9 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(({ data, updateData }
       </div>
 
       <div>
-        <Label className="mb-1 block text-lg font-medium">Application of Knowledge and Skills</Label>
+        <Label className="mb-1 block text-lg font-medium">
+          Application of Knowledge and Skills
+        </Label>
         <NestedRequirementsList
           initialRequirements={data.knowledgeApplication}
           onUpdate={handleKnowledgeApplicationChange}

@@ -91,8 +91,15 @@ const ManageRules: React.FC = () => {
       const rules = await ruleService.getAllRules(courseId)
       console.log('ManageRules: Fetched rules:', rules)
       // 更新这行来检查 is_connector 字段
-      rules.forEach(rule => {
-        console.log(`Rule ${rule.id} requirements:`, rule.requirements.map(r => ({ id: r.id, content: r.content, is_connector: r.is_connector })))
+      rules.forEach((rule) => {
+        console.log(
+          `Rule ${rule.id} requirements:`,
+          rule.requirements.map((r) => ({
+            id: r.id,
+            content: r.content,
+            is_connector: r.is_connector,
+          }))
+        )
       })
       const categorized = categorizeRules(rules)
       console.log('ManageRules: Categorized rules:', categorized)
@@ -230,7 +237,11 @@ const ManageRules: React.FC = () => {
         if (rule && data) {
           console.log(`Updating ${rule.type} rule:`, rule.id, data)
           try {
-            const result = await ruleService.updateRequirementByRuleId(course!.id, rule.id, data as Requirement[])
+            const result = await ruleService.updateRequirementByRuleId(
+              course!.id,
+              rule.id,
+              data as Requirement[]
+            )
             console.log(`Update result for ${rule.type}:`, result)
           } catch (error) {
             console.error(`Error updating ${rule.type} rule:`, error)
