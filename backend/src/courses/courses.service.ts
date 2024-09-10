@@ -32,7 +32,7 @@ export class CoursesService {
     })
 
     // 为每个最新版本的课程添加 versions 字段
-    const coursesWithVersions = await Promise.all(
+    return await Promise.all(
       Array.from(latestVersions.values()).map(async (course) => {
         const versions = await this.coursesRepository
           .createQueryBuilder('course')
@@ -47,8 +47,6 @@ export class CoursesService {
         }
       })
     )
-
-    return coursesWithVersions
   }
 
   // 根据 ID 查找单个课程，并动态生成 versions 字段
