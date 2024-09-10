@@ -1,14 +1,6 @@
-import { useState } from 'react'
 import Layout from '@/components/Layout'
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export default function Profile() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [automaticTimezoneEnabled, setAutomaticTimezoneEnabled] = useState(true)
-
   return (
     <Layout>
       <div className="mx-auto max-w-7xl lg:gap-x-16 lg:px-8">

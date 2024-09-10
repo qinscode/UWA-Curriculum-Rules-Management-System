@@ -40,8 +40,6 @@ import { PresetRequirementsModule } from './preset-requirements/preset-requireme
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware) // 应用中间件
-      .forRoutes('*') // 捕获所有路由
+    consumer.apply(LoggerMiddleware).forRoutes('*')
   }
 }

@@ -81,9 +81,6 @@ const ManageRules: React.FC = () => {
   const router = useRouter()
   const [showRankingRequirements, setShowRankingRequirements] = useState(false)
   const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
-  const [categorizedPresetRules, setCategorizedPresetRules] = useState<CategorizedRules | null>(
-    null
-  )
 
   const fetchPresetRules = async () => {
     try {

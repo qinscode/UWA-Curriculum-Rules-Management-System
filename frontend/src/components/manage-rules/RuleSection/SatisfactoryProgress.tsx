@@ -3,7 +3,6 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
-import { BackendRule } from '@/lib/categorizeRules'
 
 interface SatisfactoryProgressProps {
   data: {
