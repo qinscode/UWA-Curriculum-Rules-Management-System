@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module'
 import { CoursesModule } from './courses/courses.module'
 import { LoggerMiddleware } from './logger/logger.middleware'
 import { RequirementsModule } from './requirements/requirements.module'
+import { PresetModule } from './preset/preset.module'
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RequirementsModule } from './requirements/requirements.module'
     UsersModule,
     CoursesModule,
     RequirementsModule,
+    PresetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

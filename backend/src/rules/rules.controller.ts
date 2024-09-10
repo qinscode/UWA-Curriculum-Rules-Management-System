@@ -10,12 +10,16 @@ import {
   ParseIntPipe,
   Logger,
   NotFoundException,
-  Query,
 } from '@nestjs/common'
 import { RulesService } from './rules.service'
 import { Rule } from './entities/rule.entity'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { CreateRuleDto, UpdateRuleDto, RuleWithHierarchyDto, RequirementHierarchyDto } from './dto/rule.dto'
+import {
+  CreateRuleDto,
+  UpdateRuleDto,
+  RuleWithHierarchyDto,
+  RequirementHierarchyDto,
+} from './dto/rule.dto'
 import { RuleType } from './entities/rule.enum'
 import { Requirement } from '../requirements/entities/requirement.entity'
 
@@ -24,10 +28,12 @@ import { Requirement } from '../requirements/entities/requirement.entity'
 export class RulesController {
   private readonly logger = new Logger(RulesController.name)
 
-  constructor(private readonly rulesService: RulesService) { }
+  constructor(private readonly rulesService: RulesService) {}
 
   @Get()
-  async findAllRules(@Param('courseId', ParseIntPipe) courseId: number): Promise<RuleWithHierarchyDto[]> {
+  async findAllRules(
+    @Param('courseId', ParseIntPipe) courseId: number
+  ): Promise<RuleWithHierarchyDto[]> {
     const rules = await this.rulesService.findAllRules(courseId)
     const rulesWithHierarchy: RuleWithHierarchyDto[] = []
 
@@ -35,7 +41,7 @@ export class RulesController {
       const requirements = await this.rulesService.findRuleRequirementsHierarchy(rule.id)
       rulesWithHierarchy.push({
         ...rule,
-        requirements: this.mapRequirementsToDto(requirements.filter(req => !req.parentId)),
+        requirements: this.mapRequirementsToDto(requirements.filter((req) => !req.parentId)),
       })
     }
 
@@ -43,11 +49,11 @@ export class RulesController {
   }
 
   private mapRequirementsToDto(requirements: Requirement[]): RequirementHierarchyDto[] {
-    return requirements.map(req => ({
+    return requirements.map((req) => ({
       id: req.id,
       content: req.content,
       style: req.style,
-      is_connector: req.isConnector,  // Map isConnector to is_connector
+      is_connector: req.isConnector, // Map isConnector to is_connector
       order_index: req.order_index,
       children: req.children ? this.mapRequirementsToDto(req.children) : [],
     }))
