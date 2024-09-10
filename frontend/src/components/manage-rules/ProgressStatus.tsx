@@ -1,9 +1,9 @@
 import React from 'react'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
-import { GeneralProps, NumberingStyle } from '@/types'
+import { GeneralProps, NumberingStyle, Requirement } from '@/types'
 
-const ProgressStatus: React.FC<GeneralProps> = ({ data, updateData }) => {
+const ProgressStatus: React.FC<GeneralProps> = ({ data, updateData, initialPresetRules }) => {
   return (
     <div className="space-y-6">
       <div>
@@ -14,6 +14,11 @@ const ProgressStatus: React.FC<GeneralProps> = ({ data, updateData }) => {
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
+          presetRules={
+            initialPresetRules?.length
+              ? (initialPresetRules[2].requirements as Requirement[])
+              : undefined
+          }
         />
       </div>
     </div>

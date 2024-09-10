@@ -13,6 +13,7 @@ interface AdmissionSelectionProps {
   updateData: (data: Partial<GeneralProps['data']>) => void
   showRankingRequirements: boolean
   setShowRankingRequirements: React.Dispatch<React.SetStateAction<boolean>>
+  initialPresetRules: any[]
 }
 
 const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
@@ -20,6 +21,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
   updateData,
   showRankingRequirements,
   setShowRankingRequirements,
+  initialPresetRules,
 }) => {
   const handleEnglishRequirementsChange = useCallback(
     (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
@@ -57,6 +59,10 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     console.log('AdmissionSelection: Data changed', data)
   }, [data])
 
+  useEffect(() => {
+    console.log('initialPresetRules: Data changed', initialPresetRules)
+  }, [initialPresetRules])
+
   return (
     <div className="space-y-6">
       <div>
@@ -69,6 +75,11 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
+          presetRules={
+            initialPresetRules?.length
+              ? (initialPresetRules[0].requirements as Requirement[])
+              : undefined
+          }
         />
       </div>
 
@@ -80,6 +91,11 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
+          presetRules={
+            initialPresetRules?.length
+              ? (initialPresetRules[8].requirements as Requirement[])
+              : undefined
+          }
         />
       </div>
 
@@ -109,6 +125,11 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
             ]}
             showControls={true}
             showHelpPanel={true}
+            presetRules={
+              initialPresetRules?.length
+                ? (initialPresetRules[9].requirements as Requirement[])
+                : undefined
+            }
           />
         </div>
       )}

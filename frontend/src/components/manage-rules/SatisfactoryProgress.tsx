@@ -3,16 +3,18 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
+import { BackendRule } from '@/lib/categorizeRules'
 
 interface SatisfactoryProgressProps {
   data: {
     satisfactoryProgress: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
+  initialPresetRules: any[]
 }
 
 const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
-  ({ data, updateData }) => {
+  ({ data, updateData, initialPresetRules }) => {
     const [showSatisfactoryProgress, setShowSatisfactoryProgress] = useState(false)
 
     useEffect(() => {
@@ -21,11 +23,19 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
     }, [data.satisfactoryProgress])
 
     const handleSatisfactoryProgressChange = useCallback(
-      (requirements: Requirement[]) => {
-        console.log('SatisfactoryProgress: Updating requirements', requirements)
-        updateData({ satisfactoryProgress: requirements })
+      (
+        requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
+      ) => {
+        console.log('SatisfactoryProgress: Updating requirements', requirementsOrUpdater)
+        if (typeof requirementsOrUpdater === 'function') {
+          updateData({
+            satisfactoryProgress: requirementsOrUpdater(data.satisfactoryProgress),
+          })
+        } else {
+          updateData({ satisfactoryProgress: requirementsOrUpdater })
+        }
       },
-      [updateData]
+      [updateData, data.satisfactoryProgress]
     )
 
     const handleToggleSwitch = (checked: boolean) => {
@@ -66,6 +76,11 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
               ]}
               showControls={true}
               showHelpPanel={true}
+              presetRules={
+                initialPresetRules?.length
+                  ? (initialPresetRules[1].requirements as Requirement[])
+                  : undefined
+              }
             />
           </div>
         )}

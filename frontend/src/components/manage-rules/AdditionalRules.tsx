@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 
-const AdditionalRules: React.FC<GeneralProps> = ({ data, updateData }) => {
+const AdditionalRules: React.FC<GeneralProps> = ({ data, updateData, initialPresetRules }) => {
   return (
     <div className="space-y-6">
       <div>
@@ -16,6 +16,11 @@ const AdditionalRules: React.FC<GeneralProps> = ({ data, updateData }) => {
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
+          presetRules={
+            initialPresetRules?.length
+              ? (initialPresetRules[8].requirements as Requirement[])
+              : undefined
+          }
         />
       </div>
     </div>

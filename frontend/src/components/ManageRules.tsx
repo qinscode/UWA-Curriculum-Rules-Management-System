@@ -24,7 +24,9 @@ import SaveButton from '@/components/manage-rules/SaveButton'
 import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
-
+import { BackendRule } from '@/lib/categorizeRules'
+import { presetRuleService } from '@/services/presetRuleService'
+import { omit } from 'lodash'
 interface CategorizedRules {
   englishEligibility: Rule | null
   admissions: Rule | null
@@ -78,6 +80,25 @@ const ManageRules: React.FC = () => {
   const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
   const router = useRouter()
   const [showRankingRequirements, setShowRankingRequirements] = useState(false)
+  const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
+  const [categorizedPresetRules, setCategorizedPresetRules] = useState<CategorizedRules | null>(
+    null
+  )
+
+  const fetchPresetRules = async () => {
+    try {
+      const rules = await presetRuleService.getAllRules()
+      setAllPresetRules(rules)
+      console.log('fetchPresetRules allPresetRules', rules)
+    } catch (error) {
+      console.error('ManageRules: Error fetching rules:', error)
+    }
+  }
+
+  useEffect(() => {
+    console.log('Fuck ManageRules: Fetching rules')
+    fetchPresetRules()
+  }, [])
 
   useEffect(() => {
     if (course?.id) {
@@ -90,7 +111,6 @@ const ManageRules: React.FC = () => {
     try {
       const rules = await ruleService.getAllRules(courseId)
       console.log('ManageRules: Fetched rules:', rules)
-      // 更新这行来检查 is_connector 字段
       rules.forEach((rule) => {
         console.log(
           `Rule ${rule.id} requirements:`,
@@ -103,6 +123,11 @@ const ManageRules: React.FC = () => {
       })
       const categorized = categorizeRules(rules)
       console.log('ManageRules: Categorized rules:', categorized)
+      console.log(
+        'Fuck ManageRules: Categorized rules:',
+        omit(categorized.englishEligibility?.requirements, ['order_index'])
+      )
+
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
       console.log('ManageRules: Form data updated from rules', formData)
@@ -301,6 +326,7 @@ const ManageRules: React.FC = () => {
                 updateData={updateFormData}
                 showRankingRequirements={showRankingRequirements}
                 setShowRankingRequirements={setShowRankingRequirements}
+                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
@@ -310,6 +336,7 @@ const ManageRules: React.FC = () => {
                   satisfactoryProgress: formData.satisfactoryProgress || [],
                 }}
                 updateData={updateFormData}
+                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
