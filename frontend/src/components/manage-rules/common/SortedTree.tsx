@@ -26,7 +26,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
 
-interface BasePageProps {
+interface SortedTree {
   initialData: Requirement[]
   presetRequirements: Requirement[]
   onUpdateRequirement?: (
@@ -44,7 +44,7 @@ export default function BasePage({
   onAddChildNode,
   showControls = true,
   showHelpPanel = true,
-}: BasePageProps) {
+}: SortedTree) {
   const keys = { idKey: 'id', parentIdKey: 'parent_id' }
   const [data, setData] = useState<any[]>([])
   const [expandedNodes, setExpandedNodes] = useState<Set<number>>(new Set())
@@ -74,6 +74,10 @@ export default function BasePage({
       flattenedData.filter((node) => node.is_connector).map((node) => node.id)
     )
     setConnectorNodes(initialConnectorNodes)
+
+    // Set initial level styles based on initialData
+    const initialLevelStyles = getInitialLevelStyles(flattenedData)
+    setLevelStyles(initialLevelStyles)
   }, [initialData])
 
   const handleAddRootNode = useCallback(() => {
@@ -485,4 +489,21 @@ const getNodeLevel = (node: any, allNodes: any[]): number => {
     if (!currentNode) break
   }
   return level
+}
+
+function getInitialLevelStyles(flattenedData: any[]): NumberingStyle[] {
+  const levelStyles: NumberingStyle[] = [
+    NumberingStyle.Numeric,
+    NumberingStyle.Alphabetic,
+    NumberingStyle.Roman,
+  ]
+
+  flattenedData.forEach((node) => {
+    const level = getNodeLevel(node, flattenedData)
+    if (level < 3 && node.style !== levelStyles[level]) {
+      levelStyles[level] = node.style
+    }
+  })
+
+  return levelStyles
 }
