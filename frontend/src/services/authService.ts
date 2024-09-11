@@ -1,10 +1,10 @@
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
-
-if (!API_URL) {
-  throw new Error('API base URL is not defined in environment variables.')
-}
-
 export const login = async (email: string, password: string): Promise<string> => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  if (!API_URL) {
+    throw new Error('API base URL is not defined in environment variables.')
+  }
+
   const res = await fetch(`${API_URL}/auth/login`, {
     method: 'POST',
     headers: {
@@ -19,16 +19,23 @@ export const login = async (email: string, password: string): Promise<string> =>
   }
 
   const { access_token } = await res.json()
-  localStorage.setItem('token', access_token)
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('token', access_token)
+  }
   return access_token
 }
 
 export const logout = () => {
-  localStorage.removeItem('token')
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('token')
+  }
 }
 
 export const getToken = (): string | null => {
-  return localStorage.getItem('token')
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token')
+  }
+  return null
 }
 
 export const isAuthenticated = (): boolean => {

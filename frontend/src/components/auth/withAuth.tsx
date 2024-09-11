@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { isAuthenticated } from '@/services/authService'
 import React, { ComponentType } from 'react'
@@ -8,20 +8,20 @@ import React, { ComponentType } from 'react'
 const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
   const AuthComponent = (props: P) => {
     const router = useRouter()
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
       if (!isAuthenticated()) {
-        // If user is not authenticated, redirect to login
         router.push('/login')
+      } else {
+        setIsLoading(false)
       }
     }, [router])
 
-    // If the user is not authenticated, we can return null (or a loading spinner)
-    if (!isAuthenticated()) {
-      return null
+    if (isLoading) {
+      return <div>Loading...</div> // 或者您可以使用一个加载动画组件
     }
 
-    // If authenticated, render the wrapped component
     return <WrappedComponent {...props} />
   }
 

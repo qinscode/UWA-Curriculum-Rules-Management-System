@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useHeTree, sortFlatData } from 'he-tree-react'
-import { Requirement, NumberingStyle } from '@/types'
 import {
   ChevronRight,
   ChevronDown,
@@ -25,6 +24,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
+
+// Enums and Interfaces
+export enum NumberingStyle {
+  Numeric = 'numeric',
+  Alphabetic = 'alphabetic',
+  Roman = 'roman',
+  None = 'none',
+}
+
+export interface Requirement {
+  id: number
+  content: string
+  style: NumberingStyle
+  children: Requirement[]
+  is_connector?: boolean
+}
 
 interface BasePageProps {
   initialData: Requirement[]
@@ -57,123 +72,9 @@ export default function BasePage({
 
   useEffect(() => {
     const flattenedData = flattenRequirements(initialData)
+    console.log('BasePage: Initial data', flattenedData)
     setData(flattenedData)
   }, [initialData])
-
-  const handleAddRootNode = () => {
-    setData((prevData) => {
-      const newNode = {
-        id: Date.now(),
-        parent_id: null,
-        name: 'New Root Requirement',
-        style: NumberingStyle.Numeric,
-        is_connector: false,
-        hasChildren: false,
-      }
-      const updatedData = [...prevData, newNode]
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
-      return updatedData
-    })
-  }
-
-  const handleLevelStyleChange = (level: number, newStyle: NumberingStyle) => {
-    setLevelStyles((prevStyles) => {
-      const newStyles = [...prevStyles]
-      newStyles[level] = newStyle
-      return newStyles
-    })
-  }
-
-  const handleInputChange = (id: number, value: string) => {
-    setData((prevData) => {
-      const updatedData = prevData.map((node) => (node.id === id ? { ...node, name: value } : node))
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
-      return updatedData
-    })
-  }
-
-  const handleDeleteNode = (id: number) => {
-    setData((prevData) => {
-      const updatedData = prevData.filter((node) => node.id !== id && node.parent_id !== id)
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
-      return updatedData
-    })
-  }
-
-  const handleAddChildNode = (parentId: number) => {
-    if (onAddChildNode) {
-      onAddChildNode(parentId)
-    }
-    setData((prevData) => {
-      const newNode = {
-        id: Date.now(),
-        parent_id: parentId,
-        name: 'New Requirement',
-        style: NumberingStyle.Numeric,
-        is_connector: false,
-        hasChildren: false,
-      }
-      const updatedData = [...prevData, newNode]
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
-      return updatedData
-    })
-    setExpandedNodes((prev) => new Set(prev).add(parentId))
-  }
-
-  const toggleNode = (id: number) => {
-    setExpandedNodes((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(id)) {
-        newSet.delete(id)
-      } else {
-        newSet.add(id)
-      }
-      return newSet
-    })
-  }
-
-  const handleToggleConnector = (id: number) => {
-    setData((prevData) => {
-      const updatedData = prevData.map((node) =>
-        node.id === id ? { ...node, is_connector: !node.is_connector } : node
-      )
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
-        }
-      }, 0)
-      return updatedData
-    })
-  }
-
-  const loadPresetRequirements = () => {
-    const flattenedData = flattenRequirements(presetRequirements)
-    setData(flattenedData)
-    if (onUpdateRequirement) {
-      onUpdateRequirement(presetRequirements)
-    }
-  }
 
   const flattenRequirements = (
     requirements: Requirement[],
@@ -185,7 +86,7 @@ export default function BasePage({
         parent_id: parentId,
         name: req.content,
         style: req.style || NumberingStyle.Numeric,
-        is_connector: req.is_connector || false, // 只使用 is_connector
+        is_connector: req.is_connector || false,
         hasChildren: req.children && req.children.length > 0,
       }
       acc.push(flatNode)
@@ -205,7 +106,7 @@ export default function BasePage({
         content: item.name,
         style: item.style,
         children: [],
-        is_connector: item.is_connector, // 使用 is_connector
+        is_connector: item.is_connector,
       }
       map.set(item.id, requirement)
     })
@@ -230,17 +131,126 @@ export default function BasePage({
     return rootRequirements
   }
 
+  const updateDataWithStyles = (updatedData: any[]) => {
+    const updatedDataWithStyles = updatedData.map((node) => {
+      const level = getNodeLevel(node, updatedData)
+      return {
+        ...node,
+        style: levelStyles[level % levelStyles.length] || NumberingStyle.Numeric,
+      }
+    })
+    setData(updatedDataWithStyles)
+    if (onUpdateRequirement) {
+      const requirements = convertDataToRequirements(updatedDataWithStyles)
+      onUpdateRequirement(requirements)
+    }
+  }
+
+  const getNodeLevel = (node: any, allNodes: any[]): number => {
+    let level = 0
+    let currentNode = node
+    while (currentNode.parent_id !== null) {
+      level++
+      currentNode = allNodes.find((n) => n.id === currentNode.parent_id)
+    }
+    return level
+  }
+
+  const handleLevelStyleChange = (level: number, newStyle: NumberingStyle) => {
+    setLevelStyles((prevStyles) => {
+      const newStyles = [...prevStyles]
+      newStyles[level] = newStyle
+      return newStyles
+    })
+    updateDataWithStyles(data)
+  }
+
+  const handleAddRootNode = () => {
+    setData((prevData) => {
+      const newNode = {
+        id: Date.now(),
+        parent_id: null,
+        name: 'New Root Requirement',
+        style: NumberingStyle.Numeric,
+        is_connector: false,
+        hasChildren: false,
+      }
+      const updatedData = [...prevData, newNode]
+      updateDataWithStyles(updatedData)
+      return updatedData
+    })
+  }
+
+  const handleInputChange = (id: number, value: string) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((node) => (node.id === id ? { ...node, name: value } : node))
+      updateDataWithStyles(updatedData)
+      return updatedData
+    })
+  }
+
+  const handleDeleteNode = (id: number) => {
+    setData((prevData) => {
+      const updatedData = prevData.filter((node) => node.id !== id && node.parent_id !== id)
+      updateDataWithStyles(updatedData)
+      return updatedData
+    })
+  }
+
+  const handleAddChildNode = (parentId: number) => {
+    if (onAddChildNode) {
+      onAddChildNode(parentId)
+    }
+    setData((prevData) => {
+      const newNode = {
+        id: Date.now(),
+        parent_id: parentId,
+        name: 'New Requirement',
+        style: NumberingStyle.Numeric,
+        is_connector: false,
+        hasChildren: false,
+      }
+      const updatedData = [...prevData, newNode]
+      updateDataWithStyles(updatedData)
+      return updatedData
+    })
+    setExpandedNodes((prev) => new Set(prev).add(parentId))
+  }
+
+  const toggleNode = (id: number) => {
+    setExpandedNodes((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(id)) {
+        newSet.delete(id)
+      } else {
+        newSet.add(id)
+      }
+      return newSet
+    })
+  }
+
+  const handleToggleConnector = (id: number) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((node) =>
+        node.id === id ? { ...node, is_connector: !node.is_connector } : node
+      )
+      updateDataWithStyles(updatedData)
+      return updatedData
+    })
+  }
+
+  const loadPresetRequirements = () => {
+    const flattenedData = flattenRequirements(presetRequirements)
+    updateDataWithStyles(flattenedData)
+  }
+
   const { renderTree, placeholder } = useHeTree({
     ...keys,
     data,
     dataType: 'flat',
     onChange: (newData) => {
       const sortedData = sortFlatData(newData, keys)
-      setData(sortedData)
-      if (onUpdateRequirement) {
-        const requirements = convertDataToRequirements(sortedData)
-        onUpdateRequirement(requirements)
-      }
+      updateDataWithStyles(sortedData)
     },
     renderNodeBox: ({ stat, attrs, isPlaceholder }) => (
       <div {...attrs} key={attrs.key} className="mb-2">
@@ -379,7 +389,7 @@ export default function BasePage({
           </Button>
         </div>
       </div>
-      <HelpPanel showHelp={showHelp} />
+      {showHelpPanel && <HelpPanel showHelp={showHelp} />}
       <div className="rounded-md bg-gray-50 p-4 shadow-inner">
         <Button
           className="mb-4 bg-indigo-600 text-white hover:bg-indigo-500"
