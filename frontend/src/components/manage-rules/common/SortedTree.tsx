@@ -54,10 +54,19 @@ export default function BasePage({
     NumberingStyle.Roman,
   ])
   const [showHelp, setShowHelp] = useState(false)
+  const [connectorNodes, setConnectorNodes] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const flattenedData = flattenRequirements(initialData)
     setData(flattenedData)
+
+    // Initialize connectorNodes based on initialData
+    const initialConnectorNodes = new Set(
+      flattenedData.filter((node) => node.is_connector).map((node) => node.id)
+    )
+    setConnectorNodes(initialConnectorNodes)
+
+    console.log(`Number: Initial connector nodes: ${Array.from(initialConnectorNodes)}`)
   }, [initialData])
 
   const handleAddRootNode = () => {
@@ -86,6 +95,23 @@ export default function BasePage({
       const newStyles = [...prevStyles]
       newStyles[level] = newStyle
       return newStyles
+    })
+
+    setData((prevData) => {
+      const updatedData = prevData.map((node) => {
+        const nodeLevel = getNodeLevel(node, prevData)
+        if (nodeLevel === level) {
+          return { ...node, style: newStyle }
+        }
+        return node
+      })
+
+      if (onUpdateRequirement) {
+        const requirements = convertDataToRequirements(updatedData)
+        onUpdateRequirement(requirements)
+      }
+
+      return updatedData
     })
   }
 
@@ -154,16 +180,37 @@ export default function BasePage({
 
   const handleToggleConnector = (id: number) => {
     setData((prevData) => {
-      const updatedData = prevData.map((node) =>
-        node.id === id ? { ...node, is_connector: !node.is_connector } : node
-      )
-      setTimeout(() => {
-        if (onUpdateRequirement) {
-          const requirements = convertDataToRequirements(updatedData)
-          onUpdateRequirement(requirements)
+      const updatedData = prevData.map((node) => {
+        if (node.id === id) {
+          const newNode = { ...node, is_connector: !node.is_connector }
+          if (newNode.is_connector) {
+            newNode.hasChildren = false
+          }
+          console.log(`Number: Toggle connector for node ID ${id}, is now ${newNode.is_connector}`)
+          return newNode
         }
-      }, 0)
-      return updatedData
+        return node
+      })
+
+      const sortedData = sortFlatData(updatedData, keys)
+
+      setConnectorNodes((prev) => {
+        const newSet = new Set(prev)
+        if (sortedData.find((node) => node.id === id)?.is_connector) {
+          newSet.add(id)
+        } else {
+          newSet.delete(id)
+        }
+        console.log(`Number: Connector nodes set: ${Array.from(newSet)}`)
+        return newSet
+      })
+
+      if (onUpdateRequirement) {
+        const requirements = convertDataToRequirements(sortedData)
+        onUpdateRequirement(requirements)
+      }
+
+      return sortedData
     })
   }
 
@@ -185,7 +232,7 @@ export default function BasePage({
         parent_id: parentId,
         name: req.content,
         style: req.style || NumberingStyle.Numeric,
-        is_connector: req.is_connector || false, // 只使用 is_connector
+        is_connector: req.is_connector || false,
         hasChildren: req.children && req.children.length > 0,
       }
       acc.push(flatNode)
@@ -205,7 +252,7 @@ export default function BasePage({
         content: item.name,
         style: item.style,
         children: [],
-        is_connector: item.is_connector, // 使用 is_connector
+        is_connector: item.is_connector,
       }
       map.set(item.id, requirement)
     })
@@ -257,7 +304,7 @@ export default function BasePage({
             <CardContent className="p-3">
               <div className="flex items-start p-2">
                 <div className="m-2 flex items-center">
-                  {stat.node.hasChildren && (
+                  {stat.node.hasChildren && !stat.node.is_connector && (
                     <Button
                       variant="ghost"
                       size="icon"
@@ -285,6 +332,7 @@ export default function BasePage({
                       allNodes={data}
                       keys={keys}
                       levelStyles={levelStyles}
+                      connectorNodes={connectorNodes}
                     />
                   )}
                 </div>
@@ -393,4 +441,15 @@ export default function BasePage({
       </div>
     </div>
   )
+}
+
+const getNodeLevel = (node: any, allNodes: any[]): number => {
+  let level = 0
+  let currentNode = node
+  while (currentNode.parent_id !== null) {
+    level++
+    currentNode = allNodes.find((n) => n.id === currentNode.parent_id)
+    if (!currentNode) break
+  }
+  return level
 }

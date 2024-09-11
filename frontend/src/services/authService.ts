@@ -28,10 +28,16 @@ export const logout = () => {
 }
 
 export const getToken = (): string | null => {
-  return localStorage.getItem('token')
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token')
+  }
+  return null
 }
 
 export const isAuthenticated = (): boolean => {
+  if (typeof window === 'undefined') {
+    return false
+  }
   const token = getToken()
   return !!token
 }

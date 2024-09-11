@@ -1,13 +1,14 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, lazy, useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
-import ManageRules from '@/components/manage-rules/ManageRules'
 import { getCourseByCodeAndVersion } from '@/services/courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 import withAuth from '@/components/auth/withAuth'
+
+const ManageRules = lazy(() => import('@/components/manage-rules/ManageRules'))
 
 function ManageRulesPage({ searchParams }: { searchParams: { code?: string; version?: string } }) {
   const { code, version } = searchParams
@@ -52,7 +53,9 @@ function ManageRulesPage({ searchParams }: { searchParams: { code?: string; vers
 
   return (
     <CourseProvider initialCourse={courseData}>
-      <ManageRules />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ManageRules />
+      </Suspense>
     </CourseProvider>
   )
 }
