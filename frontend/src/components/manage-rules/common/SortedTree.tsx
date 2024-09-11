@@ -38,6 +38,11 @@ interface SortedTree {
   showHelpPanel?: boolean
 }
 
+// 在文件顶部添加这个函数
+function generateMySQLCompatibleId(): number {
+  return Math.floor(Math.random() * 2147483647) + 1
+}
+
 export default function SortedTree({
   initialData,
   presetRequirements,
@@ -81,10 +86,11 @@ export default function SortedTree({
     setLevelStyles(initialLevelStyles)
   }, [initialData])
 
+  // 修改 handleAddRootNode 函数
   const handleAddRootNode = useCallback(() => {
     setData((prevData) => {
       const newNode = {
-        id: Date.now(),
+        id: generateMySQLCompatibleId(),
         parent_id: null,
         name: 'New Root Requirement',
         style: NumberingStyle.Numeric,
@@ -181,6 +187,7 @@ export default function SortedTree({
     [keys, onUpdateRequirement]
   )
 
+  // 修改 handleAddChildNode 函数
   const handleAddChildNode = useCallback(
     (parentId: number) => {
       if (onAddChildNode) {
@@ -188,7 +195,7 @@ export default function SortedTree({
       }
       setData((prevData) => {
         const newNode = {
-          id: Date.now(),
+          id: generateMySQLCompatibleId(),
           parent_id: parentId,
           name: 'New Requirement',
           style: NumberingStyle.Numeric,
@@ -347,8 +354,9 @@ export default function SortedTree({
           </div>
         ) : (
           <Card
-            className={`transition-colors duration-200 ${stat.node.is_connector ? 'bg-blue-50' : ''
-              }`}
+            className={`transition-colors duration-200 ${
+              stat.node.is_connector ? 'bg-blue-50' : ''
+            }`}
           >
             <CardContent className="p-3">
               <div className="flex items-start p-2">
@@ -397,8 +405,9 @@ export default function SortedTree({
                       variant="outline"
                       size="icon"
                       onClick={() => handleToggleConnector(stat.node.id)}
-                      className={`mr-1 ${stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
-                        }`}
+                      className={`mr-1 ${
+                        stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
+                      }`}
                     >
                       {stat.node.is_connector ? <ArrowRight size={16} /> : <Sparkles size={16} />}
                     </Button>
