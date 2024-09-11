@@ -1,4 +1,6 @@
 export enum RuleType {
+  ASR = 'Applicability of the Student Rules policies and procedures',
+  ACECRS = 'Academic Conduct Essentials and Communication and Research Skills modules',
   ENGLISH_ELIGIBILITY = 'English Eligibility',
   ADMISSIONS = 'Admissions',
   SATISFACTORY_PROGRESS = 'Satisfactory Progress',
@@ -10,6 +12,6 @@ export enum RuleType {
   KNOWLEDGE_APPLICATION = 'Knowledge Application',
   KNOWLEDGE = 'Knowledge',
   RANKING_AND_SELECTION = 'Ranking and selection for admission',
-  ARTICULATION_AND_EXIT_AWARDS = "ARTICULATION_AND_EXIT_AWARDS",
-  COURSE_STRUCTURE = "COURSE_STRUCTURE",
+  ARTICULATION_AND_EXIT_AWARDS = 'ARTICULATION_AND_EXIT_AWARDS',
+  COURSE_STRUCTURE = 'COURSE_STRUCTURE',
 }
