@@ -160,9 +160,26 @@ export default function BasePage({
     setLevelStyles((prevStyles) => {
       const newStyles = [...prevStyles]
       newStyles[level] = newStyle
+
+      setData((prevData) => {
+        const updatedData = prevData.map((node) => {
+          const nodeLevel = getNodeLevel(node, prevData)
+          return {
+            ...node,
+            style: newStyles[nodeLevel % newStyles.length] || NumberingStyle.Numeric,
+          }
+        })
+
+        if (onUpdateRequirement) {
+          const requirements = convertDataToRequirements(updatedData)
+          onUpdateRequirement(requirements)
+        }
+
+        return updatedData
+      })
+
       return newStyles
     })
-    updateDataWithStyles(data)
   }
 
   const handleAddRootNode = () => {
