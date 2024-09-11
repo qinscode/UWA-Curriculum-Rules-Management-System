@@ -7,13 +7,13 @@ export class Requirement {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ default: 'content' })
+  @Column({ type: 'text' })
   content: string
 
   @Column({
     type: 'enum',
     enum: NumberingStyle,
-    default: NumberingStyle.Numeric
+    default: NumberingStyle.Numeric,
   })
   style: NumberingStyle
 
