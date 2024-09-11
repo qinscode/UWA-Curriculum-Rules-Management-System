@@ -39,6 +39,9 @@ export const getToken = (): string | null => {
 }
 
 export const isAuthenticated = (): boolean => {
+  if (typeof window === 'undefined') {
+    return false
+  }
   const token = getToken()
   return !!token
 }

@@ -67,7 +67,7 @@ const GenerateDocuments: FC = () => {
   const handleGenerateCoursePDF = async () => {
     if (selectedCourseId && selectedVersion) {
       try {
-        const url = await generateCoursePDF(selectedCourseId, selectedVersion)
+        const url = await generateCoursePDF(selectedCourseId)
         console.log('Generated PDF:', process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
         setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
         setIsPdfReady(true)

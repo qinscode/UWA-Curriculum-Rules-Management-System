@@ -6,6 +6,7 @@ interface RequirementNumberProps {
   allNodes: any[]
   keys: { idKey: string; parentIdKey: string }
   levelStyles: NumberingStyle[]
+  connectorNodes: Set<number>
 }
 
 const RequirementNumber: React.FC<RequirementNumberProps> = ({
@@ -13,6 +14,7 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({
   allNodes,
   keys,
   levelStyles,
+  connectorNodes,
 }) => {
   const getNumber = (num: number, style: NumberingStyle): string => {
     switch (style) {
@@ -64,29 +66,43 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({
     }
 
     const parents = getParents(node)
-    const level = parents.filter((p) => !p.isConnector).length
+    const level = parents.filter((p) => !connectorNodes.has(p[keys.idKey])).length
+
+    console.log(`Number: Node ID ${node[keys.idKey]}, Level ${level}`)
 
     const getIndex = (node: any, siblings: any[]): number => {
-      const nonConnectorSiblings = siblings.filter((s) => !s.isConnector)
-      return nonConnectorSiblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
+      const nonConnectorSiblings = siblings.filter((s) => !connectorNodes.has(s[keys.idKey]))
+      const index = nonConnectorSiblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
+      console.log(`Number: Node ID ${node[keys.idKey]}, Index among siblings: ${index}`)
+      return index
     }
 
     const numbers = parents
-      .filter((parent) => !parent.isConnector)
+      .filter((parent) => !connectorNodes.has(parent[keys.idKey]))
       .map((parent, index) => {
         const parentSiblings = allNodes.filter(
-          (n) => n[keys.parentIdKey] === parent[keys.parentIdKey]
+          (n) => n[keys.parentIdKey] === parent[keys.parentIdKey] && !connectorNodes.has(n[keys.idKey])
         )
         const parentIndex = getIndex(parent, parentSiblings)
-        return getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
+        const parentNumber = getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
+        console.log(`Number: Parent ID ${parent[keys.idKey]}, Number ${parentNumber}`)
+        return parentNumber
       })
 
-    const siblings = allNodes.filter((n) => n[keys.parentIdKey] === node[keys.parentIdKey])
+    const siblings = allNodes.filter(
+      (n) => n[keys.parentIdKey] === node[keys.parentIdKey] && !connectorNodes.has(n[keys.idKey])
+    )
     const currentIndex = getIndex(node, siblings)
-    numbers.push(getNumber(currentIndex, levelStyles[level] || NumberingStyle.Numeric))
+    const currentNumber = getNumber(currentIndex, levelStyles[level] || NumberingStyle.Numeric)
+    numbers.push(currentNumber)
 
-    return numbers.join('.')
+    const fullNumber = numbers.join('.')
+    console.log(`Number: Node ID ${node[keys.idKey]}, Full Number ${fullNumber}`)
+    return fullNumber
   }
+
+  console.log(`Number: Calculating number for node ID ${node[keys.idKey]}`)
+  console.log(`Number: Current connector nodes: ${Array.from(connectorNodes)}`)
 
   const nodeNumber = getNodeNumber(node)
 
