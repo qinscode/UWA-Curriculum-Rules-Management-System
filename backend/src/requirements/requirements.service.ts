@@ -10,6 +10,8 @@ import { Repository, DataSource, QueryRunner, In } from 'typeorm'
 import { Requirement } from './entities/requirement.entity'
 import { Rule } from '../rules/entities/rule.entity'
 import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dto'
+import { NumberingStyle } from './entities/style.enum'
+import { DeepPartial } from 'typeorm'
 
 @Injectable()
 export class RequirementsService {
@@ -21,7 +23,7 @@ export class RequirementsService {
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>,
     private dataSource: DataSource
-  ) {}
+  ) { }
 
   async findAllRequirements(
     courseId: number,
@@ -99,12 +101,12 @@ export class RequirementsService {
       }
 
       const requirement = this.requirementsRepository.create({
-        content: createRequirementDto.content,
-        style: createRequirementDto.style,
-        isConnector: Boolean(createRequirementDto.isConnector), // Explicitly convert to boolean
+        ...createRequirementDto,
+        style: createRequirementDto.style as NumberingStyle,
+        isConnector: Boolean(createRequirementDto.isConnector),
         order_index: createRequirementDto.order_index,
         rule,
-      })
+      } as DeepPartial<Requirement>)
 
       this.logger.log(`Creating requirement: ${JSON.stringify(requirement)}`)
       const savedRequirement = await queryRunner.manager.save(requirement)
@@ -137,13 +139,11 @@ export class RequirementsService {
   ): Promise<void> {
     for (const childDto of children) {
       const childRequirement = this.requirementsRepository.create({
-        content: childDto.content,
-        style: childDto.style,
-        isConnector: childDto.isConnector,
-        order_index: childDto.order_index,
+        ...childDto,
+        style: childDto.style as NumberingStyle,
         parentId: parentRequirement.id,
         rule: parentRequirement.rule,
-      })
+      } as DeepPartial<Requirement>)
 
       this.logger.log(`Creating child requirement: ${JSON.stringify(childRequirement)}`)
       const savedChild = await queryRunner.manager.save(childRequirement)
@@ -230,20 +230,18 @@ export class RequirementsService {
       if (requirement) {
         // Update existing requirement
         requirement.content = dto.content ?? requirement.content
-        requirement.style = dto.style ?? requirement.style
+        requirement.style = (dto.style as NumberingStyle) ?? requirement.style
         requirement.isConnector =
           dto.isConnector !== undefined ? dto.isConnector : requirement.isConnector
         requirement.order_index = dto.order_index ?? requirement.order_index
       } else {
         // Create new requirement
         requirement = this.requirementsRepository.create({
-          content: dto.content,
-          style: dto.style,
-          isConnector: dto.isConnector,
-          order_index: dto.order_index,
+          ...dto,
+          style: dto.style as NumberingStyle,
           rule,
           parent,
-        })
+        } as DeepPartial<Requirement>)
       }
 
       this.logger.log(
@@ -325,9 +323,10 @@ export class RequirementsService {
 
     const childRequirement = this.requirementsRepository.create({
       ...createRequirementDto,
+      style: createRequirementDto.style as NumberingStyle,
       parent: parentRequirement,
       rule: parentRequirement.rule,
-    })
+    } as DeepPartial<Requirement>)
 
     return this.requirementsRepository.save(childRequirement)
   }

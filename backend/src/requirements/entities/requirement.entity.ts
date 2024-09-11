@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
 import { Rule } from '../../rules/entities/rule.entity'
+import { NumberingStyle } from './style.enum'
 
 @Entity('requirements')
 export class Requirement {
@@ -9,8 +10,12 @@ export class Requirement {
   @Column({ default: 'content' })
   content: string
 
-  @Column({ default: 'aa.ts' })
-  style: string
+  @Column({
+    type: 'enum',
+    enum: NumberingStyle,
+    default: NumberingStyle.Numeric
+  })
+  style: NumberingStyle
 
   @ManyToOne(() => Requirement, (requirement) => requirement.children, {
     nullable: true,

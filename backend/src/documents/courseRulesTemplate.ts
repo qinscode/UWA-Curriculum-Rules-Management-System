@@ -1,4 +1,45 @@
 import { Rule } from 'src/types'
+import { NumberingStyle } from '../requirements/entities/style.enum'
+
+const verticalGap = '15px'
+const horizontalGap = '20px'
+
+const sectionTitleMaxWidth = '150px'
+const sectionContentPaddingLeft = '20px'
+
+const getStyleClass = (style: NumberingStyle): string => {
+    switch (style) {
+        case NumberingStyle.Alphabetic:
+            return 'alphabetic'
+        case NumberingStyle.Roman:
+            return 'roman'
+        case NumberingStyle.None:
+            return 'none'
+        default:
+            return 'numeric'
+    }
+}
+
+const renderRequirement = (req: any, level: number, isFirstChild: boolean): string => {
+    const styleClass = getStyleClass(req.style)
+    const padding = level * 20
+    let numberContent = ''
+
+    if (level === 0 && isFirstChild) {
+        // Only show the rule number for the first child at level 0
+        numberContent = `<span class="rule-number">${req.ruleIndex}.</span> `
+    } else if (level > 0) {
+        numberContent = '<span class="number"></span> '
+    }
+
+    const content = `
+    <p class="${styleClass}" style="padding-left: ${padding}px;">
+      ${numberContent}${req.text}
+    </p>
+    ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0)).join('') : ''}
+  `
+    return content
+}
 
 export const courseRulesTemplate = (rules_list: Rule[]) => `
 <!DOCTYPE html>
@@ -23,7 +64,8 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0 ${horizontalGap}; 
         }
 
         th,
@@ -44,14 +86,19 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
         .section-title {
             font-weight: bold;
             width: 17%;
+            max-width: ${sectionTitleMaxWidth};
+            word-wrap: break-word;
+            white-space: normal;
         }
 
         .section-content {
             width: 78%;
+            padding-left: ${sectionContentPaddingLeft}; // 添加左侧padding
         }
         
         .section-content p {
             margin-top: 0;
+            margin-bottom: ${verticalGap};  
         }
 
         table tr:nth-child(2) td {
@@ -60,6 +107,55 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
         
         .number {
             font-weight: bold;
+        }
+        
+        .numeric > .number::before {
+            content: "(" counter(numeric) ") ";
+            counter-increment: numeric;
+        }
+        
+        .alphabetic > .number::before {
+            content: "(" counter(alphabetic, lower-alpha) ") ";
+            counter-increment: alphabetic;
+        }
+        
+        .roman > .number::before {
+            content: "(" counter(roman, lower-roman) ") ";
+            counter-increment: roman;
+        }
+        
+        .none > .number::before {
+            content: "";
+        }
+        
+        .section-content {
+            counter-reset: numeric alphabetic roman;
+        }
+
+        .numeric {
+            counter-reset: alphabetic;
+        }
+
+        .alphabetic {
+            counter-reset: roman;
+        }
+
+        .roman {
+            counter-reset: numeric;
+        }
+        
+        .rule-number {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        /* Remove the ::before content for .rule-number */
+        .rule-number::before {
+            content: "";
+        }
+        
+        body {
+            counter-reset: rule;
         }
     </style>
 </head>
@@ -70,23 +166,17 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
             <th colspan="2">Rules</th>
         </tr>
         ${rules_list
-          .map(
+        .map(
             (rule) => `
         <tr>
             <td class="section-title">${rule.title}</td>
             <td class="section-content">
-                ${rule.content
-                  .map(
-                    (part) => `
-                    <p><span class="number">${part.number}</span> ${part.text}</p>
-                `
-                  )
-                  .join('')}
+                ${rule.content.map((req, index) => renderRequirement(req, 0, index === 0)).join('')}
             </td>
         </tr>
         `
-          )
-          .join('')}
+        )
+        .join('')}
     </table>
 </body>
 

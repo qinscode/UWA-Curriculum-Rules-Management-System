@@ -5,6 +5,8 @@ import { Rule } from './entities/rule.entity'
 import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
 import { RuleType } from './entities/rule.enum'
 import { Requirement } from '../requirements/entities/requirement.entity'
+import { DeepPartial } from 'typeorm'
+import { NumberingStyle } from '../requirements/entities/style.enum'
 
 @Injectable()
 export class RulesService {
@@ -38,7 +40,13 @@ export class RulesService {
   }
 
   async create(createRuleDto: CreateRuleDto): Promise<Rule> {
-    const rule = this.rulesRepository.create(createRuleDto)
+    const rule = this.rulesRepository.create({
+      ...createRuleDto,
+      requirements: createRuleDto.requirements?.map((req) => ({
+        ...req,
+        style: req.style as NumberingStyle,
+      })),
+    } as DeepPartial<Rule>)
     return this.rulesRepository.save(rule)
   }
 

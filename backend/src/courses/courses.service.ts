@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { DeepPartial, Repository } from 'typeorm'
 import { Course } from './entities/course.entity'
 import { CreateCourseDto, UpdateCourseDto } from './dto'
 import { RuleType } from '../rules/entities/rule.enum'
 import { Rule } from '../rules/entities/rule.entity'
 import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto'
+import { NumberingStyle } from '../requirements/entities/style.enum'
 
 @Injectable()
 export class CoursesService {
@@ -121,8 +122,15 @@ export class CoursesService {
 
   async createRule(courseId: number, createRuleDto: CreateRuleDto): Promise<Rule> {
     const course = await this.findOne(courseId)
-    const rule = this.rulesRepository.create({ ...createRuleDto, course })
-    return this.rulesRepository.save(rule)
+    const rule = this.rulesRepository.create({
+      ...createRuleDto,
+      course,
+      requirements: createRuleDto.requirements?.map((req) => ({
+        ...req,
+        style: req.style as NumberingStyle,
+      })),
+    } as DeepPartial<Rule>)
+    return this.rulesRepository.save(rule as Rule)
   }
 
   async updateRule(courseId: number, ruleId: number, updateRuleDto: UpdateRuleDto): Promise<Rule> {
