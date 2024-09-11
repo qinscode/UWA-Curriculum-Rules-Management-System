@@ -26,6 +26,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
 import { debounce } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 
 interface SortedTree {
   initialData: Requirement[]
@@ -36,6 +37,11 @@ interface SortedTree {
   onAddChildNode?: (parentId: number) => void
   showControls?: boolean
   showHelpPanel?: boolean
+}
+
+// 在文件顶部添加这个函数
+function generateMySQLCompatibleId(): number {
+  return Math.floor(Math.random() * 2147483647) + 1;
 }
 
 export default function SortedTree({
@@ -81,10 +87,11 @@ export default function SortedTree({
     setLevelStyles(initialLevelStyles)
   }, [initialData])
 
+  // 修改 handleAddRootNode 函数
   const handleAddRootNode = useCallback(() => {
     setData((prevData) => {
       const newNode = {
-        id: Date.now(),
+        id: generateMySQLCompatibleId(),
         parent_id: null,
         name: 'New Root Requirement',
         style: NumberingStyle.Numeric,
@@ -181,6 +188,7 @@ export default function SortedTree({
     [keys, onUpdateRequirement]
   )
 
+  // 修改 handleAddChildNode 函数
   const handleAddChildNode = useCallback(
     (parentId: number) => {
       if (onAddChildNode) {
@@ -188,7 +196,7 @@ export default function SortedTree({
       }
       setData((prevData) => {
         const newNode = {
-          id: Date.now(),
+          id: generateMySQLCompatibleId(),
           parent_id: parentId,
           name: 'New Requirement',
           style: NumberingStyle.Numeric,
