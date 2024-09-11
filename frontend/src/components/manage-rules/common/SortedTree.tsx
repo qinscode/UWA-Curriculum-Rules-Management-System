@@ -37,7 +37,7 @@ interface SortedTree {
   showHelpPanel?: boolean
 }
 
-export default function BasePage({
+export default function SortedTree({
   initialData,
   presetRequirements,
   onUpdateRequirement,
