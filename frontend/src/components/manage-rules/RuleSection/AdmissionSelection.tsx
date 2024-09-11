@@ -55,6 +55,20 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     [updateData]
   )
 
+  const handleAddRequirement = (
+    type: 'englishRequirements' | 'admissionRequirements' | 'rankingSelection'
+  ) => {
+    const newRequirement = {
+      id: Date.now(),
+      content: 'New Requirement',
+      style: NumberingStyle.Numeric,
+      children: [],
+    }
+    updateData({
+      [type]: [...data[type], newRequirement],
+    })
+  }
+
   useEffect(() => {
     console.log('AdmissionSelection: Data changed', data)
   }, [data])

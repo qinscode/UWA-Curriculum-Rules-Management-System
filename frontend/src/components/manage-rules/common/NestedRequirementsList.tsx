@@ -11,13 +11,9 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 }) => {
   const handleUpdateRequirement = useCallback(
     (newRequirementsOrUpdater: Requirement[] | ((prevState: Requirement[]) => Requirement[])) => {
-      console.log('NestedRequirementsList: Updating requirements:', newRequirementsOrUpdater)
+      console.log('NestedRequirementsList: handleUpdateRequirement called')
       if (onUpdate) {
-        if (typeof newRequirementsOrUpdater === 'function') {
-          onUpdate((prevRequirements) => newRequirementsOrUpdater(prevRequirements))
-        } else {
-          onUpdate(newRequirementsOrUpdater)
-        }
+        onUpdate(newRequirementsOrUpdater)
       }
     },
     [onUpdate]
@@ -28,9 +24,6 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
       <SortedTree
         initialData={initialRequirements}
         onUpdateRequirement={handleUpdateRequirement}
-        onAddChildNode={(parentId: number) => {
-          console.log('NestedRequirementsList - Adding child node to parent ID:', parentId)
-        }}
         presetRequirements={presetRules}
         showControls={showControls}
         showHelpPanel={showHelpPanel}

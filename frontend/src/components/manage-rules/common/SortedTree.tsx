@@ -47,7 +47,6 @@ interface BasePageProps {
   onUpdateRequirement?: (
     value: ((prevState: Requirement[]) => Requirement[]) | Requirement[]
   ) => void
-  onAddChildNode?: (parentId: number) => void
   showControls?: boolean
   showHelpPanel?: boolean
 }
@@ -56,7 +55,6 @@ export default function BasePage({
   initialData,
   presetRequirements,
   onUpdateRequirement,
-  onAddChildNode,
   showControls = true,
   showHelpPanel = true,
 }: BasePageProps) {
@@ -215,9 +213,7 @@ export default function BasePage({
   }
 
   const handleAddChildNode = (parentId: number) => {
-    if (onAddChildNode) {
-      onAddChildNode(parentId)
-    }
+    console.log('SortedTree: handleAddChildNode called')
     setData((prevData) => {
       const newNode = {
         id: Date.now(),
@@ -228,10 +224,16 @@ export default function BasePage({
         hasChildren: false,
       }
       const updatedData = [...prevData, newNode]
+      return updatedData
+    })
+
+    setExpandedNodes((prev) => new Set(prev).add(parentId))
+
+    setData((prevData) => {
+      const updatedData = [...prevData]
       updateDataWithStyles(updatedData)
       return updatedData
     })
-    setExpandedNodes((prev) => new Set(prev).add(parentId))
   }
 
   const toggleNode = (id: number) => {

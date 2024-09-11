@@ -219,6 +219,7 @@ const ManageRules: React.FC = () => {
   }
 
   const updateFormData = useCallback((data: Partial<GeneralProps['data']>) => {
+    console.log('updateFormData called with:', data)
     setFormData((prevData) => {
       const newData = {
         ...prevData,
