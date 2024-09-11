@@ -70,8 +70,7 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({
 
     const getIndex = (node: any, siblings: any[]): number => {
       const nonConnectorSiblings = siblings.filter((s) => !connectorNodes.has(s[keys.idKey]))
-      const index = nonConnectorSiblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
-      return index
+      return nonConnectorSiblings.findIndex((n) => n[keys.idKey] === node[keys.idKey]) + 1
     }
 
     const numbers = parents
@@ -82,8 +81,7 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({
             n[keys.parentIdKey] === parent[keys.parentIdKey] && !connectorNodes.has(n[keys.idKey])
         )
         const parentIndex = getIndex(parent, parentSiblings)
-        const parentNumber = getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
-        return parentNumber
+        return getNumber(parentIndex, levelStyles[index] || NumberingStyle.Numeric)
       })
 
     const siblings = allNodes.filter(
@@ -93,8 +91,7 @@ const RequirementNumber: React.FC<RequirementNumberProps> = ({
     const currentNumber = getNumber(currentIndex, levelStyles[level] || NumberingStyle.Numeric)
     numbers.push(currentNumber)
 
-    const fullNumber = numbers.join('.')
-    return fullNumber
+    return numbers.join('.')
   }
 
   const nodeNumber = getNodeNumber(node)

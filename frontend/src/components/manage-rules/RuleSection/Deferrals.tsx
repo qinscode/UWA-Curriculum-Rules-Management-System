@@ -18,7 +18,6 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
     const [showDeferralRules, setShowDeferralRules] = useState(false)
 
     useEffect(() => {
-      console.log('Deferrals: Data changed', data.deferrals)
       setShowDeferralRules(data.deferrals.length > 0)
     }, [data.deferrals])
 
@@ -26,7 +25,6 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
       (
         requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
       ) => {
-        console.log('Deferrals: Updating requirements', requirementsOrUpdater)
         if (typeof requirementsOrUpdater === 'function') {
           const updatedDeferrals = requirementsOrUpdater(data.deferrals)
           updateData({ deferrals: updatedDeferrals })
@@ -38,7 +36,6 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
     )
 
     const handleToggleDeferralAllowed = (checked: boolean) => {
-      console.log('Deferrals: Toggle deferral allowed', checked)
       updateData({ deferralAllowed: checked })
       if (!checked) {
         updateData({ deferrals: [] })
@@ -47,14 +44,11 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
     }
 
     const handleToggleCustomRules = (checked: boolean) => {
-      console.log('Deferrals: Toggle custom rules', checked)
       setShowDeferralRules(checked)
       if (!checked) {
         updateData({ deferrals: [] })
       }
     }
-
-    console.log('Deferrals: Rendering', { showDeferralRules, data })
 
     return (
       <div className="space-y-6">

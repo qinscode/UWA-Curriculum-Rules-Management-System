@@ -39,7 +39,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
 
   const handleRankingSelectionChange = useCallback(
     (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
-      console.log('AdmissionSelection: Updating ranking requirements', requirements)
       updateData({ rankingSelection: requirements as Requirement[] })
     },
     [updateData]
@@ -69,13 +68,14 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     })
   }
 
-  useEffect(() => {
-    console.log('AdmissionSelection: Data changed', data)
-  }, [data])
+  // Remove these useEffect hooks
+  // useEffect(() => {
+  //   console.log('AdmissionSelection: Data changed', data)
+  // }, [data])
 
-  useEffect(() => {
-    console.log('initialPresetRules: Data changed', initialPresetRules)
-  }, [initialPresetRules])
+  // useEffect(() => {
+  //   console.log('initialPresetRules: Data changed', initialPresetRules)
+  // }, [initialPresetRules])
 
   return (
     <div className="space-y-6">

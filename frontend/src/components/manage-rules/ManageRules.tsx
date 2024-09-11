@@ -93,13 +93,11 @@ const ManageRules: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log('Fuck ManageRules: Fetching rules')
     fetchPresetRules()
   }, [])
 
   useEffect(() => {
     if (course?.id) {
-      console.log('ManageRules: Fetching rules for course ID:', course.id)
       fetchAndCategorizeRules(course.id)
     }
   }, [course])

@@ -17,7 +17,6 @@ const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
     const [showAwardWithDistinction, setShowAwardWithDistinction] = useState(false)
 
     useEffect(() => {
-      console.log('AwardWithDistinction: Data changed', data.awardWithDistinction)
       setShowAwardWithDistinction(data.awardWithDistinction.length > 0)
     }, [data.awardWithDistinction])
 
@@ -25,7 +24,6 @@ const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
       (
         requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
       ) => {
-        console.log('AwardWithDistinction: Updating requirements', requirementsOrUpdater)
         if (typeof requirementsOrUpdater === 'function') {
           const updatedRequirements = requirementsOrUpdater(data.awardWithDistinction)
           updateData({ awardWithDistinction: updatedRequirements })
@@ -37,14 +35,11 @@ const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
     )
 
     const handleToggleSwitch = (checked: boolean) => {
-      console.log('AwardWithDistinction: Toggle switch', checked)
       setShowAwardWithDistinction(checked)
       if (!checked) {
         updateData({ awardWithDistinction: [] })
       }
     }
-
-    console.log('AwardWithDistinction: Rendering', { showAwardWithDistinction, data })
 
     return (
       <div className="space-y-6">

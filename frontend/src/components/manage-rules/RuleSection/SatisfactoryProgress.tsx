@@ -17,7 +17,6 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
     const [showSatisfactoryProgress, setShowSatisfactoryProgress] = useState(false)
 
     useEffect(() => {
-      console.log('SatisfactoryProgress: Data changed', data.satisfactoryProgress)
       setShowSatisfactoryProgress(data.satisfactoryProgress.length > 0)
     }, [data.satisfactoryProgress])
 
@@ -25,7 +24,6 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
       (
         requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
       ) => {
-        console.log('SatisfactoryProgress: Updating requirements', requirementsOrUpdater)
         if (typeof requirementsOrUpdater === 'function') {
           updateData({
             satisfactoryProgress: requirementsOrUpdater(data.satisfactoryProgress),
@@ -38,14 +36,11 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
     )
 
     const handleToggleSwitch = (checked: boolean) => {
-      console.log('SatisfactoryProgress: Toggle switch', checked)
       setShowSatisfactoryProgress(checked)
       if (!checked) {
         updateData({ satisfactoryProgress: [] })
       }
     }
-
-    console.log('SatisfactoryProgress: Rendering', { showSatisfactoryProgress, data })
 
     return (
       <div className="space-y-6">

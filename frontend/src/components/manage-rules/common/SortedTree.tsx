@@ -25,6 +25,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent } from '@/components/ui/card'
 import HelpPanel from './HelpPanel'
 import RequirementNumber from './RequirementNumber'
+import { debounce } from 'lodash'
 
 interface SortedTree {
   initialData: Requirement[]
@@ -127,8 +128,8 @@ export default function SortedTree({
     [onUpdateRequirement]
   )
 
-  const handleInputChange = useCallback(
-    (id: number, value: string) => {
+  const debouncedHandleInputChange = useCallback(
+    debounce((id: number, value: string) => {
       setData((prevData) => {
         const updatedData = prevData.map((node) =>
           node.id === id ? { ...node, name: value } : node
@@ -139,8 +140,20 @@ export default function SortedTree({
         }
         return updatedData
       })
-    },
+    }, 300),
     [onUpdateRequirement]
+  )
+
+  const handleInputChange = useCallback(
+    (id: number, value: string) => {
+      // 立即更新本地状态以保持输入响应
+      setData((prevData) =>
+        prevData.map((node) => (node.id === id ? { ...node, name: value } : node))
+      )
+      // 延迟更新父组件状态
+      debouncedHandleInputChange(id, value)
+    },
+    [debouncedHandleInputChange]
   )
 
   const handleDeleteNode = useCallback(
@@ -334,9 +347,8 @@ export default function SortedTree({
           </div>
         ) : (
           <Card
-            className={`transition-colors duration-200 ${
-              stat.node.is_connector ? 'bg-blue-50' : ''
-            }`}
+            className={`transition-colors duration-200 ${stat.node.is_connector ? 'bg-blue-50' : ''
+              }`}
           >
             <CardContent className="p-3">
               <div className="flex items-start p-2">
@@ -385,9 +397,8 @@ export default function SortedTree({
                       variant="outline"
                       size="icon"
                       onClick={() => handleToggleConnector(stat.node.id)}
-                      className={`mr-1 ${
-                        stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
-                      }`}
+                      className={`mr-1 ${stat.node.is_connector ? 'bg-blue-100 text-blue-600' : ''
+                        }`}
                     >
                       {stat.node.is_connector ? <ArrowRight size={16} /> : <Sparkles size={16} />}
                     </Button>
