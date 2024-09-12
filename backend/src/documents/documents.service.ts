@@ -64,7 +64,7 @@ export class DocumentsService {
               rule.requirements.filter((req) => !req.parentId),
               index + 1
             )
-          : [{ text: 'TO BE FILLED BY DEFAULT', style: NumberingStyle.None, ruleIndex: index + 1 }],
+          : [{ text: 'TO BE IMPLEMENT', style: NumberingStyle.None, ruleIndex: index + 1 }],
     }))
   }
 
