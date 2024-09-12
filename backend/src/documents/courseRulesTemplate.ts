@@ -8,39 +8,39 @@ const sectionTitleMaxWidth = '150px'
 const sectionContentPaddingLeft = '20px'
 
 const getStyleClass = (style: NumberingStyle): string => {
-    switch (style) {
-        case NumberingStyle.Alphabetic:
-            return 'alphabetic'
-        case NumberingStyle.Roman:
-            return 'roman'
-        case NumberingStyle.None:
-            return 'none'
-        default:
-            return 'numeric'
-    }
+  switch (style) {
+    case NumberingStyle.Alphabetic:
+      return 'alphabetic'
+    case NumberingStyle.Roman:
+      return 'roman'
+    case NumberingStyle.None:
+      return 'none'
+    default:
+      return 'numeric'
+  }
 }
 
 const renderRequirement = (
-    req: any,
-    level: number,
-    isFirstChild: boolean,
-    ruleIndex: number,
-    levelZeroCounter: number,
-    totalLevelZeroItems: number
+  req: any,
+  level: number,
+  isFirstChild: boolean,
+  ruleIndex: number,
+  levelZeroCounter: number,
+  totalLevelZeroItems: number
 ): string => {
-    const styleClass = getStyleClass(req.style)
-    const padding = level * 20
-    let numberContent = ''
+  const styleClass = getStyleClass(req.style)
+  const padding = level * 20
+  let numberContent = ''
 
-    if (level === 0) {
-        if (totalLevelZeroItems > 1) {
-            numberContent = `<span class="rule-number">${levelZeroCounter}.</span> `
-        }
-    } else if (level > 0) {
-        numberContent = `<span class="number"></span>`
+  if (level === 0) {
+    if (totalLevelZeroItems > 1) {
+      numberContent = `<span class="rule-number">(${levelZeroCounter})</span> `
     }
+  } else if (level > 0) {
+    numberContent = `<span class="number"></span>`
+  }
 
-    return `
+  return `
     <p class="${styleClass}" style="padding-left: ${padding}px;">
       ${numberContent}${req.text}
     </p>
@@ -49,7 +49,7 @@ const renderRequirement = (
 }
 
 export const courseRulesTemplate = (rules_list: Rule[]) => {
-    return `
+  return `
 <!DOCTYPE html>
 <html lang="en">
 
@@ -101,7 +101,10 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
 
         .section-content {
             width: 78%;
-            padding-left: ${sectionContentPaddingLeft}; // 添加左侧padding
+            padding-left: ${sectionContentPaddingLeft};
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
         }
         
         .section-content p {
@@ -157,13 +160,23 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             margin-right: 5px;
         }
         
-        /* Remove the ::before content for .rule-number */
         .rule-number::before {
             content: "";
         }
         
         body {
             counter-reset: rule;
+        }
+        
+        .rule-order {
+            font-weight: bold;
+            font-size: 12px;
+            margin: 0;
+            padding-right: 5px;
+        }
+        
+        .rule-content {
+            flex: 1;
         }
     </style>
 </head>
@@ -174,24 +187,35 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             <th colspan="2">Rules</th>
         </tr>
         ${rules_list
-            .map(
-                (rule, ruleIndex) => {
-                    let levelZeroCounter = 0;
-                    const totalLevelZeroItems = rule.content.length;
-                    return `
+          .map((rule, ruleIndex) => {
+            let levelZeroCounter = 0
+            const totalLevelZeroItems = rule.content.length
+            const ruleOrder = ruleIndex + 1
+            return `
         <tr>
             <td class="section-title">${rule.title}</td>
             <td class="section-content">
-                ${rule.content.map((req, index) => {
-                        levelZeroCounter++;
-                        return renderRequirement(req, 0, index === 0, ruleIndex + 1, levelZeroCounter, totalLevelZeroItems);
-                    }).join('')}
+                <span class="rule-order">${ruleOrder}.</span>
+                <div class="rule-content">
+                ${rule.content
+                  .map((req, index) => {
+                    levelZeroCounter++
+                    return renderRequirement(
+                      req,
+                      0,
+                      index === 0,
+                      ruleIndex + 1,
+                      levelZeroCounter,
+                      totalLevelZeroItems
+                    )
+                  })
+                  .join('')}
+                </div>
             </td>
         </tr>
         `
-                }
-            )
-            .join('')}
+          })
+          .join('')}
     </table>
 </body>
 
