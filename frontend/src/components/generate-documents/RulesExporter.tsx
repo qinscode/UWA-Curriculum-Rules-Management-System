@@ -8,7 +8,9 @@ interface ExportRulesSectionProps {
 
 const ExportRulesSection: FC<ExportRulesSectionProps> = ({ exportRules, isGenerating }) => {
   return (
-    <div>
+    <div className="rounded-lg border border-gray-200 p-6 shadow-lg">
+      {' '}
+      {/* Added Shadow, Border, and Padding */}
       <h3 className="text-base font-semibold leading-7 text-gray-900">Export Rules</h3>
       <p className="mt-1 text-sm leading-6 text-gray-600">
         Export all rules as a JSON file for backup or integration purposes.
