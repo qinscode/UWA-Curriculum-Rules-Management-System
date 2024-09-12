@@ -254,6 +254,8 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.rankingSelection, data: formData.rankingSelection },
       ]
 
+      console.log('Rules to update:', rulesToUpdate)
+
       for (const { rule, data } of rulesToUpdate) {
         if (rule && data) {
           console.log(`Updating ${rule.type} rule:`, rule.id, data)
