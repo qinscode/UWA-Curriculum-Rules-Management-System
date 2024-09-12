@@ -25,14 +25,17 @@ const renderRequirement = (
     level: number,
     isFirstChild: boolean,
     ruleIndex: number,
-    levelZeroCounter: number
+    levelZeroCounter: number,
+    totalLevelZeroItems: number
 ): string => {
     const styleClass = getStyleClass(req.style)
     const padding = level * 20
     let numberContent = ''
 
     if (level === 0) {
-        numberContent = `<span class="rule-number">${levelZeroCounter}.</span> `
+        if (totalLevelZeroItems > 1) {
+            numberContent = `<span class="rule-number">${levelZeroCounter}.</span> `
+        }
     } else if (level > 0) {
         numberContent = `<span class="number"></span>`
     }
@@ -41,7 +44,7 @@ const renderRequirement = (
     <p class="${styleClass}" style="padding-left: ${padding}px;">
       ${numberContent}${req.text}
     </p>
-    ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0, ruleIndex, levelZeroCounter)).join('') : ''}
+    ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0, ruleIndex, levelZeroCounter, totalLevelZeroItems)).join('') : ''}
   `
 }
 
@@ -173,14 +176,15 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
         ${rules_list
             .map(
                 (rule, ruleIndex) => {
-                    let levelZeroCounter = 0; // Reset counter for each rule
+                    let levelZeroCounter = 0;
+                    const totalLevelZeroItems = rule.content.length;
                     return `
         <tr>
             <td class="section-title">${rule.title}</td>
             <td class="section-content">
                 ${rule.content.map((req, index) => {
-                        levelZeroCounter++; // Increment counter for each level 0 item
-                        return renderRequirement(req, 0, index === 0, ruleIndex + 1, levelZeroCounter);
+                        levelZeroCounter++;
+                        return renderRequirement(req, 0, index === 0, ruleIndex + 1, levelZeroCounter, totalLevelZeroItems);
                     }).join('')}
             </td>
         </tr>
