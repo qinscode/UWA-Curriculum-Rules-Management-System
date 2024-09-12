@@ -27,7 +27,7 @@ interface LayoutProps {
   children: ReactNode
 }
 
-// 正确的 Logo 组件路径，去掉了重复的 ".svglogo.svg"
+// Add Logo component
 const Logo = () => <img src="/uwa-logo.svg" alt="UWA Logo" width={100} height={100} />
 
 const Layout: FC<LayoutProps> = ({ children }) => {
@@ -56,7 +56,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                 <div className="flex h-16 justify-between">
                   <div className="flex">
                     <div className="flex flex-shrink-0 items-center">
-                      {/* 使用 Logo 组件替换原来的 CRMS */}
+                      {/* Use Logo to replace CRMS */}
                       <Logo />
                     </div>
                     <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
