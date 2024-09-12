@@ -55,13 +55,13 @@ const CourseManage: React.FC = () => {
   const router = useRouter()
 
   useEffect(() => {
-    const storedToken = getToken() // get token from local storage
+    const storedToken = getToken()
     setToken(storedToken)
   }, [])
 
   useEffect(() => {
     const fetchCourses = async () => {
-      if (!token) return // ensure token is available before fetching courses
+      if (!token) return
       try {
         const fetchedCourses = await getCourses(token)
         setCourses(fetchedCourses)
@@ -76,7 +76,7 @@ const CourseManage: React.FC = () => {
   const filteredAndSortedCourses = courses
     .filter(
       (course) =>
-        (!selectedType || course.type === selectedType) && // 增加对type的筛选条件
+        (!selectedType || course.type === selectedType) &&
         (course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
           course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           course.type.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -127,7 +127,7 @@ const CourseManage: React.FC = () => {
   return (
     <div className="flex-1 overflow-auto">
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-        <h1 className="mb-6 text-3xl font-bold">Choose template</h1>
+        <h1 className="mb-6 text-3xl font-bold">Choose a Course</h1>
         <div className="mb-6 flex items-center justify-between">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -165,17 +165,17 @@ const CourseManage: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[120px]">Course Code</TableHead>
-                <TableHead>Course Name</TableHead>
-                <TableHead className="w-[200px]">Type</TableHead>
-                <TableHead className="w-[180px]">Version</TableHead>
-                <TableHead className="w-[200px]">
+                <TableHead className="w-[120px] bg-blue-100">Course Code</TableHead>
+                <TableHead className="bg-blue-100">Course Name</TableHead>
+                <TableHead className="w-[200px] bg-blue-100">Type</TableHead>
+                <TableHead className="w-[180px] bg-blue-100">Version</TableHead>
+                <TableHead className="w-[200px] bg-blue-100">
                   <div className="flex items-center">
                     Last updated
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                   </div>
                 </TableHead>
-                <TableHead className="w-[100px]">Action</TableHead>
+                <TableHead className="w-[100px] bg-blue-100">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -236,7 +236,12 @@ const CourseManage: React.FC = () => {
                   </TableCell>
                   <TableCell>{course.lastUpdated}</TableCell>
                   <TableCell>
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(course)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="transition-transform hover:bg-indigo-100 active:scale-95 active:bg-indigo-200"
+                      onClick={() => handleEdit(course)}
+                    >
                       Edit
                     </Button>
                   </TableCell>
