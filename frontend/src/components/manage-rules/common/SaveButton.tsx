@@ -29,7 +29,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({
     <div className="mt-8 flex justify-end">
       <Button
         type="button"
-        className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 disabled:cursor-not-allowed disabled:bg-indigo-300"
+        className="bg-blue-800 text-white shadow-sm hover:bg-black disabled:cursor-not-allowed disabled:bg-blue-300"
         onClick={handleDebouncedSave}
         disabled={disabled}
       >

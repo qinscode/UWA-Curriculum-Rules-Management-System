@@ -400,7 +400,7 @@ const ManageRules: React.FC = () => {
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
+                  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"
                 >
                   Save as New Version
                 </Button>
