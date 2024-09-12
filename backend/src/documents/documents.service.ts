@@ -3,12 +3,11 @@ import * as puppeteer from 'puppeteer'
 import * as fs from 'fs'
 import * as path from 'path'
 import { courseRulesTemplate } from './courseRulesTemplate'
-import { Rule } from 'src/types'
 import { config } from 'dotenv'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Course } from '../courses/entities/course.entity'
-import { Rule as RuleEntity } from '../rules/entities/rule.entity'
+import { Rule } from '../rules/entities/rule.entity'
 import { Requirement } from '../requirements/entities/requirement.entity'
 import { NumberingStyle } from '../requirements/entities/style.enum'
 import { PDFRuleType } from './pdf-rule-type'
@@ -26,8 +25,8 @@ export class DocumentsService {
   constructor(
     @InjectRepository(Course)
     private courseRepository: Repository<Course>,
-    @InjectRepository(RuleEntity)
-    private ruleRepository: Repository<RuleEntity>
+    @InjectRepository(Rule)
+    private ruleRepository: Repository<Rule>
   ) {
     if (!fs.existsSync(this.pdfDirectory)) {
       fs.mkdirSync(this.pdfDirectory, { recursive: true })
@@ -55,31 +54,23 @@ export class DocumentsService {
       throw new NotFoundException(`Course with ID "${courseId}" not found`)
     }
 
-    return course.rules.map((rule, index) => ({
-      title: PDFRuleType.getPrintRuleType(rule.type),
-      ruleIndex: index + 1,
-      content:
-        rule.requirements.length > 0
-          ? this.buildRequirementTree(
-              rule.requirements.filter((req) => !req.parentId),
-              index + 1
-            )
-          : [{ text: 'TO BE IMPLEMENT', style: NumberingStyle.None, ruleIndex: index + 1 }],
-    }))
+    return course.rules.map((rule) => {
+      rule.name = PDFRuleType.getPrintRuleType(rule.type)
+      rule.requirements = this.buildRequirementTree(
+        rule.requirements.filter((req) => !req.parentId)
+      )
+      return rule
+    })
   }
 
-  private buildRequirementTree(
-    requirements: Requirement[],
-    ruleIndex: number,
-    level: number = 0
-  ): any[] {
-    return requirements.map((req) => ({
-      number: req.order_index.toString(),
-      text: req.content,
-      style: this.getStyleForLevel(level, req.style),
-      children: req.children ? this.buildRequirementTree(req.children, ruleIndex, level + 1) : [],
-      ruleIndex: level === 0 ? ruleIndex : undefined,
-    }))
+  private buildRequirementTree(requirements: Requirement[], level: number = 0): Requirement[] {
+    return requirements.map((req) => {
+      req.style = this.getStyleForLevel(level, req.style)
+      if (req.children) {
+        req.children = this.buildRequirementTree(req.children, level + 1)
+      }
+      return req
+    })
   }
 
   private getStyleForLevel(level: number, defaultStyle: NumberingStyle): NumberingStyle {

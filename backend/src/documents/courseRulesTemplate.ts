@@ -1,4 +1,5 @@
-import { Rule } from 'src/types'
+import { Rule } from '../rules/entities/rule.entity'
+import { Requirement } from '../requirements/entities/requirement.entity'
 import { NumberingStyle } from '../requirements/entities/style.enum'
 
 const verticalGap = '15px'
@@ -21,28 +22,32 @@ const getStyleClass = (style: NumberingStyle): string => {
 }
 
 const renderRequirement = (
-  req: any,
+  req: Requirement,
   level: number,
   isFirstChild: boolean,
   ruleIndex: number,
   levelZeroCounter: number,
   totalLevelZeroItems: number
 ): string => {
+  console.log(`Requirement ${req.id || 'unknown'} isConnector:`, req.isConnector)
+
   const styleClass = getStyleClass(req.style)
-  const padding = level * 5 // set the padding to 0 for now. It can be level * 20 to have a nested effect
+  const padding = level * 5
   let numberContent = ''
 
-  if (level === 0) {
-    if (totalLevelZeroItems > 1) {
-      numberContent = `<span class="rule-number">(${levelZeroCounter})</span> `
+  if (!req.isConnector) {
+    if (level === 0) {
+      if (totalLevelZeroItems > 1) {
+        numberContent = `<span class="rule-number">(${levelZeroCounter})</span> `
+      }
+    } else if (level > 0) {
+      numberContent = `<span class="number"></span>`
     }
-  } else if (level > 0) {
-    numberContent = `<span class="number"></span>`
   }
 
   return `
-    <p class="${styleClass}" style="padding-left: ${padding}px;">
-      ${numberContent}${req.text}
+    <p class="${styleClass}${req.isConnector ? ' connector' : ''}" style="padding-left: ${padding}px;">
+      ${numberContent}${req.content}
     </p>
     ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0, ruleIndex, levelZeroCounter, totalLevelZeroItems)).join('') : ''}
   `
@@ -180,6 +185,10 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
         .rule-content {
             flex: 1;
         }
+        
+        .connector {
+            list-style-type: none;
+        }
     </style>
 </head>
 
@@ -191,15 +200,15 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
         ${rules_list
           .map((rule, ruleIndex) => {
             let levelZeroCounter = 0
-            const totalLevelZeroItems = rule.content.length
+            const totalLevelZeroItems = rule.requirements.length
             const ruleOrder = ruleIndex + 1
             return `
         <tr>
-            <td class="section-title">${rule.title}</td>
+            <td class="section-title">${rule.name}</td>
             <td class="section-content">
                 <span class="rule-order">${ruleOrder}.</span>
                 <div class="rule-content">
-                ${rule.content
+                ${rule.requirements
                   .map((req, index) => {
                     levelZeroCounter++
                     return renderRequirement(
