@@ -53,7 +53,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <>
       <div className="min-h-screen bg-white">
-        <Disclosure as="nav" className="bg-white shadow-sm">
+        <Disclosure as="nav" className="bg- white- h-18 shadow-lg">
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -69,7 +69,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                           key={item.name}
                           href={item.href}
                           className={classNames(
-                            'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
+                            'inline-flex items-center border-b-2 px-1 pt-1 text-base font-medium',
                             item.current
                               ? 'border-indigo-500 text-gray-900'
                               : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-indigo-500'
@@ -88,13 +88,13 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                         <>
                           <Link
                             href={'/profile'}
-                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                            className="text-base font-medium text-gray-500 hover:text-gray-700"
                           >
                             Profile
                           </Link>
                           <button
                             onClick={handleLogout}
-                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
+                            className="text-base font-medium text-gray-500 hover:text-gray-700"
                           >
                             Logout
                           </button>
@@ -103,13 +103,13 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                         <>
                           <Link
                             href={'/login'}
-                            className="text-sm font-medium text-gray-500 hover:text-indigo-500"
+                            className="text-base font-medium text-gray-500 hover:text-indigo-500"
                           >
                             Sign In
                           </Link>
                           <Link
                             href={'/register'}
-                            className="text-sm font-medium text-gray-500 hover:text-indigo-500"
+                            className="text-base font-medium text-gray-500 hover:text-indigo-500"
                           >
                             Register
                           </Link>
