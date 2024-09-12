@@ -199,8 +199,6 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
         </tr>
         ${rules_list
           .map((rule, ruleIndex) => {
-            let levelZeroCounter = 0
-            const totalLevelZeroItems = rule.requirements.length
             const ruleOrder = ruleIndex + 1
             return `
         <tr>
@@ -208,19 +206,22 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             <td class="section-content">
                 <span class="rule-order">${ruleOrder}.</span>
                 <div class="rule-content">
-                ${rule.requirements
-                  .map((req, index) => {
-                    levelZeroCounter++
-                    return renderRequirement(
-                      req,
-                      0,
-                      index === 0,
-                      ruleIndex + 1,
-                      levelZeroCounter,
-                      totalLevelZeroItems
-                    )
-                  })
-                  .join('')}
+                ${
+                  rule.requirements.length === 0
+                    ? '<p>TO BE IMPLEMENT</p>'
+                    : rule.requirements
+                        .map((req, index) =>
+                          renderRequirement(
+                            req,
+                            0,
+                            index === 0,
+                            ruleIndex + 1,
+                            index + 1,
+                            rule.requirements.length
+                          )
+                        )
+                        .join('')
+                }
                 </div>
             </td>
         </tr>
