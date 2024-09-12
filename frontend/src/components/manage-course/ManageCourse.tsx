@@ -162,93 +162,95 @@ const CourseManage: React.FC = () => {
           </Select>
         </div>
         <Card>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[120px] bg-blue-100">Course Code</TableHead>
-                <TableHead className="bg-blue-100">Course Name</TableHead>
-                <TableHead className="w-[200px] bg-blue-100">Type</TableHead>
-                <TableHead className="w-[180px] bg-blue-100">Version</TableHead>
-                <TableHead className="w-[200px] bg-blue-100">
-                  <div className="flex items-center">
-                    Last updated
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                  </div>
-                </TableHead>
-                <TableHead className="w-[100px] bg-blue-100">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAndSortedCourses.map((course) => (
-                <TableRow key={course.id}>
-                  <TableCell className="font-medium">{course.code}</TableCell>
-                  <TableCell>{course.name}</TableCell>
-                  <TableCell>{course.type}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Select
-                        value={course.version}
-                        onValueChange={(newVersion) => handleVersionChange(course.id, newVersion)}
-                      >
-                        <SelectTrigger className="w-[100px]">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {course.versions.map((version) => (
-                            <SelectItem key={version} value={version}>
-                              {version}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => handleAddVersion(course)}
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Add New Version</DialogTitle>
-                          </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <label htmlFor="new-version" className="text-right">
-                                New Version
-                              </label>
-                              <Input
-                                id="new-version"
-                                value={newVersion}
-                                onChange={(e) => setNewVersion(e.target.value)}
-                                className="col-span-3"
-                                placeholder="e.g., 2025"
-                              />
-                            </div>
-                          </div>
-                          <Button onClick={handleSaveNewVersion}>Save</Button>
-                        </DialogContent>
-                      </Dialog>
+          <div className="rounded-lg border border-gray-200 shadow-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[120px] bg-blue-100">Course Code</TableHead>
+                  <TableHead className="bg-blue-100">Course Name</TableHead>
+                  <TableHead className="w-[200px] bg-blue-100">Type</TableHead>
+                  <TableHead className="w-[180px] bg-blue-100">Version</TableHead>
+                  <TableHead className="w-[200px] bg-blue-100">
+                    <div className="flex items-center">
+                      Last updated
+                      <ArrowUpDown className="ml-2 h-4 w-4" />
                     </div>
-                  </TableCell>
-                  <TableCell>{course.lastUpdated}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="transition-transform hover:bg-indigo-100 active:scale-95 active:bg-indigo-200"
-                      onClick={() => handleEdit(course)}
-                    >
-                      Edit
-                    </Button>
-                  </TableCell>
+                  </TableHead>
+                  <TableHead className="w-[100px] bg-blue-100">Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredAndSortedCourses.map((course) => (
+                  <TableRow key={course.id}>
+                    <TableCell className="font-medium">{course.code}</TableCell>
+                    <TableCell>{course.name}</TableCell>
+                    <TableCell>{course.type}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Select
+                          value={course.version}
+                          onValueChange={(newVersion) => handleVersionChange(course.id, newVersion)}
+                        >
+                          <SelectTrigger className="w-[100px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {course.versions.map((version) => (
+                              <SelectItem key={version} value={version}>
+                                {version}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleAddVersion(course)}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Add New Version</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                              <div className="grid grid-cols-4 items-center gap-4">
+                                <label htmlFor="new-version" className="text-right">
+                                  New Version
+                                </label>
+                                <Input
+                                  id="new-version"
+                                  value={newVersion}
+                                  onChange={(e) => setNewVersion(e.target.value)}
+                                  className="col-span-3"
+                                  placeholder="e.g., 2025"
+                                />
+                              </div>
+                            </div>
+                            <Button onClick={handleSaveNewVersion}>Save</Button>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </TableCell>
+                    <TableCell>{course.lastUpdated}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="transition-transform hover:bg-indigo-100 active:scale-95 active:bg-indigo-200"
+                        onClick={() => handleEdit(course)}
+                      >
+                        Edit
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       </div>
     </div>
