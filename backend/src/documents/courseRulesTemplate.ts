@@ -8,37 +8,36 @@ const sectionTitleMaxWidth = '150px'
 const sectionContentPaddingLeft = '20px'
 
 const getStyleClass = (style: NumberingStyle): string => {
-    switch (style) {
-        case NumberingStyle.Alphabetic:
-            return 'alphabetic'
-        case NumberingStyle.Roman:
-            return 'roman'
-        case NumberingStyle.None:
-            return 'none'
-        default:
-            return 'numeric'
-    }
+  switch (style) {
+    case NumberingStyle.Alphabetic:
+      return 'alphabetic'
+    case NumberingStyle.Roman:
+      return 'roman'
+    case NumberingStyle.None:
+      return 'none'
+    default:
+      return 'numeric'
+  }
 }
 
 const renderRequirement = (req: any, level: number, isFirstChild: boolean): string => {
-    const styleClass = getStyleClass(req.style)
-    const padding = level * 20
-    let numberContent = ''
+  const styleClass = getStyleClass(req.style)
+  const padding = level * 20
+  let numberContent = ''
 
-    if (level === 0 && isFirstChild) {
-        // Only show the rule number for the first child at level 0
-        numberContent = `<span class="rule-number">${req.ruleIndex}.</span> `
-    } else if (level > 0) {
-        numberContent = '<span class="number"></span> '
-    }
+  if (level === 0 && isFirstChild) {
+    // Only show the rule number for the first child at level 0
+    numberContent = `<span class="rule-number">${req.ruleIndex}.</span> `
+  } else if (level > 0) {
+    numberContent = '<span class="number"></span> '
+  }
 
-    const content = `
+  return `
     <p class="${styleClass}" style="padding-left: ${padding}px;">
       ${numberContent}${req.text}
     </p>
     ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0)).join('') : ''}
   `
-    return content
 }
 
 export const courseRulesTemplate = (rules_list: Rule[]) => `
@@ -166,7 +165,7 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
             <th colspan="2">Rules</th>
         </tr>
         ${rules_list
-        .map(
+          .map(
             (rule) => `
         <tr>
             <td class="section-title">${rule.title}</td>
@@ -175,8 +174,8 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
             </td>
         </tr>
         `
-        )
-        .join('')}
+          )
+          .join('')}
     </table>
 </body>
 
