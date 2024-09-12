@@ -1,4 +1,5 @@
 'use client'
+
 import React, { FC, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
@@ -26,6 +27,9 @@ interface LayoutProps {
   children: ReactNode
 }
 
+// 正确的 Logo 组件路径，去掉了重复的 ".svglogo.svg"
+const Logo = () => <img src="/uwa-logo.svg" alt="UWA Logo" width={100} height={100} />
+
 const Layout: FC<LayoutProps> = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false) // Track user login state
   const router = useRouter()
@@ -52,7 +56,8 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                 <div className="flex h-16 justify-between">
                   <div className="flex">
                     <div className="flex flex-shrink-0 items-center">
-                      <span className="text-2xl font-bold text-indigo-600">CRMS</span>
+                      {/* 使用 Logo 组件替换原来的 CRMS */}
+                      <Logo />
                     </div>
                     <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
                       {navigation.map((item) => (
