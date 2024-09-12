@@ -29,7 +29,7 @@ const renderRequirement = (
   totalLevelZeroItems: number
 ): string => {
   const styleClass = getStyleClass(req.style)
-  const padding = level * 20
+  const padding = level * 5 // set the padding to 0 for now. It can be level * 20 to have a nested effect
   let numberContent = ''
 
   if (level === 0) {
@@ -74,8 +74,8 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 ${horizontalGap}; 
-                margin-top: -${horizontalGap}; /* 抵消第一行上方的间距 */
-
+            /*  Remove the gap between the table and the top of the page*/
+            margin-top: -${horizontalGap};
         }
 
         th,
