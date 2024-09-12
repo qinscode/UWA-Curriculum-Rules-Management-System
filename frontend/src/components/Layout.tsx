@@ -14,85 +14,13 @@ interface NavigationItem {
 }
 
 function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(' ')
 }
 
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
-  const [loggedIn, setLoggedIn] = useState(false); // Track user login state
-  const router = useRouter();
-
-  useEffect(() => {
-    setLoggedIn(isAuthenticated());
-  }, []);
-// Handle logout
-  const handleLogout = () => {
-    logout(); // Clear user token
-    setLoggedIn(false); // Update state
-    router.push('/'); // Redirect to home after logout
-  };
-
-  // Get the current path and dynamically assign the `current` property
-  const navigation: NavigationItem[] = [
-    { name: 'Home', href: '/', current: router.pathname === '/' },
-    { name: 'Manage Course', href: '/manage-course', current: router.pathname === '/manage-course' },
-    { name: 'Generate Documents', href: '/generate-documents', current: router.pathname === '/generate-documents' },
-  ];
-
-
-function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function Navigation() {
-  return (
-    <nav className="border-b border-gray-200 bg-white shadow-sm">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 justify-between">
-          <div className="flex">
-            {/* Add logo or brand here */}
-            <div className="flex-shrink-0">
-              <img src="/uwa-logo.svg" alt="Logo" className="h-10 w-auto" />
-            </div>
-            <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
-                    item.current
-                      ? 'border-indigo-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                  )}
-                  aria-current={item.current ? 'page' : undefined}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
-}
-
-function classNames(...classes: string[]): string {
-  return classes.filter(Boolean).join(' ')
-}
-
-interface LayoutProps {
-  children: ReactNode
-}
-
-// Add Logo component
-const Logo = () => <img src="/uwa-logo.svg" alt="UWA Logo" width={100} height={100} />
-
-const Layout: FC<LayoutProps> = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false) // Track user login state
   const router = useRouter()
 
-  // Check if the user is authenticated
   useEffect(() => {
     setLoggedIn(isAuthenticated())
   }, [])
@@ -103,6 +31,24 @@ const Layout: FC<LayoutProps> = ({ children }) => {
     setLoggedIn(false) // Update state
     router.push('/') // Redirect to home after logout
   }
+
+  // Get the current path and dynamically assign the `current` property
+  const navigation: NavigationItem[] = [
+    { name: 'Home', href: '/', current: router.pathname === '/' },
+    {
+      name: 'Manage Course',
+      href: '/manage-course',
+      current: router.pathname === '/manage-course',
+    },
+    {
+      name: 'Generate Documents',
+      href: '/generate-documents',
+      current: router.pathname === '/generate-documents',
+    },
+  ]
+
+  // Logo Component
+  const Logo = () => <img src="/uwa-logo.svg" alt="UWA Logo" className="h-10 w-auto" />
 
   return (
     <>
@@ -123,10 +69,10 @@ const Layout: FC<LayoutProps> = ({ children }) => {
                           key={item.name}
                           href={item.href}
                           className={classNames(
+                            'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
                             item.current
                               ? 'border-indigo-500 text-gray-900'
-                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                            'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'
+                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                           )}
                           aria-current={item.current ? 'page' : undefined}
                         >
@@ -245,7 +191,6 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         </Disclosure>
 
         <div>
-          {/* DO NOT DELETE THIS DIV!!!!!!! */}
           <div className="py-6"></div>
 
           <main>
