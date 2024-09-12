@@ -24,13 +24,20 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     setLoggedIn(isAuthenticated());
   }, []);
+// Handle logout
+  const handleLogout = () => {
+    logout(); // Clear user token
+    setLoggedIn(false); // Update state
+    router.push('/'); // Redirect to home after logout
+  };
 
+  // Get the current path and dynamically assign the `current` property
+  const navigation: NavigationItem[] = [
+    { name: 'Home', href: '/', current: router.pathname === '/' },
+    { name: 'Manage Course', href: '/manage-course', current: router.pathname === '/manage-course' },
+    { name: 'Generate Documents', href: '/generate-documents', current: router.pathname === '/generate-documents' },
+  ];
 
-const navigation: NavigationItem[] = [
-  { name: 'Home', href: '/' },
-  { name: 'Manage Course', href: '/manage-course' },
-  { name: 'Generate Documents', href: '/generate-documents' },
-]
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(' ')
