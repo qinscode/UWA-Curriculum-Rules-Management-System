@@ -13,11 +13,62 @@ interface NavigationItem {
   current?: boolean
 }
 
+function classNames(...classes: string[]): string {
+  return classes.filter(Boolean).join(' ');
+}
+
+const Layout: FC<{ children: ReactNode }> = ({ children }) => {
+  const [loggedIn, setLoggedIn] = useState(false); // Track user login state
+  const router = useRouter();
+
+  useEffect(() => {
+    setLoggedIn(isAuthenticated());
+  }, []);
+
+
 const navigation: NavigationItem[] = [
   { name: 'Home', href: '/' },
   { name: 'Manage Course', href: '/manage-course' },
   { name: 'Generate Documents', href: '/generate-documents' },
 ]
+
+function classNames(...classes: string[]): string {
+  return classes.filter(Boolean).join(' ')
+}
+
+export default function Navigation() {
+  return (
+    <nav className="border-b border-gray-200 bg-white shadow-sm">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 justify-between">
+          <div className="flex">
+            {/* Add logo or brand here */}
+            <div className="flex-shrink-0">
+              <img src="/uwa-logo.svg" alt="Logo" className="h-10 w-auto" />
+            </div>
+            <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={classNames(
+                    'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
+                    item.current
+                      ? 'border-indigo-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  )}
+                  aria-current={item.current ? 'page' : undefined}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+}
 
 function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(' ')
