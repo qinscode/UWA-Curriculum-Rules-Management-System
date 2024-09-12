@@ -105,7 +105,7 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
           <Button
             onClick={handleGenerateCoursePDF}
             disabled={isGenerating || !selectedCourseId || !selectedVersion || isLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500"
+            className="w-full bg-blue-800 hover:bg-black"
           >
             <DocumentTextIcon className="mr-2 h-5 w-5" />
             Generate Course PDF
@@ -113,16 +113,13 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
           <Button
             onClick={handleGenerateCoursePDF}
             disabled={isGenerating || !selectedCourseId || !selectedVersion || isLoading}
-            className="w-full bg-indigo-600 hover:bg-indigo-500"
+            className="w-full bg-blue-800 hover:bg-black"
           >
             <DocumentTextIcon className="mr-2 h-5 w-5" />
             Generate Course HTML
           </Button>
           {isPdfReady && (
-            <Button
-              onClick={handleDownloadPDF}
-              className="w-full bg-indigo-600 hover:bg-indigo-500"
-            >
+            <Button onClick={handleDownloadPDF} className="w-full bg-blue-800 hover:bg-black">
               <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
               Download PDF
             </Button>
