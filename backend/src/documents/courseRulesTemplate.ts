@@ -65,15 +65,17 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             font-family: Helvetica, sans-serif;
             font-size: 12px;
             line-height: 1.3;
-            margin: 20px;
-            padding: 10px;
             border: none;
+            margin: 0;
+            padding: 0;
         }
 
         table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 ${horizontalGap}; 
+                margin-top: -${horizontalGap}; /* 抵消第一行上方的间距 */
+
         }
 
         th,
@@ -100,7 +102,7 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
         }
 
         .section-content {
-            width: 78%;
+            width: 97%;
             padding-left: ${sectionContentPaddingLeft};
             display: flex;
             flex-wrap: wrap;
@@ -157,7 +159,7 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
         
         .rule-number {
             font-weight: bold;
-            margin-right: 5px;
+            margin-right: 1px;
         }
         
         .rule-number::before {

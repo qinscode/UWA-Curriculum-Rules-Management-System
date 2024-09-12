@@ -58,9 +58,10 @@ export class DocumentsService {
     return course.rules.map((rule, index) => ({
       title: PDFRuleType.getPrintRuleType(rule.type), // 使用 PDFRuleType 获取打印用的规则类型名称
       ruleIndex: index + 1,
-      content: rule.requirements.length > 0
-        ? this.buildRequirementTree(rule.requirements, index + 1)
-        : [{ text: 'TO BE FILLED BY DEFAULT', style: NumberingStyle.None, ruleIndex: index + 1 }],
+      content:
+        rule.requirements.length > 0
+          ? this.buildRequirementTree(rule.requirements, index + 1)
+          : [{ text: 'TO BE FILLED BY DEFAULT', style: NumberingStyle.None, ruleIndex: index + 1 }],
     }))
   }
 
@@ -120,6 +121,12 @@ export class DocumentsService {
       path: pdfFilePath,
       format: 'A4',
       printBackground: true,
+      margin: {
+        top: '5mm', // 上边距
+        bottom: '5mm', // 下边距
+        left: '5mm', // 左边距
+        right: '5mm', // 右边距
+      },
     })
 
     await browser.close()
