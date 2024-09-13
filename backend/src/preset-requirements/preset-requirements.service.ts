@@ -51,10 +51,11 @@ export class PresetRequirementsService {
     })[] = []
 
     allPresetRequirements.forEach((req) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { parentId, ...reqWithoutParentId } = req
       presetRequirementMap.set(req.id, {
         ...reqWithoutParentId,
-        isConnector: Boolean(reqWithoutParentId.isConnector),
+        is_connector: Boolean(reqWithoutParentId.is_connector),
         children: [],
       })
     })
@@ -93,7 +94,7 @@ export class PresetRequirementsService {
       const presetRequirement = this.presetRequirementsRepository.create({
         content: createPresetRequirementDto.content,
         style: createPresetRequirementDto.style,
-        isConnector: Boolean(createPresetRequirementDto.isConnector),
+        is_connector: Boolean(createPresetRequirementDto.is_connector),
         order_index: createPresetRequirementDto.order_index,
         presetRule,
       })
@@ -140,7 +141,7 @@ export class PresetRequirementsService {
       const childPresetRequirement = this.presetRequirementsRepository.create({
         content: childDto.content,
         style: childDto.style,
-        isConnector: childDto.isConnector,
+        is_connector: childDto.is_connector,
         order_index: childDto.order_index,
         parentId: parentPresetRequirement.id,
         presetRule: parentPresetRequirement.presetRule,
@@ -229,14 +230,14 @@ export class PresetRequirementsService {
       if (presetRequirement) {
         presetRequirement.content = dto.content ?? presetRequirement.content
         presetRequirement.style = dto.style ?? presetRequirement.style
-        presetRequirement.isConnector =
-          dto.isConnector !== undefined ? dto.isConnector : presetRequirement.isConnector
+        presetRequirement.is_connector =
+          dto.is_connector !== undefined ? dto.is_connector : presetRequirement.is_connector
         presetRequirement.order_index = dto.order_index ?? presetRequirement.order_index
       } else {
         presetRequirement = this.presetRequirementsRepository.create({
           content: dto.content,
           style: dto.style,
-          isConnector: dto.isConnector,
+          is_connector: dto.is_connector,
           order_index: dto.order_index,
           presetRule,
           parent,

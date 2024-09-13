@@ -26,7 +26,6 @@ import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 import { BackendRule } from '@/lib/categorizeRules'
 import { presetRuleService } from '@/services/presetRuleService'
-import { omit } from 'lodash'
 interface CategorizedRules {
   englishEligibility: Rule | null
   admissions: Rule | null
@@ -118,10 +117,6 @@ const ManageRules: React.FC = () => {
       })
       const categorized = categorizeRules(rules)
       console.log('ManageRules: Categorized rules:', categorized)
-      console.log(
-        'Fuck ManageRules: Categorized rules:',
-        omit(categorized.englishEligibility?.requirements, ['order_index'])
-      )
 
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
@@ -253,6 +248,8 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.progressStatus, data: formData.progressStatus },
         { rule: categorizedRules.rankingSelection, data: formData.rankingSelection },
       ]
+
+      console.log('Rules to update:', rulesToUpdate)
 
       for (const { rule, data } of rulesToUpdate) {
         if (rule && data) {

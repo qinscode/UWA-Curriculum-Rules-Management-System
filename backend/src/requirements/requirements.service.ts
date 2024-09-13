@@ -23,7 +23,7 @@ export class RequirementsService {
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>,
     private dataSource: DataSource
-  ) { }
+  ) {}
 
   async findAllRequirements(
     courseId: number,
@@ -52,10 +52,11 @@ export class RequirementsService {
     })[] = []
 
     allRequirements.forEach((req) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { parentId, ...reqWithoutParentId } = req
       requirementMap.set(req.id, {
         ...reqWithoutParentId,
-        isConnector: Boolean(reqWithoutParentId.isConnector),
+        is_connector: Boolean(reqWithoutParentId.is_connector),
         children: [],
       })
     })
@@ -100,11 +101,10 @@ export class RequirementsService {
         throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${courseId}"`)
       }
 
+      const { children, ...requirementData } = createRequirementDto
       const requirement = this.requirementsRepository.create({
-        ...createRequirementDto,
-        style: createRequirementDto.style as NumberingStyle,
-        isConnector: Boolean(createRequirementDto.isConnector),
-        order_index: createRequirementDto.order_index,
+        ...requirementData,
+        style: requirementData.style as NumberingStyle,
         rule,
       } as DeepPartial<Requirement>)
 
@@ -112,8 +112,8 @@ export class RequirementsService {
       const savedRequirement = await queryRunner.manager.save(requirement)
       this.logger.log(`Saved requirement: ${JSON.stringify(savedRequirement)}`)
 
-      if (createRequirementDto.children && createRequirementDto.children.length > 0) {
-        await this.createChildren(savedRequirement, createRequirementDto.children, queryRunner)
+      if (children && children.length > 0) {
+        await this.createChildren(savedRequirement, children, queryRunner)
       }
 
       await queryRunner.commitTransaction()
@@ -138,9 +138,10 @@ export class RequirementsService {
     queryRunner: QueryRunner
   ): Promise<void> {
     for (const childDto of children) {
+      const { children: grandchildren, ...childData } = childDto
       const childRequirement = this.requirementsRepository.create({
-        ...childDto,
-        style: childDto.style as NumberingStyle,
+        ...childData,
+        style: childData.style as NumberingStyle,
         parentId: parentRequirement.id,
         rule: parentRequirement.rule,
       } as DeepPartial<Requirement>)
@@ -149,8 +150,8 @@ export class RequirementsService {
       const savedChild = await queryRunner.manager.save(childRequirement)
       this.logger.log(`Saved child requirement: ${JSON.stringify(savedChild)}`)
 
-      if (childDto.children && childDto.children.length > 0) {
-        await this.createChildren(savedChild, childDto.children, queryRunner)
+      if (grandchildren && grandchildren.length > 0) {
+        await this.createChildren(savedChild, grandchildren, queryRunner)
       }
     }
   }
@@ -231,24 +232,24 @@ export class RequirementsService {
         // Update existing requirement
         requirement.content = dto.content ?? requirement.content
         requirement.style = (dto.style as NumberingStyle) ?? requirement.style
-        requirement.isConnector =
-          dto.isConnector !== undefined ? dto.isConnector : requirement.isConnector
+        requirement.is_connector = dto.is_connector ?? requirement.is_connector
         requirement.order_index = dto.order_index ?? requirement.order_index
       } else {
         // Create new requirement
+        const { id, children, ...requirementData } = dto
         requirement = this.requirementsRepository.create({
-          ...dto,
-          style: dto.style as NumberingStyle,
+          ...requirementData,
+          style: requirementData.style as NumberingStyle,
           rule,
           parent,
         } as DeepPartial<Requirement>)
       }
 
       this.logger.log(
-        `Before saving, isConnector: ${requirement.isConnector}, dto.isConnector: ${dto.isConnector}`
+        `Before saving, is_connector: ${requirement.is_connector}, dto.is_connector: ${dto.is_connector}`
       )
       const savedRequirement = await queryRunner.manager.save(requirement)
-      this.logger.log(`After saving, isConnector: ${savedRequirement.isConnector}`)
+      this.logger.log(`After saving, is_connector: ${savedRequirement.is_connector}`)
 
       if (dto.children && dto.children.length > 0) {
         const children = await this.updateOrCreateRequirements(

@@ -3,12 +3,11 @@ import * as puppeteer from 'puppeteer'
 import * as fs from 'fs'
 import * as path from 'path'
 import { courseRulesTemplate } from './courseRulesTemplate'
-import { Rule } from 'src/types'
 import { config } from 'dotenv'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Course } from '../courses/entities/course.entity'
-import { Rule as RuleEntity } from '../rules/entities/rule.entity'
+import { Rule } from '../rules/entities/rule.entity'
 import { Requirement } from '../requirements/entities/requirement.entity'
 import { NumberingStyle } from '../requirements/entities/style.enum'
 import { PDFRuleType } from './pdf-rule-type'
@@ -26,8 +25,8 @@ export class DocumentsService {
   constructor(
     @InjectRepository(Course)
     private courseRepository: Repository<Course>,
-    @InjectRepository(RuleEntity)
-    private ruleRepository: Repository<RuleEntity>
+    @InjectRepository(Rule)
+    private ruleRepository: Repository<Rule>
   ) {
     if (!fs.existsSync(this.pdfDirectory)) {
       fs.mkdirSync(this.pdfDirectory, { recursive: true })
@@ -48,43 +47,30 @@ export class DocumentsService {
   private async getCourseRules(courseId: string): Promise<Rule[]> {
     const course = await this.courseRepository.findOne({
       where: { id: Number(courseId) },
-      relations: ['rules', 'rules.requirements'],
+      relations: ['rules', 'rules.requirements', 'rules.requirements.children'],
     })
 
     if (!course) {
       throw new NotFoundException(`Course with ID "${courseId}" not found`)
     }
 
-    return course.rules.map((rule, index) => ({
-      title: PDFRuleType.getPrintRuleType(rule.type), // 使用 PDFRuleType 获取打印用的规则类型名称
-      ruleIndex: index + 1,
-      content: rule.requirements.length > 0
-        ? this.buildRequirementTree(rule.requirements, index + 1)
-        : [{ text: 'TO BE FILLED BY DEFAULT', style: NumberingStyle.None, ruleIndex: index + 1 }],
-    }))
+    return course.rules.map((rule) => {
+      rule.name = PDFRuleType.getPrintRuleType(rule.type)
+      rule.requirements = this.buildRequirementTree(
+        rule.requirements.filter((req) => !req.parentId)
+      )
+      return rule
+    })
   }
 
-  private buildRequirementTree(requirements: Requirement[], ruleIndex: number): any[] {
-    const rootRequirements = requirements.filter((req) => !req.parentId)
-    return rootRequirements.map((req) => this.buildRequirementNode(req, requirements, 0, ruleIndex))
-  }
-
-  private buildRequirementNode(
-    requirement: Requirement,
-    allRequirements: Requirement[],
-    level: number,
-    ruleIndex: number
-  ): any {
-    const children = allRequirements.filter((req) => req.parentId === requirement.id)
-    return {
-      number: requirement.order_index.toString(),
-      text: requirement.content,
-      style: this.getStyleForLevel(level, requirement.style),
-      children: children.map((child) =>
-        this.buildRequirementNode(child, allRequirements, level + 1, ruleIndex)
-      ),
-      ruleIndex: level === 0 ? ruleIndex : undefined,
-    }
+  private buildRequirementTree(requirements: Requirement[], level: number = 0): Requirement[] {
+    return requirements.map((req) => {
+      req.style = this.getStyleForLevel(level, req.style)
+      if (req.children) {
+        req.children = this.buildRequirementTree(req.children, level + 1)
+      }
+      return req
+    })
   }
 
   private getStyleForLevel(level: number, defaultStyle: NumberingStyle): NumberingStyle {
@@ -120,6 +106,12 @@ export class DocumentsService {
       path: pdfFilePath,
       format: 'A4',
       printBackground: true,
+      margin: {
+        top: '5mm', // 上边距
+        bottom: '5mm', // 下边距
+        left: '5mm', // 左边距
+        right: '5mm', // 右边距
+      },
     })
 
     await browser.close()

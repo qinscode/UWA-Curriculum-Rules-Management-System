@@ -1,7 +1,7 @@
 export class CreateRequirementDto {
   content: string
   style: string
-  isConnector: boolean // Changed from is_connector to isConnector
+  is_connector: boolean
   order_index: number
   children?: CreateRequirementDto[]
 }
@@ -10,7 +10,7 @@ export class UpdateRequirementDto {
   id?: number
   content?: string
   style?: string
-  isConnector?: boolean
+  is_connector?: boolean
   order_index?: number
   children?: UpdateRequirementDto[]
 }

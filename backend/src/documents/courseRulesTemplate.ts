@@ -1,4 +1,5 @@
-import { Rule } from 'src/types'
+import { Rule } from '../rules/entities/rule.entity'
+import { Requirement } from '../requirements/entities/requirement.entity'
 import { NumberingStyle } from '../requirements/entities/style.enum'
 
 const verticalGap = '15px'
@@ -8,40 +9,52 @@ const sectionTitleMaxWidth = '150px'
 const sectionContentPaddingLeft = '20px'
 
 const getStyleClass = (style: NumberingStyle): string => {
-    switch (style) {
-        case NumberingStyle.Alphabetic:
-            return 'alphabetic'
-        case NumberingStyle.Roman:
-            return 'roman'
-        case NumberingStyle.None:
-            return 'none'
-        default:
-            return 'numeric'
-    }
+  switch (style) {
+    case NumberingStyle.Alphabetic:
+      return 'alphabetic'
+    case NumberingStyle.Roman:
+      return 'roman'
+    case NumberingStyle.None:
+      return 'none'
+    default:
+      return 'numeric'
+  }
 }
 
-const renderRequirement = (req: any, level: number, isFirstChild: boolean): string => {
-    const styleClass = getStyleClass(req.style)
-    const padding = level * 20
-    let numberContent = ''
+const renderRequirement = (
+  req: Requirement,
+  level: number,
+  isFirstChild: boolean,
+  ruleIndex: number,
+  levelZeroCounter: number,
+  totalLevelZeroItems: number
+): string => {
+  console.log(`Requirement ${req.id || 'unknown'} is_connector:`, req.is_connector)
 
-    if (level === 0 && isFirstChild) {
-        // Only show the rule number for the first child at level 0
-        numberContent = `<span class="rule-number">${req.ruleIndex}.</span> `
+  const styleClass = getStyleClass(req.style)
+  const padding = level * 5
+  let numberContent = ''
+
+  if (!req.is_connector) {
+    if (level === 0) {
+      if (totalLevelZeroItems > 1) {
+        numberContent = `<span class="rule-number">(${levelZeroCounter})</span> `
+      }
     } else if (level > 0) {
-        numberContent = '<span class="number"></span> '
+      numberContent = `<span class="number"></span>`
     }
+  }
 
-    const content = `
-    <p class="${styleClass}" style="padding-left: ${padding}px;">
-      ${numberContent}${req.text}
+  return `
+    <p class="${styleClass}${req.is_connector ? ' connector' : ''}" style="padding-left: ${padding}px;">
+      ${numberContent}${req.content}
     </p>
-    ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0)).join('') : ''}
+    ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0, ruleIndex, levelZeroCounter, totalLevelZeroItems)).join('') : ''}
   `
-    return content
 }
 
-export const courseRulesTemplate = (rules_list: Rule[]) => `
+export const courseRulesTemplate = (rules_list: Rule[]) => {
+  return `
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,15 +70,17 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
             font-family: Helvetica, sans-serif;
             font-size: 12px;
             line-height: 1.3;
-            margin: 20px;
-            padding: 10px;
             border: none;
+            margin: 0;
+            padding: 0;
         }
 
         table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 ${horizontalGap}; 
+            /*  Remove the gap between the table and the top of the page*/
+            margin-top: -${horizontalGap};
         }
 
         th,
@@ -92,8 +107,11 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
         }
 
         .section-content {
-            width: 78%;
-            padding-left: ${sectionContentPaddingLeft}; // 添加左侧padding
+            width: 97%;
+            padding-left: ${sectionContentPaddingLeft};
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
         }
         
         .section-content p {
@@ -146,16 +164,30 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
         
         .rule-number {
             font-weight: bold;
-            margin-right: 5px;
+            margin-right: 1px;
         }
         
-        /* Remove the ::before content for .rule-number */
         .rule-number::before {
             content: "";
         }
         
         body {
             counter-reset: rule;
+        }
+        
+        .rule-order {
+            font-weight: bold;
+            font-size: 12px;
+            margin: 0;
+            padding-right: 5px;
+        }
+        
+        .rule-content {
+            flex: 1;
+        }
+        
+        .connector {
+            list-style-type: none;
         }
     </style>
 </head>
@@ -166,19 +198,39 @@ export const courseRulesTemplate = (rules_list: Rule[]) => `
             <th colspan="2">Rules</th>
         </tr>
         ${rules_list
-        .map(
-            (rule) => `
+          .map((rule, ruleIndex) => {
+            const ruleOrder = ruleIndex + 1
+            return `
         <tr>
-            <td class="section-title">${rule.title}</td>
+            <td class="section-title">${rule.name}</td>
             <td class="section-content">
-                ${rule.content.map((req, index) => renderRequirement(req, 0, index === 0)).join('')}
+                <span class="rule-order">${ruleOrder}.</span>
+                <div class="rule-content">
+                ${
+                  rule.requirements.length === 0
+                    ? '<p>TO BE IMPLEMENT</p>'
+                    : rule.requirements
+                        .map((req, index) =>
+                          renderRequirement(
+                            req,
+                            0,
+                            index === 0,
+                            ruleIndex + 1,
+                            index + 1,
+                            rule.requirements.length
+                          )
+                        )
+                        .join('')
+                }
+                </div>
             </td>
         </tr>
         `
-        )
-        .join('')}
+          })
+          .join('')}
     </table>
 </body>
 
 </html>
 `
+}

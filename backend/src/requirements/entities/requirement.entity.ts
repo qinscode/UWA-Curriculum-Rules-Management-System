@@ -40,7 +40,7 @@ export class Requirement {
       from: (value: number) => value === 1,
     },
   })
-  isConnector: boolean
+  is_connector: boolean
 
   @Column({ name: 'order_index', default: 0 })
   order_index: number
