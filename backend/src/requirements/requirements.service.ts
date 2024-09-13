@@ -23,7 +23,7 @@ export class RequirementsService {
     @InjectRepository(Rule)
     private rulesRepository: Repository<Rule>,
     private dataSource: DataSource
-  ) { }
+  ) {}
 
   async findAllRequirements(
     courseId: number,
@@ -52,10 +52,11 @@ export class RequirementsService {
     })[] = []
 
     allRequirements.forEach((req) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { parentId, ...reqWithoutParentId } = req
       requirementMap.set(req.id, {
         ...reqWithoutParentId,
-        isConnector: Boolean(reqWithoutParentId.isConnector),
+        is_connector: Boolean(reqWithoutParentId.is_connector),
         children: [],
       })
     })
@@ -231,7 +232,7 @@ export class RequirementsService {
         // Update existing requirement
         requirement.content = dto.content ?? requirement.content
         requirement.style = (dto.style as NumberingStyle) ?? requirement.style
-        requirement.isConnector = dto.isConnector ?? requirement.isConnector
+        requirement.is_connector = dto.is_connector ?? requirement.is_connector
         requirement.order_index = dto.order_index ?? requirement.order_index
       } else {
         // Create new requirement
@@ -245,10 +246,10 @@ export class RequirementsService {
       }
 
       this.logger.log(
-        `Before saving, isConnector: ${requirement.isConnector}, dto.isConnector: ${dto.isConnector}`
+        `Before saving, is_connector: ${requirement.is_connector}, dto.is_connector: ${dto.is_connector}`
       )
       const savedRequirement = await queryRunner.manager.save(requirement)
-      this.logger.log(`After saving, isConnector: ${savedRequirement.isConnector}`)
+      this.logger.log(`After saving, is_connector: ${savedRequirement.is_connector}`)
 
       if (dto.children && dto.children.length > 0) {
         const children = await this.updateOrCreateRequirements(

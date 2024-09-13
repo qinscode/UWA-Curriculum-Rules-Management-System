@@ -29,13 +29,13 @@ const renderRequirement = (
   levelZeroCounter: number,
   totalLevelZeroItems: number
 ): string => {
-  console.log(`Requirement ${req.id || 'unknown'} isConnector:`, req.isConnector)
+  console.log(`Requirement ${req.id || 'unknown'} is_connector:`, req.is_connector)
 
   const styleClass = getStyleClass(req.style)
   const padding = level * 5
   let numberContent = ''
 
-  if (!req.isConnector) {
+  if (!req.is_connector) {
     if (level === 0) {
       if (totalLevelZeroItems > 1) {
         numberContent = `<span class="rule-number">(${levelZeroCounter})</span> `
@@ -46,7 +46,7 @@ const renderRequirement = (
   }
 
   return `
-    <p class="${styleClass}${req.isConnector ? ' connector' : ''}" style="padding-left: ${padding}px;">
+    <p class="${styleClass}${req.is_connector ? ' connector' : ''}" style="padding-left: ${padding}px;">
       ${numberContent}${req.content}
     </p>
     ${req.children ? req.children.map((child, index) => renderRequirement(child, level + 1, index === 0, ruleIndex, levelZeroCounter, totalLevelZeroItems)).join('') : ''}

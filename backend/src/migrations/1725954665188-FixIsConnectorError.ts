@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class FixIsConnectorError1725954665188 implements MigrationInterface {
-  name = 'FixIsConnectorError1725954665188'
+export class Fixis_connectorError1725954665188 implements MigrationInterface {
+  name = 'Fixis_connectorError1725954665188'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
