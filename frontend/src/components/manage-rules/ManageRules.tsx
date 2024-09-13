@@ -408,25 +408,25 @@ const ManageRules: React.FC = () => {
               />
             </RuleSection>
 
-            <RuleSection title="Additional rules">
-              <AdditionalRules
-                data={formData}
-                updateData={updateFormData}
-                initialPresetRules={allPresetRules}
-              />
-            </RuleSection>
+            {/*<RuleSection title="Additional rules">*/}
+            {/*  <AdditionalRules*/}
+            {/*    data={formData}*/}
+            {/*    updateData={updateFormData}*/}
+            {/*    initialPresetRules={allPresetRules}*/}
+            {/*  />*/}
+            {/*</RuleSection>*/}
 
-            <RuleSection title="Outcomes & Australian Qualifications Framework">
-              <OutcomesAQF
-                data={{
-                  knowledge: formData.knowledge || [],
-                  skills: formData.skills || [],
-                  knowledgeApplication: formData.knowledgeApplication || [],
-                }}
-                updateData={updateFormData}
-                initialPresetRules={allPresetRules}
-              />
-            </RuleSection>
+            {/*<RuleSection title="Outcomes & Australian Qualifications Framework">*/}
+            {/*  <OutcomesAQF*/}
+            {/*    data={{*/}
+            {/*      knowledge: formData.knowledge || [],*/}
+            {/*      skills: formData.skills || [],*/}
+            {/*      knowledgeApplication: formData.knowledgeApplication || [],*/}
+            {/*    }}*/}
+            {/*    updateData={updateFormData}*/}
+            {/*    initialPresetRules={allPresetRules}*/}
+            {/*  />*/}
+            {/*</RuleSection>*/}
           </div>
           <div className="mt-8 flex justify-end">
             <Dialog open={isNewVersionDialogOpen} onOpenChange={setIsNewVersionDialogOpen}>
