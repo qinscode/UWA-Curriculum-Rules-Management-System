@@ -40,6 +40,8 @@ interface CategorizedRules {
   knowledge: Rule | null
   knowledgeApplication: Rule | null
   rankingSelection: Rule | null
+  articulationExitAward?: Rule | null
+  courseStructure?: Rule | null
 }
 
 const ManageRules: React.FC = () => {
@@ -62,6 +64,8 @@ const ManageRules: React.FC = () => {
     knowledgeApplication: [],
     skills: [],
     knowledge: [],
+    articulationExitAward: [],
+    courseStructure: [],
   })
 
   const [categorizedRules, setCategorizedRules] = useState<CategorizedRules>({
@@ -76,6 +80,8 @@ const ManageRules: React.FC = () => {
     knowledgeApplication: null,
     knowledge: null,
     rankingSelection: null,
+    articulationExitAward: null,
+    courseStructure: null,
   })
   const [newVersion, setNewVersion] = useState<string>('')
   const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
@@ -141,6 +147,8 @@ const ManageRules: React.FC = () => {
       knowledgeApplication: null,
       knowledge: null,
       rankingSelection: null,
+      articulationExitAward: null,
+      courseStructure: null,
     }
 
     rules.forEach((rule) => {
@@ -178,6 +186,12 @@ const ManageRules: React.FC = () => {
         case RuleType.RANKING_AND_SELECTION:
           categorized.rankingSelection = rule
           break
+        case RuleType.ARTICULATION_EXIT_AWARD:
+          categorized.articulationExitAward = rule
+          break
+        case RuleType.COURSE_STRUCTURE:
+          categorized.courseStructure = rule
+          break
       }
     })
 
@@ -200,6 +214,8 @@ const ManageRules: React.FC = () => {
         knowledge: categorized.knowledge?.requirements || [],
         skills: categorized.skills?.requirements || [],
         knowledgeApplication: categorized.knowledgeApplication?.requirements || [],
+        articulationExitAward: categorized.articulationExitAward?.requirements || [],
+        courseStructure: categorized.courseStructure?.requirements || [],
       }
       console.log('ManageRules: Updated form data:', newData)
       console.log('ManageRules: Ranking and selection:', newData.rankingSelection)
@@ -249,6 +265,8 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.knowledgeApplication, data: formData.knowledgeApplication },
         { rule: categorizedRules.progressStatus, data: formData.progressStatus },
         { rule: categorizedRules.rankingSelection, data: formData.rankingSelection },
+        { rule: categorizedRules.articulationExitAward, data: formData.articulationExitAward },
+        { rule: categorizedRules.courseStructure, data: formData.courseStructure },
       ]
 
       console.log('Rules to update:', rulesToUpdate)
