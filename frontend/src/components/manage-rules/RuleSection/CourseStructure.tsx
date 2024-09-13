@@ -21,7 +21,7 @@ const CourseStructure: React.FC<GeneralProps> = ({ data, updateData, initialPres
   return (
     <div className="space-y-6">
       <div>
-        <Label className="mb-1 block text-lg font-medium">Progress status rule</Label>
+        <Label className="mb-1 block text-lg font-medium">Course Structure</Label>
         <NestedRequirementsList
           initialRequirements={data.courseStructure || []}
           onUpdate={handleUpdateCourseStructure}
