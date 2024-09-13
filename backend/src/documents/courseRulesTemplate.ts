@@ -198,6 +198,7 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             <th colspan="2">Rules</th>
         </tr>
         ${rules_list
+          .filter((rule) => rule.requirements.length > 0)
           .map((rule, ruleIndex) => {
             const ruleOrder = ruleIndex + 1
             return `
@@ -206,7 +207,7 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
             <td class="section-content">
                 <span class="rule-order">${ruleOrder}.</span>
                 <div class="rule-content">
-                ${
+                <!--  DO NOT REMOVE THIS CODE                               ${
                   rule.requirements.length === 0
                     ? '<p>TO BE IMPLEMENT</p>'
                     : rule.requirements
@@ -221,7 +222,22 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
                           )
                         )
                         .join('')
-                }
+                } -->
+
+                
+                
+                ${rule.requirements
+                  .map((req, index) =>
+                    renderRequirement(
+                      req,
+                      0,
+                      index === 0,
+                      ruleIndex + 1,
+                      index + 1,
+                      rule.requirements.length
+                    )
+                  )
+                  .join('')}
                 </div>
             </td>
         </tr>
