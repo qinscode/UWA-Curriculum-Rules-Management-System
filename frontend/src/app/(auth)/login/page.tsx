@@ -35,6 +35,30 @@ export default function Login() {
 
   return (
     <SlimLayout>
+      {/* go back button*/}
+      <div className="mb-6 flex items-center">
+        <button
+          type="button"
+          onClick={() => router.back()} // use router.back() to go back
+          className="flex items-center text-blue-600 hover:text-black"
+        >
+          <svg
+            className="mr-2 h-16 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back
+        </button>
+      </div>
       <div className="flex">
         <Logo className="h-10 w-auto" />
       </div>

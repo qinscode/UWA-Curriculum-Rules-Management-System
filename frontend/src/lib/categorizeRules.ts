@@ -1,4 +1,4 @@
-import { Rule, Requirement, RuleType } from '@/types'
+import { Requirement, Rule, RuleType } from '@/types'
 
 export interface BackendRule {
   id: number
@@ -27,6 +27,8 @@ export interface CategorizedPresetRules {
   deferrals: Requirement[]
   skills: Requirement[]
   knowledgeApplication: Requirement[]
+  articulationExitAward?: Requirement[]
+  courseStructure?: Requirement[]
 }
 
 function categorizeRules(rules: Rule[]): CategorizedPresetRules {
@@ -78,6 +80,12 @@ function categorizeRules(rules: Rule[]): CategorizedPresetRules {
         break
       case RuleType.KNOWLEDGE_APPLICATION:
         categorizedRules.knowledgeApplication = rule.requirements
+        break
+      case RuleType.ARTICULATION_EXIT_AWARD:
+        categorizedRules.articulationExitAward = rule.requirements
+        break
+      case RuleType.COURSE_STRUCTURE:
+        categorizedRules.courseStructure = rule.requirements
         break
     }
   })
