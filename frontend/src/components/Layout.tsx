@@ -72,7 +72,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                             'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium',
                             item.current
                               ? 'border-indigo-500 text-gray-900'
-                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-blue-900'
+                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                           )}
                           aria-current={item.current ? 'page' : undefined}
                         >
@@ -103,13 +103,13 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
                         <>
                           <Link
                             href={'/login'}
-                            className="text-sm font-medium text-gray-500 hover:text-indigo-500"
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
                           >
                             Sign In
                           </Link>
                           <Link
                             href={'/register'}
-                            className="text-sm font-medium text-gray-500 hover:text-indigo-500"
+                            className="text-sm font-medium text-gray-500 hover:text-gray-700"
                           >
                             Register
                           </Link>
