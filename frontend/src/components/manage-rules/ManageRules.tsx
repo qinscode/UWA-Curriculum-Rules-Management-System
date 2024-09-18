@@ -26,6 +26,7 @@ import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 import { BackendRule } from '@/lib/categorizeRules'
 import { presetRuleService } from '@/services/presetRuleService'
+import ArticulationExitAward from '@/components/manage-rules/RuleSection/ArticulationExitAward'
 interface CategorizedRules {
   englishEligibility: Rule | null
   admissions: Rule | null
@@ -328,6 +329,27 @@ const ManageRules: React.FC = () => {
                 }}
                 updateData={updateFormData}
                 showRankingRequirements={showRankingRequirements}
+                setShowRankingRequirements={setShowRankingRequirements}
+                initialPresetRules={allPresetRules}
+              />
+            </RuleSection>
+
+            <RuleSection title="ArticulationExitAward">
+              <ArticulationExitAward
+                data={formData}
+                updateData={updateFormData}
+                initialPresetRules={allPresetRules}
+              />
+            </RuleSection>
+
+            <RuleSection title="Admission and selection">
+              <AdmissionSelection
+                data={{
+                  englishRequirements: formData.englishRequirements || [],
+                  admissionRequirements: formData.admissionRequirements || [],
+                  rankingSelection: formData.rankingSelection || [],
+                }}
+                updateData={updateFormData}
                 setShowRankingRequirements={setShowRankingRequirements}
                 initialPresetRules={allPresetRules}
               />

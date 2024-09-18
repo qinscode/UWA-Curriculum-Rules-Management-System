@@ -17,6 +17,7 @@ export enum RuleType {
   KNOWLEDGE_APPLICATION = 'Knowledge Application',
   KNOWLEDGE = 'Knowledge',
   RANKING_AND_SELECTION = 'Ranking and selection for admission',
+  ARTICULATION_EXIT_AWARD = 'Articulation Exit Award',
 }
 
 // Interfaces
@@ -104,6 +105,7 @@ export interface GeneralProps {
     aqfOutcomes?: Requirement[]
     knowledgeApplication?: Requirement[]
     skills?: Requirement[]
+    articulationExitAward?: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
   initialPresetRules: any[]
