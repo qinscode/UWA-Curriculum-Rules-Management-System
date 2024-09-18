@@ -470,7 +470,7 @@ export default function SortedTree({
             variant="outline"
             size="icon"
             onClick={loadPresetRequirements}
-            className="bg-blue-600 text-white hover:bg-blue-500"
+            className="bg-indigo-600 text-white hover:bg-indigo-500"
           >
             <ArrowDownLeft className="h-4 w-4" />
           </Button>
@@ -478,7 +478,7 @@ export default function SortedTree({
             variant="outline"
             size="icon"
             onClick={() => setShowHelp(!showHelp)}
-            className="bg-blue-600 text-white hover:bg-blue-500"
+            className="bg-indigo-600 text-white hover:bg-indigo-500"
           >
             <HelpCircle className="h-4 w-4" />
           </Button>
@@ -486,7 +486,10 @@ export default function SortedTree({
       </div>
       <HelpPanel showHelp={showHelp} />
       <div className="rounded-md bg-gray-50 p-4 shadow-inner">
-        <Button className="mb-4 bg-blue-800 text-white hover:bg-black" onClick={handleAddRootNode}>
+        <Button
+          className="mb-4 bg-indigo-600 text-white hover:bg-indigo-500"
+          onClick={handleAddRootNode}
+        >
           Add Requirement
         </Button>
         {renderTree({
