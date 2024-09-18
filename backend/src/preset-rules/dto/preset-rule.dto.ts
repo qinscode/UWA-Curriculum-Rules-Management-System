@@ -8,6 +8,7 @@ export class CreatePresetRuleDto {
     content: string
     style: string
     is_connector: boolean
+    order_index: number
   }[]
 }
 
@@ -28,6 +29,7 @@ export class PresetRequirementHierarchyDto {
   content: string
   style: string
   is_connector: boolean
+  order_index: number
   children: PresetRequirementHierarchyDto[]
 }
 

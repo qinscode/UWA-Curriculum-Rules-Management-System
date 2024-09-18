@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
 
-export class AddDefaultValueForis_connector1725775557490 implements MigrationInterface {
-  name = 'AddDefaultValueForis_connector1725775557490'
+export class AddDefaultValueForIsConnector1725775557490 implements MigrationInterface {
+  name = 'AddDefaultValueForIsConnector1725775557490'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(

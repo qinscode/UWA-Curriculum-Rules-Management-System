@@ -9,7 +9,6 @@ import {
   UseGuards,
   ParseIntPipe,
   Logger,
-  ValidationPipe
 } from '@nestjs/common'
 import { RequirementsService } from './requirements.service'
 import { Requirement } from './entities/requirement.entity'
@@ -21,13 +20,13 @@ import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dt
 export class RequirementsController {
   private readonly logger = new Logger(RequirementsController.name)
 
-  constructor(private readonly requirementsService: RequirementsService) { }
+  constructor(private readonly requirementsService: RequirementsService) {}
 
   @Get()
   async findAllRequirements(
     @Param('courseId', ParseIntPipe) courseId: number,
     @Param('ruleId', ParseIntPipe) ruleId: number
-  ): Promise<Omit<Requirement, 'parentId'>[]> {
+  ): Promise<Requirement[]> {
     this.logger.log(`Fetching all requirements for rule ${ruleId} in course ${courseId}`)
     return this.requirementsService.findAllRequirements(courseId, ruleId)
   }
@@ -36,7 +35,7 @@ export class RequirementsController {
   async createRequirement(
     @Param('courseId', ParseIntPipe) courseId: number,
     @Param('ruleId', ParseIntPipe) ruleId: number,
-    @Body(new ValidationPipe({ whitelist: true })) createRequirementDtos: CreateRequirementDto[]
+    @Body() createRequirementDtos: CreateRequirementDto[]
   ): Promise<Requirement[]> {
     this.logger.log(`Receive createRequirement request：${JSON.stringify(createRequirementDtos)}`)
     return Promise.all(
@@ -46,18 +45,22 @@ export class RequirementsController {
     )
   }
 
-  @Put()
-  async updateRequirements(
+  @Put(':requirementId')
+  async updateRequirement(
     @Param('courseId', ParseIntPipe) courseId: number,
     @Param('ruleId', ParseIntPipe) ruleId: number,
-    @Body() updateRequirementData: UpdateRequirementDto | UpdateRequirementDto[]
-  ): Promise<Requirement[]> {
-    this.logger.log(`Updating requirements for rule ${ruleId} in course ${courseId}`)
-    // Ensure we're always passing an array to the service
-    const updateRequirementDtos = Array.isArray(updateRequirementData)
-      ? updateRequirementData
-      : [updateRequirementData]
-    return this.requirementsService.updateRequirements(courseId, ruleId, updateRequirementDtos)
+    @Param('requirementId', ParseIntPipe) requirementId: number,
+    @Body() updateRequirementDto: UpdateRequirementDto
+  ): Promise<Requirement> {
+    this.logger.log(
+      `Updating requirement ${requirementId} for rule ${ruleId} in course ${courseId}`
+    )
+    return this.requirementsService.updateRequirement(
+      courseId,
+      ruleId,
+      requirementId,
+      updateRequirementDto
+    )
   }
 
   @Delete(':requirementId')

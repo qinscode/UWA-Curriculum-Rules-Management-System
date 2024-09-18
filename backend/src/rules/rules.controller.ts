@@ -14,14 +14,7 @@ import {
 import { RulesService } from './rules.service'
 import { Rule } from './entities/rule.entity'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import {
-  CreateRuleDto,
-  UpdateRuleDto,
-  RuleWithHierarchyDto,
-  RequirementHierarchyDto,
-} from './dto/rule.dto'
-import { RuleType } from './entities/rule.enum'
-import { Requirement } from '../requirements/entities/requirement.entity'
+import { CreateRuleDto, UpdateRuleDto } from './dto/rule.dto'
 
 @Controller('courses/:courseId/rules')
 @UseGuards(JwtAuthGuard)
@@ -31,72 +24,53 @@ export class RulesController {
   constructor(private readonly rulesService: RulesService) {}
 
   @Get()
-  async findAllRules(
-    @Param('courseId', ParseIntPipe) courseId: number
-  ): Promise<RuleWithHierarchyDto[]> {
-    const rules = await this.rulesService.findAllRules(courseId)
-    const rulesWithHierarchy: RuleWithHierarchyDto[] = []
-
-    for (const rule of rules) {
-      const requirements = await this.rulesService.findRuleRequirementsHierarchy(rule.id)
-      rulesWithHierarchy.push({
-        ...rule,
-        requirements: this.mapRequirementsToDto(requirements.filter((req) => !req.parentId)),
-      })
-    }
-
-    return rulesWithHierarchy
-  }
-
-  private mapRequirementsToDto(requirements: Requirement[]): RequirementHierarchyDto[] {
-    return requirements.map((req) => ({
-      id: req.id,
-      content: req.content,
-      style: req.style,
-      is_connector: req.is_connector, // Map is_connector to is_connector
-      order_index: req.order_index,
-      children: req.children ? this.mapRequirementsToDto(req.children) : [],
-    }))
+  async findAll(@Param('courseId', ParseIntPipe) courseId: number): Promise<Rule[]> {
+    this.logger.log(`Fetching all rules for course ${courseId}`)
+    return this.rulesService.findAll(courseId)
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Rule> {
-    this.logger.log(`Fetching rule ${id}`)
-    const rule = await this.rulesService.findOne(id)
+  async findOne(
+    @Param('courseId', ParseIntPipe) courseId: number,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<Rule> {
+    this.logger.log(`Fetching rule ${id} for course ${courseId}`)
+    const rule = await this.rulesService.findOne(courseId, id)
     if (!rule) {
-      throw new NotFoundException(`Rule with ID "${id}" not found`)
+      throw new NotFoundException(`Rule with ID "${id}" not found in course "${courseId}"`)
     }
     return rule
   }
 
-  @Get('by-type/:type')
-  async findByType(@Param('type') type: RuleType): Promise<Rule[]> {
-    this.logger.log(`Fetching rules with type ${type}`)
-    return this.rulesService.findByType(type)
-  }
-
   @Post()
-  async create(@Body() createRuleDto: CreateRuleDto): Promise<Rule> {
-    this.logger.log('Creating new rule')
-    return this.rulesService.create(createRuleDto)
+  async create(
+    @Param('courseId', ParseIntPipe) courseId: number,
+    @Body() createRuleDto: CreateRuleDto
+  ): Promise<Rule> {
+    this.logger.log(`Creating new rule for course ${courseId}`)
+    return this.rulesService.create(courseId, createRuleDto)
   }
 
   @Put(':id')
   async update(
+    @Param('courseId', ParseIntPipe) courseId: number,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRuleDto: UpdateRuleDto
   ): Promise<Rule> {
-    this.logger.log(`Updating rule ${id}`)
-    const updatedRule = await this.rulesService.update(id, updateRuleDto)
+    this.logger.log(`Updating rule ${id} for course ${courseId}`)
+    const updatedRule = await this.rulesService.update(courseId, id, updateRuleDto)
     if (!updatedRule) {
-      throw new NotFoundException(`Rule with ID "${id}" not found`)
+      throw new NotFoundException(`Rule with ID "${id}" not found in course "${courseId}"`)
     }
     return updatedRule
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    this.logger.log(`Removing rule ${id}`)
-    await this.rulesService.remove(id)
+  async remove(
+    @Param('courseId', ParseIntPipe) courseId: number,
+    @Param('id', ParseIntPipe) id: number
+  ): Promise<void> {
+    this.logger.log(`Removing rule ${id} from course ${courseId}`)
+    await this.rulesService.remove(courseId, id)
   }
 }
