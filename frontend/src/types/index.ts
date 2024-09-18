@@ -1,3 +1,6 @@
+import React from 'react'
+
+// Enums
 export enum NumberingStyle {
   Numeric = 'numeric',
   Alphabetic = 'alphabetic',
@@ -48,7 +51,7 @@ export interface Requirement {
   content: string
   style: NumberingStyle
   children: Requirement[]
-  is_connector?: boolean // use is_connector not isConnector
+  is_connector?: boolean // 使用 is_connector 而不是 isConnector
 }
 
 export interface StyleOption {

@@ -56,11 +56,11 @@ export class PresetRulesController {
   private mapPresetRequirementsToDto(
     presetRequirements: PresetRequirement[]
   ): PresetRequirementHierarchyDto[] {
-    return presetRequirements.map(({ id, content, style, is_connector, children }) => ({
+    return presetRequirements.map(({ id, content, style, isConnector, children }) => ({
       id,
       content,
       style,
-      is_connector: is_connector,
+      is_connector: isConnector,
       children: children ? this.mapPresetRequirementsToDto(children) : [],
     }))
   }
