@@ -12,22 +12,19 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { toast } from '@/hooks/use-toast'
-import RuleSection from '@/components/manage-rules/common/RuleSection'
-import AdmissionSelection from '@/components/manage-rules/RuleSection/AdmissionSelection'
-import SatisfactoryProgress from '@/components/manage-rules/RuleSection/SatisfactoryProgress'
-import ProgressStatus from '@/components/manage-rules/RuleSection/ProgressStatus'
-import AwardWithDistinction from '@/components/manage-rules/RuleSection/AwardWithDistinction'
-import Deferrals from '@/components/manage-rules/RuleSection/Deferrals'
-import AdditionalRules from '@/components/manage-rules/RuleSection/AdditionalRules'
-import OutcomesAQF from '@/components/manage-rules/RuleSection/OutcomesAQF'
-import SaveButton from '@/components/manage-rules/common/SaveButton'
+import RuleSection from '@/components/manage-rules/RuleSection'
+import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
+import SatisfactoryProgress from '@/components/manage-rules/SatisfactoryProgress'
+import ProgressStatus from '@/components/manage-rules/ProgressStatus'
+import AwardWithDistinction from '@/components/manage-rules/AwardWithDistinction'
+import Deferrals from '@/components/manage-rules/Deferrals'
+import AdditionalRules from '@/components/manage-rules/AdditionalRules'
+import OutcomesAQF from '@/components/manage-rules/OutcomesAQF'
+import SaveButton from '@/components/manage-rules/SaveButton'
 import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
-import { BackendRule } from '@/lib/categorizeRules'
-import { presetRuleService } from '@/services/presetRuleService'
-import ArticulationExitAward from '@/components/manage-rules/RuleSection/ArticulationExitAward'
-import CourseStructure from '@/components/manage-rules/RuleSection/CourseStructure'
+
 interface CategorizedRules {
   englishEligibility: Rule | null
   admissions: Rule | null
@@ -40,8 +37,6 @@ interface CategorizedRules {
   knowledge: Rule | null
   knowledgeApplication: Rule | null
   rankingSelection: Rule | null
-  articulationExitAward?: Rule | null
-  courseStructure?: Rule | null
 }
 
 const ManageRules: React.FC = () => {
@@ -64,8 +59,6 @@ const ManageRules: React.FC = () => {
     knowledgeApplication: [],
     skills: [],
     knowledge: [],
-    articulationExitAward: [],
-    courseStructure: [],
   })
 
   const [categorizedRules, setCategorizedRules] = useState<CategorizedRules>({
@@ -80,31 +73,15 @@ const ManageRules: React.FC = () => {
     knowledgeApplication: null,
     knowledge: null,
     rankingSelection: null,
-    articulationExitAward: null,
-    courseStructure: null,
   })
   const [newVersion, setNewVersion] = useState<string>('')
   const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
   const router = useRouter()
   const [showRankingRequirements, setShowRankingRequirements] = useState(false)
-  const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
-
-  const fetchPresetRules = async () => {
-    try {
-      const rules = await presetRuleService.getAllRules()
-      setAllPresetRules(rules)
-      console.log('fetchPresetRules allPresetRules', rules)
-    } catch (error) {
-      console.error('ManageRules: Error fetching rules:', error)
-    }
-  }
-
-  useEffect(() => {
-    fetchPresetRules()
-  }, [])
 
   useEffect(() => {
     if (course?.id) {
+      console.log('ManageRules: Fetching rules for course ID:', course.id)
       fetchAndCategorizeRules(course.id)
     }
   }, [course])
@@ -113,6 +90,7 @@ const ManageRules: React.FC = () => {
     try {
       const rules = await ruleService.getAllRules(courseId)
       console.log('ManageRules: Fetched rules:', rules)
+      // 更新这行来检查 is_connector 字段
       rules.forEach((rule) => {
         console.log(
           `Rule ${rule.id} requirements:`,
@@ -125,7 +103,6 @@ const ManageRules: React.FC = () => {
       })
       const categorized = categorizeRules(rules)
       console.log('ManageRules: Categorized rules:', categorized)
-
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
       console.log('ManageRules: Form data updated from rules', formData)
@@ -147,8 +124,6 @@ const ManageRules: React.FC = () => {
       knowledgeApplication: null,
       knowledge: null,
       rankingSelection: null,
-      articulationExitAward: null,
-      courseStructure: null,
     }
 
     rules.forEach((rule) => {
@@ -186,12 +161,6 @@ const ManageRules: React.FC = () => {
         case RuleType.RANKING_AND_SELECTION:
           categorized.rankingSelection = rule
           break
-        case RuleType.ARTICULATION_EXIT_AWARD:
-          categorized.articulationExitAward = rule
-          break
-        case RuleType.COURSE_STRUCTURE:
-          categorized.courseStructure = rule
-          break
       }
     })
 
@@ -214,8 +183,6 @@ const ManageRules: React.FC = () => {
         knowledge: categorized.knowledge?.requirements || [],
         skills: categorized.skills?.requirements || [],
         knowledgeApplication: categorized.knowledgeApplication?.requirements || [],
-        articulationExitAward: categorized.articulationExitAward?.requirements || [],
-        courseStructure: categorized.courseStructure?.requirements || [],
       }
       console.log('ManageRules: Updated form data:', newData)
       console.log('ManageRules: Ranking and selection:', newData.rankingSelection)
@@ -230,7 +197,6 @@ const ManageRules: React.FC = () => {
   }
 
   const updateFormData = useCallback((data: Partial<GeneralProps['data']>) => {
-    console.log('updateFormData called with:', data)
     setFormData((prevData) => {
       const newData = {
         ...prevData,
@@ -265,11 +231,7 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.knowledgeApplication, data: formData.knowledgeApplication },
         { rule: categorizedRules.progressStatus, data: formData.progressStatus },
         { rule: categorizedRules.rankingSelection, data: formData.rankingSelection },
-        { rule: categorizedRules.articulationExitAward, data: formData.articulationExitAward },
-        { rule: categorizedRules.courseStructure, data: formData.courseStructure },
       ]
-
-      console.log('Rules to update:', rulesToUpdate)
 
       for (const { rule, data } of rulesToUpdate) {
         if (rule && data) {
@@ -319,16 +281,6 @@ const ManageRules: React.FC = () => {
     }
   }
 
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  if (!isClient) {
-    return null // or return a skeleton/placeholder
-  }
-
   return (
     <Layout>
       <div className="mx-auto max-w-7xl p-6 sm:px-6 lg:px-8">
@@ -349,23 +301,6 @@ const ManageRules: React.FC = () => {
                 updateData={updateFormData}
                 showRankingRequirements={showRankingRequirements}
                 setShowRankingRequirements={setShowRankingRequirements}
-                initialPresetRules={allPresetRules}
-              />
-            </RuleSection>
-
-            <RuleSection title="Articulation and Exit Award">
-              <ArticulationExitAward
-                data={formData}
-                updateData={updateFormData}
-                initialPresetRules={allPresetRules}
-              />
-            </RuleSection>
-
-            <RuleSection title="Course Structure">
-              <CourseStructure
-                data={formData}
-                updateData={updateFormData}
-                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
@@ -375,16 +310,11 @@ const ManageRules: React.FC = () => {
                   satisfactoryProgress: formData.satisfactoryProgress || [],
                 }}
                 updateData={updateFormData}
-                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
             <RuleSection title="Progress Status">
-              <ProgressStatus
-                data={formData}
-                updateData={updateFormData}
-                initialPresetRules={allPresetRules}
-              />
+              <ProgressStatus data={formData} updateData={updateFormData} />
             </RuleSection>
 
             <RuleSection title="Award with distinction">
@@ -393,7 +323,6 @@ const ManageRules: React.FC = () => {
                   awardWithDistinction: formData.awardWithDistinction || [],
                 }}
                 updateData={updateFormData}
-                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
@@ -404,36 +333,30 @@ const ManageRules: React.FC = () => {
                   deferralAllowed: formData.deferralAllowed || false,
                 }}
                 updateData={updateFormData}
-                initialPresetRules={allPresetRules}
               />
             </RuleSection>
 
-            {/*<RuleSection title="Additional rules">*/}
-            {/*  <AdditionalRules*/}
-            {/*    data={formData}*/}
-            {/*    updateData={updateFormData}*/}
-            {/*    initialPresetRules={allPresetRules}*/}
-            {/*  />*/}
-            {/*</RuleSection>*/}
+            <RuleSection title="Additional rules">
+              <AdditionalRules data={formData} updateData={updateFormData} />
+            </RuleSection>
 
-            {/*<RuleSection title="Outcomes & Australian Qualifications Framework">*/}
-            {/*  <OutcomesAQF*/}
-            {/*    data={{*/}
-            {/*      knowledge: formData.knowledge || [],*/}
-            {/*      skills: formData.skills || [],*/}
-            {/*      knowledgeApplication: formData.knowledgeApplication || [],*/}
-            {/*    }}*/}
-            {/*    updateData={updateFormData}*/}
-            {/*    initialPresetRules={allPresetRules}*/}
-            {/*  />*/}
-            {/*</RuleSection>*/}
+            <RuleSection title="Outcomes & Australian Qualifications Framework">
+              <OutcomesAQF
+                data={{
+                  knowledge: formData.knowledge || [],
+                  skills: formData.skills || [],
+                  knowledgeApplication: formData.knowledgeApplication || [],
+                }}
+                updateData={updateFormData}
+              />
+            </RuleSection>
           </div>
           <div className="mt-8 flex justify-end">
             <Dialog open={isNewVersionDialogOpen} onOpenChange={setIsNewVersionDialogOpen}>
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"
+                  className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
                 >
                   Save as New Version
                 </Button>

@@ -9,38 +9,34 @@ interface SatisfactoryProgressProps {
     satisfactoryProgress: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
-  initialPresetRules: any[]
 }
 
 const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
-  ({ data, updateData, initialPresetRules }) => {
+  ({ data, updateData }) => {
     const [showSatisfactoryProgress, setShowSatisfactoryProgress] = useState(false)
 
     useEffect(() => {
+      console.log('SatisfactoryProgress: Data changed', data.satisfactoryProgress)
       setShowSatisfactoryProgress(data.satisfactoryProgress.length > 0)
     }, [data.satisfactoryProgress])
 
     const handleSatisfactoryProgressChange = useCallback(
-      (
-        requirementsOrUpdater: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])
-      ) => {
-        if (typeof requirementsOrUpdater === 'function') {
-          updateData({
-            satisfactoryProgress: requirementsOrUpdater(data.satisfactoryProgress),
-          })
-        } else {
-          updateData({ satisfactoryProgress: requirementsOrUpdater })
-        }
+      (requirements: Requirement[]) => {
+        console.log('SatisfactoryProgress: Updating requirements', requirements)
+        updateData({ satisfactoryProgress: requirements })
       },
-      [updateData, data.satisfactoryProgress]
+      [updateData]
     )
 
     const handleToggleSwitch = (checked: boolean) => {
+      console.log('SatisfactoryProgress: Toggle switch', checked)
       setShowSatisfactoryProgress(checked)
       if (!checked) {
         updateData({ satisfactoryProgress: [] })
       }
     }
+
+    console.log('SatisfactoryProgress: Rendering', { showSatisfactoryProgress, data })
 
     return (
       <div className="space-y-6">
@@ -70,11 +66,6 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
               ]}
               showControls={true}
               showHelpPanel={true}
-              presetRules={
-                initialPresetRules?.length
-                  ? (initialPresetRules[1].requirements as Requirement[])
-                  : undefined
-              }
             />
           </div>
         )}

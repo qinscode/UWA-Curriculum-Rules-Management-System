@@ -9,11 +9,10 @@ interface AwardWithDistinctionProps {
     awardWithDistinction: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
-  initialPresetRules: any[]
 }
 
 const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
-  ({ data, updateData, initialPresetRules }) => {
+  ({ data, updateData }) => {
     const [showAwardWithDistinction, setShowAwardWithDistinction] = useState(false)
 
     useEffect(() => {
@@ -69,11 +68,6 @@ const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
               ]}
               showControls={true}
               showHelpPanel={true}
-              presetRules={
-                initialPresetRules?.length
-                  ? (initialPresetRules[3].requirements as Requirement[])
-                  : undefined
-              }
             />
           </div>
         )}

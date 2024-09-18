@@ -50,6 +50,7 @@ export interface Requirement {
   id: number
   content: string
   style: NumberingStyle
+  numbering?: string
   children: Requirement[]
   is_connector?: boolean // 使用 is_connector 而不是 isConnector
 }
@@ -113,5 +114,4 @@ export interface GeneralProps {
     courseStructure?: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
-  initialPresetRules: any[]
 }
