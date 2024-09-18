@@ -13,8 +13,6 @@ import { UsersModule } from './users/users.module'
 import { CoursesModule } from './courses/courses.module'
 import { LoggerMiddleware } from './logger/logger.middleware'
 import { RequirementsModule } from './requirements/requirements.module'
-import { PresetRulesModule } from './preset-rules/preset-rules.module'
-import { PresetRequirementsModule } from './preset-requirements/preset-requirements.module'
 
 @Module({
   imports: [
@@ -32,14 +30,14 @@ import { PresetRequirementsModule } from './preset-requirements/preset-requireme
     UsersModule,
     CoursesModule,
     RequirementsModule,
-    PresetRequirementsModule,
-    PresetRulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes('*')
+    consumer
+      .apply(LoggerMiddleware) // 应用中间件
+      .forRoutes('*') // 捕获所有路由
   }
 }

@@ -10,95 +10,69 @@ interface OutcomesAQFProps {
     knowledgeApplication: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
-  initialPresetRules: any[]
 }
 
-const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
-  ({ data, updateData, initialPresetRules }) => {
-    const handleRequirementsChange = useCallback(
-      (key: 'knowledge' | 'skills' | 'knowledgeApplication') =>
-        (
-          requirementsOrUpdater:
-            | Requirement[]
-            | ((prevRequirements: Requirement[]) => Requirement[])
-        ) => {
-          if (typeof requirementsOrUpdater === 'function') {
-            const updatedRequirements = requirementsOrUpdater(data[key])
-            updateData({ [key]: updatedRequirements })
-          } else {
-            updateData({ [key]: requirementsOrUpdater })
-          }
-        },
-      [data, updateData]
-    )
+const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(({ data, updateData }) => {
+  const handleKnowledgeChange = useCallback(
+    (requirements: Requirement[]) => {
+      updateData({ knowledge: requirements })
+    },
+    [updateData]
+  )
 
-    return (
-      <div className="space-y-6">
-        <div>
-          <Label className="mb-1 block text-lg font-medium">Knowledge</Label>
-          <NestedRequirementsList
-            initialRequirements={data.knowledge}
-            onUpdate={handleRequirementsChange('knowledge')}
-            defaultStyles={[
-              NumberingStyle.Numeric,
-              NumberingStyle.Alphabetic,
-              NumberingStyle.Roman,
-            ]}
-            showControls={true}
-            showHelpPanel={true}
-            presetRules={
-              initialPresetRules?.length
-                ? (initialPresetRules[10].requirements as Requirement[])
-                : undefined
-            }
-          />
-        </div>
+  const handleSkillsChange = useCallback(
+    (requirements: Requirement[]) => {
+      updateData({ skills: requirements })
+    },
+    [updateData]
+  )
 
-        <div>
-          <Label className="mb-1 block text-lg font-medium">Skills</Label>
-          <NestedRequirementsList
-            initialRequirements={data.skills}
-            onUpdate={handleRequirementsChange('skills')}
-            defaultStyles={[
-              NumberingStyle.Numeric,
-              NumberingStyle.Alphabetic,
-              NumberingStyle.Roman,
-            ]}
-            showControls={true}
-            showHelpPanel={true}
-            presetRules={
-              initialPresetRules?.length
-                ? (initialPresetRules[6].requirements as Requirement[])
-                : undefined
-            }
-          />
-        </div>
+  const handleKnowledgeApplicationChange = useCallback(
+    (requirements: Requirement[]) => {
+      updateData({ knowledgeApplication: requirements })
+    },
+    [updateData]
+  )
 
-        <div>
-          <Label className="mb-1 block text-lg font-medium">
-            Application of Knowledge and Skills
-          </Label>
-          <NestedRequirementsList
-            initialRequirements={data.knowledgeApplication}
-            onUpdate={handleRequirementsChange('knowledgeApplication')}
-            defaultStyles={[
-              NumberingStyle.Numeric,
-              NumberingStyle.Alphabetic,
-              NumberingStyle.Roman,
-            ]}
-            showControls={true}
-            showHelpPanel={true}
-            presetRules={
-              initialPresetRules?.length
-                ? (initialPresetRules[7].requirements as Requirement[])
-                : undefined
-            }
-          />
-        </div>
+  return (
+    <div className="space-y-6">
+      <div>
+        <Label className="mb-1 block text-lg font-medium">Knowledge</Label>
+        <NestedRequirementsList
+          initialRequirements={data.knowledge}
+          onUpdate={handleKnowledgeChange}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
+          showControls={true}
+          showHelpPanel={true}
+        />
       </div>
-    )
-  }
-)
+
+      <div>
+        <Label className="mb-1 block text-lg font-medium">Skills</Label>
+        <NestedRequirementsList
+          initialRequirements={data.skills}
+          onUpdate={handleSkillsChange}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
+          showControls={true}
+          showHelpPanel={true}
+        />
+      </div>
+
+      <div>
+        <Label className="mb-1 block text-lg font-medium">
+          Application of Knowledge and Skills
+        </Label>
+        <NestedRequirementsList
+          initialRequirements={data.knowledgeApplication}
+          onUpdate={handleKnowledgeApplicationChange}
+          defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
+          showControls={true}
+          showHelpPanel={true}
+        />
+      </div>
+    </div>
+  )
+})
 
 OutcomesAQF.displayName = 'OutcomesAQF'
 

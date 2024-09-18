@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
+import PresetRule from '@/components/manage-rules/RuleSection/CurrentPresetRules' // Import the new component
 
 interface AdmissionSelectionProps {
   data: {
@@ -13,7 +14,6 @@ interface AdmissionSelectionProps {
   updateData: (data: Partial<GeneralProps['data']>) => void
   showRankingRequirements: boolean
   setShowRankingRequirements: React.Dispatch<React.SetStateAction<boolean>>
-  initialPresetRules: any[]
 }
 
 const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
@@ -21,7 +21,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
   updateData,
   showRankingRequirements,
   setShowRankingRequirements,
-  initialPresetRules,
 }) => {
   const handleEnglishRequirementsChange = useCallback(
     (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
@@ -39,6 +38,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
 
   const handleRankingSelectionChange = useCallback(
     (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
+      console.log('AdmissionSelection: Updating ranking requirements', requirements)
       updateData({ rankingSelection: requirements as Requirement[] })
     },
     [updateData]
@@ -54,28 +54,9 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     [updateData]
   )
 
-  const handleAddRequirement = (
-    type: 'englishRequirements' | 'admissionRequirements' | 'rankingSelection'
-  ) => {
-    const newRequirement = {
-      id: Date.now(),
-      content: 'New Requirement',
-      style: NumberingStyle.Numeric,
-      children: [],
-    }
-    updateData({
-      [type]: [...data[type], newRequirement],
-    })
-  }
-
-  // Remove these useEffect hooks
-  // useEffect(() => {
-  //   console.log('AdmissionSelection: Data changed', data)
-  // }, [data])
-
-  // useEffect(() => {
-  //   console.log('initialPresetRules: Data changed', initialPresetRules)
-  // }, [initialPresetRules])
+  useEffect(() => {
+    console.log('AdmissionSelection: Data changed', data)
+  }, [data])
 
   return (
     <div className="space-y-6">
@@ -89,11 +70,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
-          presetRules={
-            initialPresetRules?.length
-              ? (initialPresetRules[0].requirements as Requirement[])
-              : undefined
-          }
         />
       </div>
 
@@ -105,11 +81,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           defaultStyles={[NumberingStyle.Numeric, NumberingStyle.Alphabetic, NumberingStyle.Roman]}
           showControls={true}
           showHelpPanel={true}
-          presetRules={
-            initialPresetRules?.length
-              ? (initialPresetRules[8].requirements as Requirement[])
-              : undefined
-          }
         />
       </div>
 
@@ -139,11 +110,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
             ]}
             showControls={true}
             showHelpPanel={true}
-            presetRules={
-              initialPresetRules?.length
-                ? (initialPresetRules[9].requirements as Requirement[])
-                : undefined
-            }
           />
         </div>
       )}
