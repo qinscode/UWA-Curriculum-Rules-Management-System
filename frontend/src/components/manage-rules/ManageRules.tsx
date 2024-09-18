@@ -431,12 +431,12 @@ const ManageRules: React.FC = () => {
           <div className="mt-8 flex justify-end">
             <Dialog open={isNewVersionDialogOpen} onOpenChange={setIsNewVersionDialogOpen}>
               <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"
-                >
-                  Save as New Version
-                </Button>
+                {/*<Button*/}
+                {/*  variant="outline"*/}
+                {/*  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"*/}
+                {/*>*/}
+                {/*  Save as New Version*/}
+                {/*</Button>*/}
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
