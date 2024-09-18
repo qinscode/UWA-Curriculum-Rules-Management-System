@@ -30,7 +30,7 @@ export class Course {
   type: CourseType
 
   @Column()
-  version: string
+  version: number
 
   @Column()
   is_current: boolean
