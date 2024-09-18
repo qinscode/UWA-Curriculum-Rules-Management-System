@@ -15,8 +15,6 @@ export class PDFRuleType {
     [RuleType.ADMISSIONS]: string
     [RuleType.DEFERRALS]: string
     [RuleType.COURSE_STRUCTURE]: string
-    [RuleType.ASR]: string
-    [RuleType.ACECRS]: string
   } = {
     // Admission rules
     [RuleType.ENGLISH_ELIGIBILITY]: 'Admission rules - English language competency requirements',
@@ -39,8 +37,6 @@ export class PDFRuleType {
     [RuleType.SKILLS]: 'Skills Rules',
     [RuleType.KNOWLEDGE_APPLICATION]: 'Knowledge Application Rules',
     [RuleType.KNOWLEDGE]: 'Knowledge Rules',
-    [RuleType.ASR]: 'Applicability of the Student Rules policies and procedures',
-    [RuleType.ACECRS]: 'Academic Conduct Essentials and Communication and Research Skills modules',
   }
 
   static getPrintRuleType(ruleType: RuleType): string {
