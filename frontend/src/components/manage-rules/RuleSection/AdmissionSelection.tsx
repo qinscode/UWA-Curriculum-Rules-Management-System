@@ -3,6 +3,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
+import PresetRule from '@/components/manage-rules/RuleSection/CurrentPresetRules' // Import the new component
 
 interface AdmissionSelectionProps {
   data: {

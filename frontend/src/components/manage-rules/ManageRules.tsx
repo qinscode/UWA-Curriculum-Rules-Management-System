@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from '@/hooks/use-toast'
 import RuleSection from '@/components/manage-rules/common/RuleSection'
+import CurrentPresetRules from '@/components/manage-rules/RuleSection/CurrentPresetRules'
 import AdmissionSelection from '@/components/manage-rules/RuleSection/AdmissionSelection'
 import SatisfactoryProgress from '@/components/manage-rules/RuleSection/SatisfactoryProgress'
 import ProgressStatus from '@/components/manage-rules/RuleSection/ProgressStatus'
@@ -28,6 +29,7 @@ import { BackendRule } from '@/lib/categorizeRules'
 import { presetRuleService } from '@/services/presetRuleService'
 import ArticulationExitAward from '@/components/manage-rules/RuleSection/ArticulationExitAward'
 import CourseStructure from '@/components/manage-rules/RuleSection/CourseStructure'
+
 interface CategorizedRules {
   englishEligibility: Rule | null
   admissions: Rule | null
@@ -431,12 +433,12 @@ const ManageRules: React.FC = () => {
           <div className="mt-8 flex justify-end">
             <Dialog open={isNewVersionDialogOpen} onOpenChange={setIsNewVersionDialogOpen}>
               <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"
-                >
-                  Save as New Version
-                </Button>
+                {/*<Button*/}
+                {/*  variant="outline"*/}
+                {/*  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"*/}
+                {/*>*/}
+                {/*  Save as New Version*/}
+                {/*</Button>*/}
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
