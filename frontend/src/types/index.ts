@@ -1,3 +1,6 @@
+import React from 'react'
+
+// Enums
 export enum NumberingStyle {
   Numeric = 'numeric',
   Alphabetic = 'alphabetic',
@@ -47,8 +50,9 @@ export interface Requirement {
   id: number
   content: string
   style: NumberingStyle
+  numbering?: string
   children: Requirement[]
-  is_connector?: boolean // use is_connector not isConnector
+  is_connector?: boolean // 使用 is_connector 而不是 isConnector
 }
 
 export interface StyleOption {
@@ -110,5 +114,4 @@ export interface GeneralProps {
     courseStructure?: Requirement[]
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
-  initialPresetRules: any[]
 }

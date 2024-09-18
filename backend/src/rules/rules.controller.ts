@@ -53,7 +53,7 @@ export class RulesController {
       id: req.id,
       content: req.content,
       style: req.style,
-      is_connector: req.is_connector, // Map is_connector to is_connector
+      is_connector: req.isConnector, // Map isConnector to is_connector
       order_index: req.order_index,
       children: req.children ? this.mapRequirementsToDto(req.children) : [],
     }))

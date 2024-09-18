@@ -7,13 +7,13 @@ export class Requirement {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'text' })
+  @Column({ default: 'content' })
   content: string
 
   @Column({
     type: 'enum',
     enum: NumberingStyle,
-    default: NumberingStyle.Numeric,
+    default: NumberingStyle.Numeric
   })
   style: NumberingStyle
 
@@ -40,7 +40,7 @@ export class Requirement {
       from: (value: number) => value === 1,
     },
   })
-  is_connector: boolean
+  isConnector: boolean
 
   @Column({ name: 'order_index', default: 0 })
   order_index: number
