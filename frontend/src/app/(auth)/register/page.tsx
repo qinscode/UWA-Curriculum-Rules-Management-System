@@ -1,46 +1,18 @@
-'use client'
 import { type Metadata } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation' // import useRouter hook
 
 import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/ui/Fields'
 import { Logo } from '@/components/ui/Logo'
 import { SlimLayout } from '@/components/ui/SlimLayout'
 
-/*export const metadata: Metadata = {
+export const metadata: Metadata = {
   title: 'Sign Up',
-}*/
+}
 
 export default function Register() {
-  const router = useRouter() // initialise useRouter hook
-
   return (
     <SlimLayout>
-      {/* go back button*/}
-      <div className="mb-6 flex items-center">
-        <button
-          type="button"
-          onClick={() => router.back()} // use router.back() to go back
-          className="flex items-center text-blue-600 hover:text-black"
-        >
-          <svg
-            className="mr-2 h-16 w-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Back
-        </button>
-      </div>
       <div className="flex">
         <Link href="/" aria-label="Home">
           <Logo className="h-10 w-auto" />
