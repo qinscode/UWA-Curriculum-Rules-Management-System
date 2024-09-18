@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Layout from '@/components/Layout'
 
 export default function Profile() {
@@ -12,6 +13,19 @@ export default function Profile() {
               <p className="mt-1 text-sm leading-6 text-gray-500">
                 This information will be displayed publicly so be careful what you share.
               </p>
+
+              {/* Profile Picture Frame */}
+              <div className="mt-8 flex items-center justify-center">
+                <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-gray-200">
+                  <Image
+                    src="/UWA.jpg"
+                    alt="Profile Picture"
+                    width={128} // Define the width
+                    height={128} // Define the height
+                    className="object-cover"
+                  />
+                </div>
+              </div>
 
               <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
                 <div className="pt-6 sm:flex">
