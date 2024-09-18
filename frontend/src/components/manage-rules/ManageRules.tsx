@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { toast } from '@/hooks/use-toast'
+
 import RuleSection from '@/components/manage-rules/RuleSection'
 import AdmissionSelection from '@/components/manage-rules/AdmissionSelection'
 import SatisfactoryProgress from '@/components/manage-rules/SatisfactoryProgress'
@@ -24,6 +25,7 @@ import SaveButton from '@/components/manage-rules/SaveButton'
 import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
+
 
 interface CategorizedRules {
   englishEligibility: Rule | null
@@ -354,12 +356,13 @@ const ManageRules: React.FC = () => {
           <div className="mt-8 flex justify-end">
             <Dialog open={isNewVersionDialogOpen} onOpenChange={setIsNewVersionDialogOpen}>
               <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
-                >
-                  Save as New Version
-                </Button>
+
+                {/*<Button*/}
+                {/*  variant="outline"*/}
+                {/*  className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"*/}
+                {/*>*/}
+                {/*  Save as New Version*/}
+                {/*</Button>*/}
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
