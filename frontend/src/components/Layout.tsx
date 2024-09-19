@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { isAuthenticated, logout } from '@/services/authService' // Import auth functions
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface NavigationItem {
   name: string
@@ -20,6 +20,7 @@ function classNames(...classes: string[]): string {
 const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false) // Track user login state
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     setLoggedIn(isAuthenticated())
@@ -34,16 +35,16 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
 
   // Get the current path and dynamically assign the `current` property
   const navigation: NavigationItem[] = [
-    { name: 'Home', href: '/', current: router.pathname === '/' },
+    { name: 'Home', href: '/', current: pathname === '/' },
     {
       name: 'Manage Course',
       href: '/manage-course',
-      current: router.pathname === '/manage-course',
+      current: pathname === '/manage-course',
     },
     {
       name: 'Generate Documents',
       href: '/generate-documents',
-      current: router.pathname === '/generate-documents',
+      current: pathname === '/generate-documents',
     },
   ]
 
