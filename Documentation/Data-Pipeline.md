@@ -1,5 +1,5 @@
 ```mermaid
-graph TD
+graph LR
     A[ManageRulesPage] -->|Fetches course data| B(getCourseByCodeAndVersion)
     B -->|Returns course data| A
     A -->|Provides course data| C[CourseProvider]
