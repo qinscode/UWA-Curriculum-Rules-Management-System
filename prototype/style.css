@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body{
 	font-family:  'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
 	font-size: 1rem;
@@ -9,7 +15,7 @@ body{
 
 h2{
 	font-weight: bold;
-	font-size:xx-large;
+	font-size:x-large;
 	text-align: center;
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -25,7 +31,6 @@ h3{
 }
 
 hr {
-	
 	border: 0;
     height: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
@@ -34,7 +39,14 @@ hr {
 	margin-bottom: 10px;
 	margin-right: 5%;
 	margin-left: 5%;
+}
 
+.logo {
+	display: block;
+	width: 20%;
+	height: 100%;
+	padding-left: 2%;
+	
 }
 
 .container-wrap{
@@ -67,6 +79,43 @@ hr {
 	color: #fff;
 }
 
+.form-heading{
+	display: inline-block;
+	font-weight:normal;
+	padding-left: 2%;
+	padding-right: 2%;
+	margin-right: auto;
+}
+
+#form-control {
+	width:90%;
+	line-height: 3em;
+	margin:1em;	
+	border-radius: 2%;
+	border: 1px solid black;
+	outline: none;
+	padding-left: 10px;
+	display: block;
+}
+
+.form_button {
+	display: block;
+	margin: auto;
+	background-color: #233382;
+	color: #fff;
+	border: none;
+	margin-top: 5px;
+	margin-bottom: 15px;
+	padding: 10px 32px;
+	text-align: center;
+	font-size: 16px;
+	transition-duration: 0.4s;
+}
+
+.form_button:hover {
+	background-color: #1f2a74;
+}
+
 .text{
 	padding: 2%;
 }
@@ -76,5 +125,9 @@ hr {
 	padding-bottom: 3%;
 	font-size: small;
 	font-style: italic;
+	text-align: center;
+}
+
+.switch-login-register{
 	text-align: center;
 }
