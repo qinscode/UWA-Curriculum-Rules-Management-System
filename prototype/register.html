@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login</title>
+        <title>Register</title>
         <link rel="stylesheet" type="text/css" href="style.css">
         <script src=""></script>
 
@@ -16,15 +16,24 @@
                     <h2 class="form-heading">Cirriculum Management Portal</h2>
                 </div>
                 <div class="text">
-                    <h3>Welcome</h3>
-                    <p class="switch-login-register">This application is managed by the UWA Student Administration Office to manage and maintain course curriculum. Please log in below.
+                    <p class="switch-login-register">Please enter the required details to register yourself.
                         <br>
                         <br>
-                        You must be an approved staff member to view these items. If you are not a member, please contact the UWA Student Administration Office.
+                        Your email will be verified against the UWA Staff System to ensure identity.
                     </p>
                     <hr>
-                    <h3>Login</h3>
+                    <h3>Register</h3>
                     <form action="" method="post">
+                        <div>
+                            <label for="firstname">First name</label><br>
+                            <input type="text" id="form-control" name="firstname"><br>
+                            <span class="error" style="color: red;"></span>
+                        </div>
+                        <div>
+                            <label for="lastname">Last name</label><br>
+                            <input type="text" id="form-control" name="lastname"><br>
+                            <span class="error" style="color: red;"></span>
+                        </div>
                         <div>
                             <label for="email">Email</label><br>
                             <input type="email" id="form-control" name="email"><br>
@@ -36,11 +45,16 @@
                             <span class="error" style="color: red;"></span>
                         </div>
                         <div>
-                            <input type="submit" value="Login" class="form_button">
+                            <label for="password">Confirm Password</label><br>
+                            <input type="password" id="form-control" name="confirm password"><br>
+                            <span class="error" style="color: red;"></span>
+                        </div>
+                        <div>
+                            <input type="submit" value="Register" class="form_button">
                         </div>
                     </form>
                     <p class="switch-login-register">
-                        Don't have an account? <a href="register.html">Register here</a>
+                        Already have an account? <a href="login.html">Login here</a>
                     </p>
                 </div>
                 <footer class ="additional-text">
