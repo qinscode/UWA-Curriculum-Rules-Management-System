@@ -20,6 +20,7 @@ This document provides a comprehensive overview of the Course Rules Management S
 7. [API Endpoints](#api-endpoints)
 8. [Deployment](#deployment)
 9. [Future Enhancements](#future-enhancements)
+10. [User Manual](#User-Manual)
 
 ## Project Overview
 
@@ -148,4 +149,57 @@ The system follows a client-server architecture:
 - **Backend:** Deployed on a VPS using PM2 for process management
 - **Database:** Hosted MySQL instance
 
+### User Manual for the **Curriculum Management Website**
+
+#### **Getting Started**
+
+1. **Registration**:
+    - Navigate to the registration page.
+    - Fill in the required information (name, email, password) and submit the form.
+2. **Login**:
+    - Once registered, log in with your email and password.
+    - Only logged-in users have access to the course management features.
+
+#### **Managing Courses**
+
+1. **Accessing the Manage Course Tab**:
+    
+    - After logging in, click on the **"Manage Course"** tab in the navigation bar.
+    - Select the course and version you want to edit from the dropdown menu.
+2. **Editing Course Rules**:
+    
+    - After selecting a course, click **"Edit"** to enter the **Manage Rule** page.
+    - You will see a list of preset rules for the selected course version.
+3. **Modifying Rules**:
+    
+    - Click the **arrow button** next to a rule to view or modify its details.
+    - To **add new rules**, click the **"Add Requirement"** button.
+4. **Numbering Styles**:
+    
+    - There are three options for numbering styles:
+        - **Level 1 Style**
+        - **Level 2 Style**
+        - **Level 3 Style**
+    - Each style has a dropdown menu with the following options:
+        - **Numeric**
+        - **Alphabetic**
+        - **Roman**
+        - **None** (no numbering)
+5. **Reordering Rules**:
+    
+    - To reorder requirements, simply **drag and drop** them into the desired position using your mouse.
+6. **Additional Features**:
+    
+    - Click the **question mark button** for further user instructions.
+    - Use the **red trash bin button** to delete any unwanted rules.
+7. **Saving Changes**:
+    
+    - After making modifications, click the **"Save Changes"** button to apply your updates.
+
+#### **Generating Course Documentation**
+
+1. **Generate Documentation**:
+    - Click on the **"Generate Documentation"** tab.
+    - Select the course and version you want to generate a PDF for.
+    - Click **"Generate"** to download a PDF version of the course details.
 
