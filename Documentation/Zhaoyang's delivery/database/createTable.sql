@@ -74,7 +74,7 @@ CREATE TABLE LogRecord (
 );
 
 -- Indexing for better query performance
-CREATE INDEX idx_course_active ON Courses(CourseCode, ActiveStatus);
+CREATE INDEX idx_course_active ON Courses(CourseID, ActiveStatus);
 CREATE INDEX idx_template_active ON CourseTemplates(TemplateID, ActiveStatus);
 CREATE INDEX idx_rules_lastupdated ON Rules(LastUpdated);
 CREATE INDEX idx_logrecord_timestamp ON LogRecord(Timestamp);
