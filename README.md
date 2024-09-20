@@ -150,6 +150,7 @@ The system follows a client-server architecture:
 - **Database:** Hosted MySQL instance
 
 ### User Manual for the **Curriculum Management Website**
+---
 
 #### **Getting Started**
 
