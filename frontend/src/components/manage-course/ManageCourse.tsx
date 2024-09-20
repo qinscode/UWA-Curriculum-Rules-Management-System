@@ -127,7 +127,7 @@ const CourseManage: React.FC = () => {
   return (
     <div className="flex-1 overflow-auto">
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-        <h1 className="mb-6 text-3xl font-bold">Choose a Course</h1>
+        <h1 className="mb-6 text-3xl font-bold">Modify course rules</h1>
         <div className="mb-6 flex items-center justify-between">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
