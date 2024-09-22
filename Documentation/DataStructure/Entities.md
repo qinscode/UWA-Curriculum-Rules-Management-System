@@ -7,6 +7,7 @@ erDiagram
         string password
         date created_at
         date updated_at
+        boolean is_admin
     }
 
     Course {
@@ -15,7 +16,8 @@ erDiagram
         string name
         string description
         enum type
-        string version
+        int year
+        string semester
         boolean is_current
         date created_at
         date updated_at
@@ -39,6 +41,12 @@ erDiagram
         int parentId FK
     }
 
+    StandardRequirement {
+        int id PK
+        string standard_content
+        int parent_id FK
+    }
+
     CourseType {
         enum type
     }
@@ -57,4 +65,7 @@ erDiagram
     Course ||--|| CourseType : has
     Rule ||--|| RuleType : has
     Requirement ||--|| NumberingStyle : has
+    StandardRequirement ||--o{ StandardRequirement : "parent/child"
+    StandardRequirement ||--|| NumberingStyle : "has"
+
 ```
