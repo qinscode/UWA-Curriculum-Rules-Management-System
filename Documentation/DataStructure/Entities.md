@@ -7,7 +7,7 @@ erDiagram
         string password
         date created_at
         date updated_at
-        boolean is_admin
+        enum role
     }
 
     Course {
@@ -21,6 +21,7 @@ erDiagram
         boolean is_current
         date created_at
         date updated_at
+        int type_id FK
     }
 
     Rule {
@@ -39,17 +40,21 @@ erDiagram
         boolean is_connector
         int order_index
         int parentId FK
+        int type_id FK
     }
 
     StandardRequirement {
         int id PK
         string standard_content
         int parent_id FK
+        int type_id FK
     }
 
-    CourseType {
-        enum type
-    }
+    CourseType{
+        int type_id PK
+        enum type
+        enum category
+    }
 
     RuleType {
         enum type
@@ -57,6 +62,10 @@ erDiagram
 
     NumberingStyle {
         enum style
+    }
+
+    Role{
+        enum role
     }
 
     Course ||--o{ Rule : has
@@ -67,5 +76,6 @@ erDiagram
     Requirement ||--|| NumberingStyle : has
     StandardRequirement ||--o{ StandardRequirement : "parent/child"
     StandardRequirement ||--|| NumberingStyle : "has"
+    User ||--|| Role : has
 
 ```
