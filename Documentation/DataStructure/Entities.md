@@ -16,12 +16,10 @@ erDiagram
         string name
         string description
         enum type
-        int year
-        string semester
+        string version
         boolean is_current
         date created_at
         date updated_at
-        int type_id FK
     }
 
     Rule {
@@ -40,20 +38,16 @@ erDiagram
         boolean is_connector
         int order_index
         int parentId FK
-        int type_id FK
     }
 
     StandardRequirement {
         int id PK
         string standard_content
         int parent_id FK
-        int type_id FK
     }
 
     CourseType{
-        int type_id PK
-        enum type
-        enum category
+        enum type
     }
 
     RuleType {
