@@ -37,6 +37,11 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const navigation: NavigationItem[] = [
     { name: 'Home', href: '/', current: pathname === '/' },
     {
+      name: 'Manage Template',
+      href: '/choose-template',
+      current: pathname === '/choose-template',
+    },
+    {
       name: 'Manage Course',
       href: '/manage-course',
       current: pathname === '/manage-course',
