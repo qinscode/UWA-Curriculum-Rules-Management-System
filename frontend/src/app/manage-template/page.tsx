@@ -2,24 +2,24 @@
 
 import React, { Suspense, lazy, useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
-import { getCourseByCodeAndVersion } from '@/services/courseService'
+import {getCourseByCodeAndVersion, getCourseById} from '@/services/courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 import withAuth from '@/components/auth/withAuth'
 
-const ManageRules = lazy(() => import('@/components/manage-rules/ManageRules'))
+const ManageTemplate = lazy(() => import('@/components/template-management/ManageTemplate'))
 
-function ManageRulesPage({ searchParams }: { searchParams: { code?: string; version?: string } }) {
-  const { code, version } = searchParams
+function ManageTemplatePage({ searchParams }: { searchParams: { id?: string } }) {
+  const { id } = searchParams
 
   const [courseData, setCourseData] = useState<Course | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchCourse = async () => {
-      if (!code || !version) {
-        redirect('/manage-course')
+      if (!id) {
+        redirect('/choose-template')
         return
       }
 
@@ -27,21 +27,17 @@ function ManageRulesPage({ searchParams }: { searchParams: { code?: string; vers
         const token = await getToken()
         console.log('token', token)
 
-        const data = await getCourseByCodeAndVersion(
-          code.toString(),
-          version.toString(),
-          token as string
-        )
+        const data = await getCourseById(id.toString(), token as string) // Fetch course by id
         setCourseData(data)
       } catch (error) {
-        console.error('Error fetching course data:', error)
+        console.error('Error fetching course data by id:', error)
       } finally {
         setLoading(false)
       }
     }
 
     fetchCourse()
-  }, [code, version])
+  }, [id])
 
   if (loading) {
     return <div>Loading...</div>
@@ -54,10 +50,10 @@ function ManageRulesPage({ searchParams }: { searchParams: { code?: string; vers
   return (
     <CourseProvider initialCourse={courseData}>
       <Suspense fallback={<div>Loading...</div>}>
-        <ManageRules />
+        <ManageTemplate />
       </Suspense>
     </CourseProvider>
   )
 }
 
-export default withAuth(ManageRulesPage)
+export default withAuth(ManageTemplatePage)
