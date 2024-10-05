@@ -104,3 +104,5 @@ backend/public/html
 */.idea/*
 */.idea
 
+/frontend/.yarnrc.yml
+/backend/.yarnrc.yml

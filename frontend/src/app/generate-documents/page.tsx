@@ -15,13 +15,7 @@ import { config } from 'dotenv'
 config()
 
 const GenerateDocuments: FC = () => {
-  const {
-    isGenerating,
-    error: docError,
-    generateCoursePDF,
-    generateHandbook,
-    exportRules,
-  } = useDocuments()
+  const { isGenerating, error: docError, generateCoursePDF, exportRules } = useDocuments()
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -35,6 +29,10 @@ const GenerateDocuments: FC = () => {
     const storedToken = getToken()
     setToken(storedToken)
   }, [])
+
+  useEffect(() => {
+    console.log('selectedCourseId', selectedCourseId)
+  }, [selectedCourseId])
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -78,8 +76,10 @@ const GenerateDocuments: FC = () => {
   }
 
   const selectedCourse = courses.find((course) => course.id.toString() === selectedCourseId)
+  const code = courses.find((course) => course.id.toString() === selectedCourseId)?.code
   const versions = selectedCourse?.versions || []
 
+  // @ts-ignore
   return (
     <Layout>
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Generate Documentation</h2>
@@ -99,7 +99,7 @@ const GenerateDocuments: FC = () => {
           isGenerating={isGenerating}
           versions={versions}
         />
-        <HandbookGenerator generateHandbook={generateHandbook} isGenerating={isGenerating} />
+        <HandbookGenerator course={code} />
         <RulesExporter exportRules={exportRules} isGenerating={isGenerating} />
       </div>
       {isGenerating && <LoadingOverlay />}

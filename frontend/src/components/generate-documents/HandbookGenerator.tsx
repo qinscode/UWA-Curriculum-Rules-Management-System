@@ -1,12 +1,15 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { BookOpenIcon } from '@heroicons/react/24/solid'
 
 interface HandbookSectionProps {
-  generateHandbook: () => void
-  isGenerating: boolean
+  course: string
 }
 
-const HandbookSection: FC<HandbookSectionProps> = ({ generateHandbook, isGenerating }) => {
+const HandbookSection: FC<HandbookSectionProps> = ({ course }) => {
+  const url = `https://handbooks.uwa.edu.au/coursedetails?code=${course}#rules`
+  useEffect(() => {
+    console.log('Course:', course)
+  }, [])
   return (
     <div className="rounded-lg border border-gray-200 p-6 shadow-lg">
       {' '}
@@ -20,7 +23,7 @@ const HandbookSection: FC<HandbookSectionProps> = ({ generateHandbook, isGenerat
         </p>
         <div className="mt-6">
           <a
-            href="https://handbooks.uwa.edu.au/coursedetails?code=62510#rules"
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
             className="flex w-full items-center justify-center rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 sm:w-auto"
