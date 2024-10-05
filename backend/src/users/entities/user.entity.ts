@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { UserType } from './user.enum'
 
 @Entity('users')
 export class User {
@@ -14,8 +15,11 @@ export class User {
   @Column()
   password: string
 
-  @Column({ default: false })
-  user_type: string
+  @Column({
+    type: 'enum',
+    enum: UserType,
+  })
+  type: UserType
 
   @CreateDateColumn()
   created_at: Date
