@@ -29,6 +29,7 @@ import { BackendRule } from '@/lib/categorizeRules'
 import { presetRuleService } from '@/services/presetRuleService'
 import ArticulationExitAward from '@/components/manage-rules/RuleSection/ArticulationExitAward'
 import CourseStructure from '@/components/manage-rules/RuleSection/CourseStructure'
+import { Sidebar } from 'lucide-react'
 
 interface CategorizedRules {
   englishEligibility: Rule | null
@@ -333,6 +334,9 @@ const ManageRules: React.FC = () => {
 
   return (
     <Layout>
+      <div className="flex">
+        <Sidebar />
+      </div>
       <div className="mx-auto max-w-7xl p-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
           <h1 className="text-3xl font-bold">
