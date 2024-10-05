@@ -7,6 +7,7 @@ import {
   ChangePasswordDto,
   ForgotPasswordDto,
   ResetPasswordDto,
+  UserProfileDto,
 } from './dto'
 
 @Controller('auth')
@@ -25,8 +26,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getProfile(@Request() req) {
-    return this.authService.getProfile(req.user.id)
+  async getCurrentUser(@Request() req): Promise<UserProfileDto> {
+    return this.authService.getProfile(req.user.userId)
   }
 
   @UseGuards(JwtAuthGuard)

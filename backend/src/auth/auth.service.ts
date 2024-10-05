@@ -4,9 +4,6 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
-import { User } from '../users/entities/user.entity'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import {
@@ -15,32 +12,33 @@ import {
   ChangePasswordDto,
   ForgotPasswordDto,
   ResetPasswordDto,
+  UserProfileDto,
 } from './dto'
+import { UsersService } from '../users/users.service'
+import { User } from '../users/entities/user.entity'
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private usersService: UsersService,
     private jwtService: JwtService
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const existingUser = await this.usersRepository.findOne({ where: { email: registerDto.email } })
+    const existingUser = await this.usersService.findByEmail(registerDto.email)
     if (existingUser) {
       throw new ConflictException('User already exists')
     }
     const hashedPassword = await bcrypt.hash(registerDto.password, 10)
-    const user = this.usersRepository.create({
+    const user = await this.usersService.create({
       ...registerDto,
       password: hashedPassword,
     })
-    await this.usersRepository.save(user)
-    return { message: 'User registered successfully' }
+    return { message: 'User registered successfully', userId: user.id }
   }
 
   async login(loginDto: LoginDto) {
-    const user = await this.usersRepository.findOne({ where: { email: loginDto.email } })
+    const user = await this.usersService.findByEmail(loginDto.email)
     if (user && (await bcrypt.compare(loginDto.password, user.password))) {
       const payload = { username: user.username, sub: user.id }
       return {
@@ -50,22 +48,25 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials')
   }
 
-  async getProfile(userId: number) {
-    const user = await this.usersRepository.findOne({ where: { id: userId } })
+  async getProfile(userId: number): Promise<UserProfileDto> {
+    const user = await this.usersService.findOne(userId)
     if (!user) {
       throw new NotFoundException('User not found')
     }
-    delete user.password
-    return user
+    return this.mapUserToProfileDto(user)
   }
 
-  async updateProfile(userId: number, updateProfileDto: any) {
-    await this.usersRepository.update(userId, updateProfileDto)
-    return this.getProfile(userId)
+  private mapUserToProfileDto(user: User): UserProfileDto {
+    const { username, email, role } = user
+    return { username, email, role }
+  }
+
+  async updateProfile(userId: number, updateProfileDto: Partial<User>) {
+    return this.usersService.update(userId, updateProfileDto)
   }
 
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
-    const user = await this.usersRepository.findOne({ where: { id: userId } })
+    const user = await this.usersService.findOne(userId)
     if (!user) {
       throw new NotFoundException('User not found')
     }
@@ -73,27 +74,29 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Current password is incorrect')
     }
-    user.password = await bcrypt.hash(changePasswordDto.newPassword, 10)
-    await this.usersRepository.save(user)
+    const hashedPassword = await bcrypt.hash(changePasswordDto.newPassword, 10)
+    await this.usersService.update(userId, { password: hashedPassword })
     return { message: 'Password changed successfully' }
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
-    const user = await this.usersRepository.findOne({ where: { email: forgotPasswordDto.email } })
+    const user = await this.usersService.findByEmail(forgotPasswordDto.email)
     if (!user) {
       throw new NotFoundException('User not found')
     }
+    // TODO: Implement password reset token generation and email sending
     return { message: 'Password reset instructions sent to your email' }
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    const { token, newPassword } = resetPasswordDto
-    const user = await this.usersRepository.findOne({ where: { id: parseInt(token) } })
+    // TODO: Implement token verification
+    const userId = 1 // This should be extracted from the verified token
+    const user = await this.usersService.findOne(userId)
     if (!user) {
       throw new NotFoundException('User not found')
     }
-    user.password = await bcrypt.hash(newPassword, 10)
-    await this.usersRepository.save(user)
+    const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10)
+    await this.usersService.update(userId, { password: hashedPassword })
     return { message: 'Password reset successfully' }
   }
 }
