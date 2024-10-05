@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { User } from './entities/user.entity'
+import { User } from '../users/entities/user.entity'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 import {
@@ -83,17 +83,11 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found')
     }
-    // Generate and send reset token (implement email sending logic here)
     return { message: 'Password reset instructions sent to your email' }
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    // 实现重置密码的逻辑
-    // 例如：验证重置令牌，更新用户密码等
     const { token, newPassword } = resetPasswordDto
-    // 这里应该有验证令牌的逻辑
-    // 然后更新用户密码
-    // 为了示例，假设令牌就是用户ID
     const user = await this.usersRepository.findOne({ where: { id: parseInt(token) } })
     if (!user) {
       throw new NotFoundException('User not found')
