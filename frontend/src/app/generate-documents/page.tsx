@@ -76,10 +76,9 @@ const GenerateDocuments: FC = () => {
   }
 
   const selectedCourse = courses.find((course) => course.id.toString() === selectedCourseId)
-  const code = courses.find((course) => course.id.toString() === selectedCourseId)?.code
+  const code = selectedCourse?.code || ''
   const versions = selectedCourse?.versions || []
 
-  // @ts-ignore
   return (
     <Layout>
       <h2 className="mb-8 text-2xl font-bold text-gray-900">Generate Documentation</h2>
@@ -99,7 +98,8 @@ const GenerateDocuments: FC = () => {
           isGenerating={isGenerating}
           versions={versions}
         />
-        <HandbookGenerator course={code} />
+        <HandbookGenerator course={code} disabled={!selectedCourseId} />{' '}
+        {/* 根据是否选择了课程禁用按钮 */}
         <RulesExporter exportRules={exportRules} isGenerating={isGenerating} />
       </div>
       {isGenerating && <LoadingOverlay />}
