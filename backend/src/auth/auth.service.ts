@@ -16,6 +16,7 @@ import {
 } from './dto'
 import { UsersService } from '../users/users.service'
 import { User } from '../users/entities/user.entity'
+import { UserType } from '../users/entities/user.enum'
 
 @Injectable()
 export class AuthService {
@@ -58,6 +59,7 @@ export class AuthService {
 
   private mapUserToProfileDto(user: User): UserProfileDto {
     const { username, email, role } = user
+    console.log(user)
     return { username, email, role }
   }
 
@@ -84,12 +86,10 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('User not found')
     }
-    // TODO: Implement password reset token generation and email sending
     return { message: 'Password reset instructions sent to your email' }
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    // TODO: Implement token verification
     const userId = 1 // This should be extracted from the verified token
     const user = await this.usersService.findOne(userId)
     if (!user) {

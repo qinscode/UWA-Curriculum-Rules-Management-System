@@ -10,10 +10,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { login } from '@/services/authService' // Import the login service
 
-// export const metadata: Metadata = {
-//   title: 'Sign In',
-// }
-
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
