@@ -19,14 +19,15 @@ const HandbookSection: FC<HandbookSectionProps> = ({ generateHandbook, isGenerat
           Generate a complete handbook containing all course information.
         </p>
         <div className="mt-6">
-          <button
-            onClick={generateHandbook}
-            disabled={isGenerating}
+          <a
+            href="https://handbooks.uwa.edu.au/coursedetails?code=62510#rules"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex w-full items-center justify-center rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 sm:w-auto"
           >
             <BookOpenIcon className="mr-2 h-5 w-5" />
-            Generate Full Handbook PDF
-          </button>
+            Link to Full Handbook
+          </a>
         </div>
       </div>
     </div>
