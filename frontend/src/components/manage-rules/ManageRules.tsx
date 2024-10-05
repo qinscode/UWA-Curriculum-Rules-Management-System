@@ -332,6 +332,7 @@ const ManageRules: React.FC = () => {
 
               <RuleSection title="Deferrals">
                 <Deferrals
+                  anchorId="deferrals"
                   data={{
                     deferrals: formData.deferrals || [],
                     deferralAllowed: formData.deferralAllowed || false,
