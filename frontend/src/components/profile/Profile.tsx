@@ -1,7 +1,35 @@
 import Image from 'next/image'
 import Layout from '@/components/Layout'
+import { useUser } from '@/hooks/useUser'
+import { UserRole } from '@/types'
 
 export default function Profile() {
+  const { user, loading, error } = useUser()
+
+  if (loading) {
+    return (
+      <Layout>
+        <div>Loading...</div>
+      </Layout>
+    )
+  }
+
+  if (error) {
+    return (
+      <Layout>
+        <div>Error: {error}</div>
+      </Layout>
+    )
+  }
+
+  if (!user) {
+    return (
+      <Layout>
+        <div>User not found</div>
+      </Layout>
+    )
+  }
+
   return (
     <Layout>
       <div className="mx-auto max-w-7xl lg:gap-x-16 lg:px-8">
@@ -15,8 +43,8 @@ export default function Profile() {
                   <Image
                     src="/UWA.jpg"
                     alt="Profile Picture"
-                    width={128} // Define the width
-                    height={128} // Define the height
+                    width={128}
+                    height={128}
                     className="object-cover"
                   />
                 </div>
@@ -25,10 +53,10 @@ export default function Profile() {
               <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
                 <div className="pt-6 sm:flex">
                   <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
-                    Full name
+                    Username
                   </dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">Tom Cook</div>
+                    <div className="text-gray-900">{user.username}</div>
                     <button
                       type="button"
                       className="font-semibold text-indigo-600 hover:text-indigo-500"
@@ -42,7 +70,7 @@ export default function Profile() {
                     Email address
                   </dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">tom.cook@example.com</div>
+                    <div className="text-gray-900">{user.email}</div>
                     <button
                       type="button"
                       className="font-semibold text-indigo-600 hover:text-indigo-500"
@@ -52,15 +80,11 @@ export default function Profile() {
                   </dd>
                 </div>
                 <div className="pt-6 sm:flex">
-                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Title</dt>
+                  <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Role</dt>
                   <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                    <div className="text-gray-900">Human Resources Manager</div>
-                    <button
-                      type="button"
-                      className="font-semibold text-indigo-600 hover:text-indigo-500"
-                    >
-                      Update
-                    </button>
+                    <div className="text-gray-900">
+                      {user.role === UserRole.ADMIN ? 'Administrator' : 'Normal User'}
+                    </div>
                   </dd>
                 </div>
               </dl>

@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getToken } from '@/services/authService'
-
-interface User {
-  id: string
-  email: string
-  fullName: string
-  title: string
-  profilePicture?: string
-}
+import { User, UserRole } from '@/types'
 
 export const useUser = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -28,7 +21,7 @@ export const useUser = () => {
           throw new Error('API base URL is not defined in environment variables.')
         }
 
-        const response = await fetch(`${API_URL}/users/me`, {
+        const response = await fetch(`${API_URL}/auth/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,8 +31,12 @@ export const useUser = () => {
           throw new Error('Failed to fetch user data')
         }
 
-        const userData: User = await response.json()
-        setUser(userData)
+        const userData = await response.json()
+        const user: User = {
+          ...userData,
+          role: userData.role.toLowerCase() as UserRole,
+        }
+        setUser(user)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred')
       } finally {
