@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import Layout from '@/components/Layout'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
@@ -26,22 +27,6 @@ import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 import { presetRuleService } from '@/services/presetRuleService'
 
-interface CategorizedRules {
-  englishEligibility: Rule | null
-  admissions: Rule | null
-  progress: Rule | null
-  progressStatus: Rule | null
-  distinction: Rule | null
-  deferrals: Rule | null
-  additional: Rule | null
-  skills: Rule | null
-  knowledge: Rule | null
-  knowledgeApplication: Rule | null
-  rankingSelection: Rule | null
-  articulationExitAward?: Rule | null
-  courseStructure?: Rule | null
-}
-
 // Sidebar navigation items
 const sidebarItems = [
   { name: 'Admission and selection', href: '#admission-selection' },
@@ -61,9 +46,9 @@ const Sidebar = () => (
     <ul>
       {sidebarItems.map((item) => (
         <li key={item.name} className="mb-2">
-          <a href={item.href} className="text-blue-600 hover:underline">
+          <Link href={item.href} scroll={false} className="text-blue-600 hover:underline">
             {item.name}
-          </a>
+          </Link>
         </li>
       ))}
     </ul>
@@ -276,7 +261,7 @@ const ManageRules: React.FC = () => {
           </div>
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="space-y-6">
-              <RuleSection title="Admission and selection">
+              <RuleSection id="admission-selection" title="Admission and selection">
                 <AdmissionSelection
                   data={{
                     englishRequirements: formData.englishRequirements || [],
@@ -290,7 +275,7 @@ const ManageRules: React.FC = () => {
                 />
               </RuleSection>
 
-              <RuleSection title="Articulation and Exit Award">
+              <RuleSection id="articulation-exit-award" title="Articulation and Exit Award">
                 <ArticulationExitAward
                   data={formData}
                   updateData={updateFormData}
@@ -298,7 +283,7 @@ const ManageRules: React.FC = () => {
                 />
               </RuleSection>
 
-              <RuleSection title="Course Structure">
+              <RuleSection id="course-structure" title="Course Structure">
                 <CourseStructure
                   data={formData}
                   updateData={updateFormData}
@@ -306,7 +291,7 @@ const ManageRules: React.FC = () => {
                 />
               </RuleSection>
 
-              <RuleSection title="Satisfactory Progress">
+              <RuleSection id="satisfactory-progress" title="Satisfactory Progress">
                 <SatisfactoryProgress
                   data={{ satisfactoryProgress: formData.satisfactoryProgress || [] }}
                   updateData={updateFormData}
@@ -314,7 +299,7 @@ const ManageRules: React.FC = () => {
                 />
               </RuleSection>
 
-              <RuleSection title="Progress Status">
+              <RuleSection id="progress-status" title="Progress Status">
                 <ProgressStatus
                   data={formData}
                   updateData={updateFormData}
@@ -322,7 +307,7 @@ const ManageRules: React.FC = () => {
                 />
               </RuleSection>
 
-              <RuleSection title="Award with distinction">
+              <RuleSection id="award-with-distinction" title="Award with distinction">
                 <AwardWithDistinction
                   data={{ awardWithDistinction: formData.awardWithDistinction || [] }}
                   updateData={updateFormData}
@@ -330,7 +315,7 @@ const ManageRules: React.FC = () => {
                 />
               </RuleSection>
 
-              <RuleSection title="Deferrals">
+              <RuleSection id="deferrals" title="Deferrals">
                 <Deferrals
                   anchorId="deferrals"
                   data={{
