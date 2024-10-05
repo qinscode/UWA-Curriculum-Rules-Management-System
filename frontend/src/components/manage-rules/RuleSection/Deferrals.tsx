@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
@@ -11,15 +11,22 @@ interface DeferralsProps {
   }
   updateData: (data: Partial<GeneralProps['data']>) => void
   initialPresetRules: any[]
+  anchorId: string
 }
 
 const Deferrals: React.FC<DeferralsProps> = React.memo(
-  ({ data, updateData, initialPresetRules }) => {
+  ({ data, updateData, initialPresetRules, anchorId }) => {
     const [showDeferralRules, setShowDeferralRules] = useState(false)
-
+    const ref = useRef<HTMLDivElement>(null)
     useEffect(() => {
       setShowDeferralRules(data.deferrals.length > 0)
     }, [data.deferrals])
+
+    useEffect(() => {
+      if (ref.current) {
+        ref.current.id = anchorId
+      }
+    }, [anchorId])
 
     const handleDeferralsChange = useCallback(
       (
@@ -51,7 +58,7 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" ref={ref}>
         <div className="flex items-center space-x-2">
           <Switch
             id="deferralAllowed"
