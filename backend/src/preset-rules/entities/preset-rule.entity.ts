@@ -9,7 +9,7 @@ import {
 } from 'typeorm'
 import { Course } from '../../courses/entities/course.entity'
 import { Requirement } from '../../requirements/entities/requirement.entity'
-import { PresetRuleType } from './preset-rule.enum'
+import { RuleType } from './rule.enum'
 
 @Entity('preset-rules')
 export class PresetRule {
@@ -21,9 +21,9 @@ export class PresetRule {
 
   @Column({
     type: 'enum',
-    enum: PresetRuleType,
+    enum: RuleType,
   })
-  type: PresetRuleType
+  type: RuleType
 
   @Column('text')
   description: string
