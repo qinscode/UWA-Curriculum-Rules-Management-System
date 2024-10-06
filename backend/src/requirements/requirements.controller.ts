@@ -9,7 +9,7 @@ import {
   UseGuards,
   ParseIntPipe,
   Logger,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common'
 import { RequirementsService } from './requirements.service'
 import { Requirement } from './entities/requirement.entity'
@@ -21,7 +21,7 @@ import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dt
 export class RequirementsController {
   private readonly logger = new Logger(RequirementsController.name)
 
-  constructor(private readonly requirementsService: RequirementsService) { }
+  constructor(private readonly requirementsService: RequirementsService) {}
 
   @Get()
   async findAllRequirements(
