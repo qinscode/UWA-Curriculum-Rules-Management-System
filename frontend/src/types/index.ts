@@ -113,13 +113,11 @@ export interface GeneralProps {
   initialPresetRules: any[]
 }
 
-// 在文件的开头添加新的枚举定义
 export enum UserRole {
   ADMIN = 'admin',
   NORMAL = 'normal',
 }
 
-// 修改或添加 User 接口
 export interface User {
   username: string
   email: string

@@ -25,6 +25,7 @@ import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { ruleService } from '@/services/ruleService'
 import { presetRuleService } from '@/services/presetRuleService'
+import { BackendRule } from '@/lib/categorizeRules'
 
 interface CategorizedRules {
   englishEligibility: Rule | null

@@ -18,6 +18,7 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
   ({ data, updateData, initialPresetRules, anchorId }) => {
     const [showDeferralRules, setShowDeferralRules] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
+
     useEffect(() => {
       setShowDeferralRules(data.deferrals.length > 0)
     }, [data.deferrals])
