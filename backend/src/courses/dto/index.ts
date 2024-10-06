@@ -1,21 +1,22 @@
-import { IsString, IsBoolean, IsOptional } from 'class-validator'
+import { IsString, IsBoolean, IsOptional, IsNotEmpty, IsEnum } from 'class-validator'
+import { CourseType } from '../entities/course-type.enum'
 
 export class CreateCourseDto {
+  @IsNotEmpty()
   @IsString()
   code: string
 
+  @IsNotEmpty()
   @IsString()
   name: string
 
-  @IsString()
-  @IsOptional()
-  description?: string
+  @IsNotEmpty()
+  @IsEnum(CourseType)
+  type: CourseType
 
+  @IsNotEmpty()
   @IsString()
   version: string
-
-  @IsBoolean()
-  is_current: boolean
 }
 
 export class UpdateCourseDto {
