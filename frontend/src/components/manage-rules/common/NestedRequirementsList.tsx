@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { NestedRequirementsListProps, Requirement } from '@/types'
 import SortedTree from '@/components/manage-rules/common/SortedTree'
 

@@ -103,9 +103,6 @@ const ManageRules: React.FC = () => {
     courseStructure: null,
   })
 
-  const [newVersion, setNewVersion] = useState<string>('')
-  const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
-  const router = useRouter()
   const [showRankingRequirements, setShowRankingRequirements] = useState(false)
   const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
 
