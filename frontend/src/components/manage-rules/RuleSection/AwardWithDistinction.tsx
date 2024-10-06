@@ -71,7 +71,7 @@ const AwardWithDistinction: React.FC<AwardWithDistinctionProps> = React.memo(
               showHelpPanel={true}
               presetRules={
                 initialPresetRules?.length
-                  ? (initialPresetRules[3].requirements as Requirement[])
+                  ? (initialPresetRules[5].requirements as Requirement[])
                   : undefined
               }
             />
