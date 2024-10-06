@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DeepPartial, Repository } from 'typeorm'
 import { PresetCourse } from './entities/preset-course.entity'
@@ -11,6 +11,8 @@ import { PresetCourseType } from './entities/preset-course-type.enum'
 
 @Injectable()
 export class PresetCoursesService {
+  private readonly logger = new Logger(PresetCoursesService.name)
+
   constructor(
     @InjectRepository(PresetCourse)
     private presetCoursesRepository: Repository<PresetCourse>,
@@ -196,20 +198,26 @@ export class PresetCoursesService {
   }
 
   async findPresetRulesByType(type: PresetCourseType): Promise<PresetRule[]> {
+    this.logger.log(`Searching for preset course with type: ${type}`)
+
     const presetCourse = await this.presetCoursesRepository.findOne({
       where: { type },
       relations: ['presetRules', 'presetRules.presetRequirements'],
     })
 
     if (!presetCourse) {
-      // 如果没有找到匹配的预设课程，我们返回一个空数组
-      console.log(`No preset course found for type: ${type}`)
+      this.logger.warn(`No preset course found for type: ${type}`)
       return []
     }
 
+    this.logger.log(`Found preset course with ID: ${presetCourse.id} for type: ${type}`)
+
     if (presetCourse.presetRules.length === 0) {
-      // 如果找到了预设课程，但没有关联的预设规则，我们记录这个情况
-      console.log(`Preset course found for type: ${type}, but it has no preset rules`)
+      this.logger.warn(`Preset course found for type: ${type}, but it has no preset rules`)
+    } else {
+      this.logger.log(
+        `Found ${presetCourse.presetRules.length} preset rules for course type: ${type}`
+      )
     }
 
     // 返回排序后的预设规则数组

@@ -14,6 +14,7 @@ import {
   Injectable,
   ArgumentMetadata,
   BadRequestException,
+  Logger,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { PresetCoursesService } from './preset-courses.service'
@@ -41,6 +42,8 @@ class ParsePresetCourseTypePipe implements PipeTransform<string, PresetCourseTyp
 @Controller('preset-courses')
 @UseGuards(JwtAuthGuard)
 export class PresetCoursesController {
+  private readonly logger = new Logger(PresetCoursesController.name)
+
   constructor(private readonly presetCoursesService: PresetCoursesService) {}
 
   @Get()
@@ -184,16 +187,18 @@ export class PresetCoursesController {
   @Get('by-type/:type/preset-rules')
   async findPresetRulesByType(
     @Param('type', ParsePresetCourseTypePipe) type: PresetCourseType
-  ): Promise<{ presetRules: PresetRule[]; message?: string }> {
+  ): Promise<PresetRule[]> {
+    this.logger.log(`Received request for preset rules of course type: ${type}`)
+
     const presetRules = await this.presetCoursesService.findPresetRulesByType(type)
 
+    this.logger.log(`Found ${presetRules.length} preset rules for course type: ${type}`)
+
     if (presetRules.length === 0) {
-      return {
-        presetRules: [],
-        message: `No preset rules found for course type: ${type}. This could be because no course of this type exists, or because the course has no associated rules.`,
-      }
+      const message = `No preset rules found for course type: ${type}. This could be because no course of this type exists, or because the course has no associated rules.`
+      this.logger.warn(message)
     }
 
-    return { presetRules }
+    return presetRules
   }
 }
