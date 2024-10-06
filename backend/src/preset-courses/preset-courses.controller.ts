@@ -14,7 +14,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { PresetCoursesService } from './preset-courses.service'
 import { PresetCourse } from './entities/preset-course.entity'
-import { CreatePresetCourseDto, UpdatePresetCourseDto } from './dto/preset-course.dto'
+import { CreatePresetCourseDto, UpdatePresetCourseDto } from './dto/'
 import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
 import { PresetRuleType } from '../preset-rules/entities/preset-rule.enum'
