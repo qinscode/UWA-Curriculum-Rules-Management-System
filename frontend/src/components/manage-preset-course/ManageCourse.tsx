@@ -30,6 +30,8 @@ import {
 } from '@/components/ui/dialog'
 import { Course } from '@/types'
 import { getToken } from '@/services/authService'
+import { useUser } from '@/hooks/useUser'
+import { toast } from '@/hooks/use-toast'
 
 const courseTypes = [
   'Graduate Certificate',
@@ -51,6 +53,7 @@ const CourseManage: React.FC = () => {
     null
   )
   const [token, setToken] = useState<string | null>(null)
+  const { user, loading: userLoading } = useUser()
 
   const router = useRouter()
 
@@ -82,6 +85,14 @@ const CourseManage: React.FC = () => {
   )
 
   const handleEdit = (course: Course) => {
+    if (user?.role !== 'admin') {
+      toast({
+        title: 'Permission Denied',
+        description: 'Only administrators can edit courses.',
+        variant: 'destructive',
+      })
+      return
+    }
     router.push(`/manage-preset-rules?code=${course.code}&version=${course.version}`)
   }
 
@@ -114,6 +125,10 @@ const CourseManage: React.FC = () => {
       setSelectedCourseForNewVersion(null)
       setNewVersion('')
     }
+  }
+
+  if (userLoading) {
+    return <div>Loading...</div>
   }
 
   return (
