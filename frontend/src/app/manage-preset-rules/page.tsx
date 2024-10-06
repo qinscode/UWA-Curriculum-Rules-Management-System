@@ -7,11 +7,15 @@ import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 import withAuth from '@/components/auth/withAuth'
+import { useUser } from '@/hooks/useUser'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { AlertCircle } from 'lucide-react'
 
 const ManageRules = lazy(() => import('@/components/manage-preset-rules/ManageRules'))
 
 function ManageRulesPage({ searchParams }: { searchParams: { code?: string; version?: string } }) {
   const { code, version } = searchParams
+  const { user, loading: userLoading } = useUser()
 
   const [courseData, setCourseData] = useState<Course | null>(null)
   const [loading, setLoading] = useState(true)
@@ -43,8 +47,20 @@ function ManageRulesPage({ searchParams }: { searchParams: { code?: string; vers
     fetchCourse()
   }, [code, version])
 
-  if (loading) {
+  if (userLoading || loading) {
     return <div>Loading...</div>
+  }
+
+  if (user?.role !== 'admin') {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Alert variant="destructive" className="max-w-md">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Permission Denied</AlertTitle>
+          <AlertDescription>Only administrators can access the manage rules page.</AlertDescription>
+        </Alert>
+      </div>
+    )
   }
 
   if (!courseData) {

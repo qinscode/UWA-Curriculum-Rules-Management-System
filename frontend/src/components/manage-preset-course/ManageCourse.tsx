@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { Search, ArrowUpDown, Plus } from 'lucide-react'
+import { Search, ArrowUpDown, Plus, AlertCircle } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -31,7 +31,7 @@ import {
 import { Course } from '@/types'
 import { getToken } from '@/services/authService'
 import { useUser } from '@/hooks/useUser'
-import { toast } from '@/hooks/use-toast'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 const courseTypes = [
   'Graduate Certificate',
@@ -54,6 +54,7 @@ const CourseManage: React.FC = () => {
   )
   const [token, setToken] = useState<string | null>(null)
   const { user, loading: userLoading } = useUser()
+  const [showAlert, setShowAlert] = useState(false)
 
   const router = useRouter()
 
@@ -86,11 +87,11 @@ const CourseManage: React.FC = () => {
 
   const handleEdit = (course: Course) => {
     if (user?.role !== 'admin') {
-      toast({
-        title: 'Permission Denied',
-        description: 'Only administrators can edit courses.',
-        variant: 'destructive',
-      })
+      setShowAlert(true)
+      // 设置 3 秒后自动隐藏 Alert
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 3000)
       return
     }
     router.push(`/manage-preset-rules?code=${course.code}&version=${course.version}`)
@@ -135,6 +136,15 @@ const CourseManage: React.FC = () => {
     <div className="flex-1 overflow-auto">
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
         <h1 className="mb-6 text-3xl font-bold">Choose a Standard Rule</h1>
+
+        {showAlert && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Permission Denied</AlertTitle>
+            <AlertDescription>Only administrators can edit courses.</AlertDescription>
+          </Alert>
+        )}
+
         <div className="mb-6 flex items-center justify-between">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
