@@ -2,13 +2,13 @@
 
 import React, { Suspense, lazy, useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
-import { getCourseByCodeAndVersion } from '@/services/courseService'
+import { getCourseByCodeAndVersion } from '@/services/preset-courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 import withAuth from '@/components/auth/withAuth'
 
-const ManageRules = lazy(() => import('@/components/manage-rules/ManageRules'))
+const ManageRules = lazy(() => import('@/components/manage-preset-rules/ManageRules'))
 
 function ManageRulesPage({ searchParams }: { searchParams: { code?: string; version?: string } }) {
   const { code, version } = searchParams
@@ -19,7 +19,7 @@ function ManageRulesPage({ searchParams }: { searchParams: { code?: string; vers
   useEffect(() => {
     const fetchCourse = async () => {
       if (!code || !version) {
-        redirect('/manage-course')
+        redirect('/manage-preset-course')
         return
       }
 

@@ -90,7 +90,7 @@ const CourseManage: React.FC = () => {
     })
 
   const handleEdit = (course: Course) => {
-    router.push(`/manage-rules?code=${course.code}&version=${course.version}`)
+    router.push(`/manage-preset-rules?code=${course.code}&version=${course.version}`)
   }
 
   const handleVersionChange = (courseId: number, newVersion: string) => {

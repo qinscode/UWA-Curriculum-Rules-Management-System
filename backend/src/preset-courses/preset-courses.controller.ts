@@ -72,12 +72,6 @@ export class PresetCoursesController {
 
   // PresetRule-related endpoints
 
-  @Get(':id/preset-rules')
-  async findAllPresetRules(@Param('id', ParseIntPipe) id: number): Promise<PresetRule[]> {
-    console.log('Fetching all preset rules')
-    return this.presetCoursesService.findAllPresetRules(id)
-  }
-
   @Get(':id/preset-rules/:presetRuleId')
   async findOnePresetRule(
     @Param('id', ParseIntPipe) id: number,

@@ -23,8 +23,7 @@ import CourseStructure from '@/components/manage-rules/RuleSection/CourseStructu
 import SaveButton from '@/components/manage-rules/common/SaveButton'
 import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
-import { ruleService } from '@/services/ruleService'
-import { presetRuleService } from '@/services/presetRuleService'
+import { ruleService } from '@/services/preset-ruleService'
 import { BackendRule } from '@/lib/categorizeRules'
 
 interface CategorizedRules {
@@ -71,7 +70,7 @@ const Sidebar = () => (
   </div>
 )
 
-const ManageStandardRules: React.FC = () => {
+const ManageRules: React.FC = () => {
   const { course, updateCourse } = useCourse()
   const courseCode = course?.code
   const version = course?.version
@@ -117,28 +116,16 @@ const ManageStandardRules: React.FC = () => {
   const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
 
   useEffect(() => {
-    fetchPresetRules()
-  }, [])
-
-  useEffect(() => {
     if (course?.id) {
       fetchAndCategorizeRules(course.id)
     }
   }, [course])
 
-  const fetchPresetRules = async () => {
-    try {
-      const rules = await presetRuleService.getAllRules()
-      setAllPresetRules(rules)
-    } catch (error) {
-      console.error('Error fetching rules:', error)
-    }
-  }
-
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
       const rules = await ruleService.getAllRules(courseId)
       const categorized = categorizeRules(rules)
+      console.log('Preset Debugging: Categorized rules:', categorized)
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
     } catch (error) {
@@ -252,17 +239,6 @@ const ManageStandardRules: React.FC = () => {
     }
   }
 
-  const handleSaveAsNewVersion = () => {
-    if (newVersion) {
-      toast({
-        title: 'New version created',
-        description: `Version ${newVersion} has been created successfully.`,
-      })
-      setIsNewVersionDialogOpen(false)
-      router.push(`/manage-rules?code=${courseCode}&version=${newVersion}`)
-    }
-  }
-
   return (
     <Layout>
       <div className="flex">
@@ -353,4 +329,4 @@ const ManageStandardRules: React.FC = () => {
   )
 }
 
-export default ManageStandardRules
+export default ManageRules

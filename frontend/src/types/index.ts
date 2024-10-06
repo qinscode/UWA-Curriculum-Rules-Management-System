@@ -31,7 +31,6 @@ export enum RuleType {
   COURSE_STRUCTURE = 'Course Structure',
 }
 
-// Interfaces
 export interface Course {
   id: number
   code: string

@@ -19,7 +19,7 @@ const handleResponse = async (response: Response) => {
 
 export const ruleService = {
   getAllRules: async (courseId: number): Promise<Rule[]> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules`, {
+    const res = await fetch(`${API_URL}/preset-courses/${courseId}/preset-rules`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
@@ -28,16 +28,19 @@ export const ruleService = {
   },
 
   getRequirement: async (courseId: number, ruleId: number): Promise<Requirement> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    })
+    const res = await fetch(
+      `${API_URL}/preset-courses/${courseId}/preset-rules/${ruleId}/preset-requirements`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    )
     return handleResponse(res)
   },
 
   getRules: async (courseId: number, ruleId: number): Promise<Rule> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/`, {
+    const res = await fetch(`${API_URL}/preset-courses/${courseId}/preset-rules/`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
@@ -46,7 +49,7 @@ export const ruleService = {
   },
 
   createRule: async (courseId: number, ruleData: any): Promise<Rule> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/104/requirements`, {
+    const res = await fetch(`${API_URL}/preset-courses/${courseId}/rules/104/preset-requirements`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -64,14 +67,17 @@ export const ruleService = {
   ) => {
     console.log(`Updating rule ${ruleId} for course ${courseId}:`, requirements)
     try {
-      const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}/requirements`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${getToken()}`,
-        },
-        body: JSON.stringify(requirements), // 直接发送 requirements 数组
-      })
+      const res = await fetch(
+        `${API_URL}/preset-courses/${courseId}/preset-rules/${ruleId}/preset-requirements`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(requirements), // 直接发送 requirements 数组
+        }
+      )
       const data = await handleResponse(res)
       console.log(`Update response for rule ${ruleId}:`, data)
       return data
@@ -82,7 +88,7 @@ export const ruleService = {
   },
 
   deleteRule: async (courseId: number, ruleId: number): Promise<void> => {
-    const res = await fetch(`${API_URL}/courses/${courseId}/rules/${ruleId}`, {
+    const res = await fetch(`${API_URL}/preset-courses/${courseId}/preset-rules/${ruleId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${getToken()}`,

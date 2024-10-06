@@ -35,6 +35,7 @@ export class PresetRulesController {
     @Param('presetCourseId', ParseIntPipe) presetCourseId: number
   ): Promise<PresetRuleWithHierarchyDto[]> {
     const presetRules = await this.presetRulesService.findAllPresetRules(presetCourseId)
+    console.log(presetRules)
     const presetRulesWithHierarchy: PresetRuleWithHierarchyDto[] = []
 
     for (const presetRule of presetRules) {
