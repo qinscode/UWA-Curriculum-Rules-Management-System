@@ -59,7 +59,7 @@ const PresetCourseManage: React.FC = () => {
   const { user, loading: userLoading } = useUser()
   const [showAlert, setShowAlert] = useState(false)
   const [isCreateCourseDialogOpen, setIsCreateCourseDialogOpen] = useState(false)
-  const [newCourse, setNewCourse] = useState({
+  const [newCourse, setNewCourse] = useState<CreateCourseDto>({
     code: '',
     name: '',
     type: '',
@@ -148,21 +148,9 @@ const PresetCourseManage: React.FC = () => {
     }
 
     try {
-      const courseData: CreateCourseDto = {
-        code: newCourse.code,
-        name: newCourse.name,
-        type: newCourse.type,
-        version: newCourse.version,
-      }
+      const createdCourse = await createCourse(newCourse, token)
 
-      const createdCourse = await createCourse(courseData, token)
-
-      const courseWithVersions = {
-        ...createdCourse,
-        versions: createdCourse.versions || [createdCourse.version],
-      }
-
-      setCourses([...courses, courseWithVersions])
+      setCourses([...courses, createdCourse])
       setIsCreateCourseDialogOpen(false)
       setNewCourse({ code: '', name: '', type: '', version: '' })
 
