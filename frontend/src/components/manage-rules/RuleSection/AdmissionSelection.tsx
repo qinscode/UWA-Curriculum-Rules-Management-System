@@ -75,7 +75,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
   }, [data])
 
   useEffect(() => {
-    console.log('initialPresetRules: Data changed', initialPresetRules)
+    console.log('AD: initialPresetRules: Data changed', initialPresetRules)
   }, [initialPresetRules])
 
   return (
@@ -92,7 +92,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[0].requirements as Requirement[])
+              ? (initialPresetRules[2].Requirements as Requirement[])
               : undefined
           }
         />

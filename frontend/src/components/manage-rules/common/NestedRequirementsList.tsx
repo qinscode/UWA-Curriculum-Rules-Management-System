@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { NestedRequirementsListProps, Requirement } from '@/types'
 import SortedTree from '@/components/manage-rules/common/SortedTree'
 
@@ -18,6 +18,10 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
     },
     [onUpdate]
   )
+
+  useEffect(() => {
+    console.log('FFFFFFF', presetRules)
+  }, [presetRules])
 
   return (
     <div className="space-y-4">
