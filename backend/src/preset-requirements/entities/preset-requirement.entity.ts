@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
+import { CourseType } from '../../courses/entities/course-type.enum'
 
 @Entity('preset_requirements')
 export class PresetRequirement {

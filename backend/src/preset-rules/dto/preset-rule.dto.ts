@@ -1,26 +1,27 @@
 import { PresetRuleType } from '../entities/preset-rule.enum'
+import { CourseType } from '../../courses/entities/course-type.enum'
 
 export class CreatePresetRuleDto {
   name: string
   type: PresetRuleType
   description: string
-  Requirements?: {
-    content: string
-    style: string
-    is_connector: boolean
-  }[]
+  course_type: CourseType
 }
 
 export class UpdatePresetRuleDto {
   name?: string
   type?: PresetRuleType
   description?: string
-  Requirements?: {
-    content: string
-    style: string
-    is_connector: boolean
-    order_index: number
-  }[]
+  course_type?: CourseType
+}
+
+export class PresetRuleWithHierarchyDto {
+  id: number
+  name: string
+  type: PresetRuleType
+  description: string
+  course_type: CourseType
+  Requirements: PresetRequirementHierarchyDto[]
 }
 
 export class PresetRequirementHierarchyDto {
@@ -29,11 +30,4 @@ export class PresetRequirementHierarchyDto {
   style: string
   is_connector: boolean
   children: PresetRequirementHierarchyDto[]
-}
-
-export class PresetRuleWithHierarchyDto extends CreatePresetRuleDto {
-  id: number
-  created_at: Date
-  updated_at: Date
-  Requirements: PresetRequirementHierarchyDto[]
 }

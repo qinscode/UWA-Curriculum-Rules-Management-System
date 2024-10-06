@@ -22,6 +22,8 @@ import {
 } from './dto/preset-rule.dto'
 import { PresetRuleType } from './entities/preset-rule.enum'
 import { PresetRequirement } from '../preset-requirements/entities/preset-requirement.entity'
+import { CourseType } from '../courses/entities/course-type.enum'
+import { PresetRuleWithRequirementsDto } from './dto/preset-rule-with-requirements.dto'
 
 type PresetRuleWithLowercaseRequirements = Omit<PresetRuleWithHierarchyDto, 'Requirements'> & {
   requirements: PresetRequirementHierarchyDto[]
@@ -64,6 +66,13 @@ export class PresetRulesController {
       children: children ? this.mapPresetRequirementsToDto(children) : [],
     }))
   }
+
+  @Get('course-types')
+  async getUniqueCourseTypes(): Promise<CourseType[]> {
+    this.logger.log('Fetching unique course types')
+    return this.presetRulesService.getUniqueCourseTypes()
+  }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<PresetRule> {
     this.logger.log(`Fetching preset rule ${id}`)
@@ -76,7 +85,6 @@ export class PresetRulesController {
 
   @Get('by-type/:type')
   async findByType(@Param('type') type: PresetRuleType): Promise<PresetRule[]> {
-    this.logger.log(`Fetching preset rules with type ${type}`)
     return this.presetRulesService.findByType(type)
   }
 
@@ -103,5 +111,13 @@ export class PresetRulesController {
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     this.logger.log(`Removing preset rule ${id}`)
     await this.presetRulesService.remove(id)
+  }
+
+  @Get('by-course-type/:courseType')
+  async findPresetRulesByCourseType(
+    @Param('courseType') courseType: CourseType
+  ): Promise<PresetRuleWithRequirementsDto[]> {
+    this.logger.log(`Fetching preset rules for course type: ${courseType}`)
+    return this.presetRulesService.findPresetRulesByCourseType(courseType)
   }
 }

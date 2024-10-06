@@ -8,6 +8,7 @@ import {
 } from 'typeorm'
 import { PresetRequirement } from '../../preset-requirements/entities/preset-requirement.entity'
 import { PresetRuleType } from './preset-rule.enum'
+import { CourseType } from '../../courses/entities/course-type.enum'
 
 @Entity('preset_rules')
 export class PresetRule {
@@ -26,12 +27,12 @@ export class PresetRule {
   @Column('text')
   description: string
 
+  @Column({
+    type: 'enum',
+    enum: CourseType,
+  })
+  course_type: CourseType
+
   @OneToMany(() => PresetRequirement, (presetRequirement) => presetRequirement.presetRule)
   presetRequirements: PresetRequirement[]
-
-  @CreateDateColumn()
-  created_at: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
 }
