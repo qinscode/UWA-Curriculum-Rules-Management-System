@@ -110,6 +110,10 @@ const ManageRules: React.FC = () => {
   const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
 
   useEffect(() => {
+    console.log('DEBUG: allPresetRules', allPresetRules)
+  }, [allPresetRules])
+
+  useEffect(() => {
     fetchPresetRules()
   }, [])
 
@@ -119,9 +123,23 @@ const ManageRules: React.FC = () => {
     }
   }, [course])
 
+  type ObjType = { [key: string]: any }
+
+  function renamePresetRequirements(arr: ObjType[]) {
+    return arr.map((obj) => {
+      if ('presetRequirements' in obj) {
+        obj.Requirements = obj.presetRequirements
+        delete obj.presetRequirements
+      }
+      return obj
+    })
+  }
+
   const fetchPresetRules = async () => {
     try {
-      const rules = await presetRuleService.getAllRules(courseType)
+      const raw_rules = await presetRuleService.getAllRules(courseType)
+      const rules = renamePresetRequirements(raw_rules) as BackendRule[]
+      console.log('rules', rules)
       setAllPresetRules(rules)
     } catch (error) {
       console.error('Error fetching rules:', error)

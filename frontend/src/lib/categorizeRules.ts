@@ -10,7 +10,6 @@ export interface BackendRule {
     content: string
     style: string
     is_connector: boolean
-
     children: any[]
   }[]
 }
