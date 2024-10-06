@@ -2,15 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import Footer from '@/components/Footer'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+
 import { toast } from '@/hooks/use-toast'
 import RuleSection from '@/components/manage-rules/common/RuleSection'
 import AdmissionSelection from '@/components/manage-rules/RuleSection/AdmissionSelection'
@@ -76,6 +68,7 @@ const ManageRules: React.FC = () => {
   const courseCode = course?.code
   const version = course?.version
   const courseName = course?.name
+  const courseType = course?.type
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [formData, setFormData] = useState<GeneralProps['data']>({
     englishRequirements: [],
@@ -128,7 +121,7 @@ const ManageRules: React.FC = () => {
 
   const fetchPresetRules = async () => {
     try {
-      const rules = await presetRuleService.getAllRules()
+      const rules = await presetRuleService.getAllRules(courseType)
       setAllPresetRules(rules)
     } catch (error) {
       console.error('Error fetching rules:', error)
