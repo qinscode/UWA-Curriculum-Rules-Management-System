@@ -148,7 +148,7 @@ export class PresetRulesService {
     return {
       id: requirement.id,
       content: requirement.content,
-      style: requirement.style as NumberingStyle, // 确保这里返回的是 NumberingStyle 类型
+      style: requirement.style as NumberingStyle,
       is_connector: requirement.is_connector,
       order_index: requirement.order_index,
       children: childrenDtos,

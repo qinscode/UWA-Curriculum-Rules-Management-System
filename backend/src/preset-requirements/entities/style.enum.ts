@@ -1,7 +1,6 @@
 export enum NumberingStyle {
-  BULLET = 'BULLET',
-  NUMBERED = 'NUMBERED',
-  ROMAN = 'ROMAN',
-  ALPHABETIC = 'ALPHABETIC',
-  NONE = 'NONE',
+  Numeric = 'numeric',
+  Alphabetic = 'alphabetic',
+  Roman = 'roman',
+  None = 'none',
 }
