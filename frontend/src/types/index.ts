@@ -38,8 +38,6 @@ export interface Course {
   type: string
   versions: string[]
   version: string
-  category: string
-  lastUpdated: string
   rules: Rule[]
 }
 
@@ -50,6 +48,13 @@ export interface Rule {
   type: RuleType
   description: string
   requirements: Requirement[]
+}
+
+export interface CreateCourseDto {
+  code: string
+  name: string
+  type: string
+  version: string
 }
 
 export interface Requirement {
