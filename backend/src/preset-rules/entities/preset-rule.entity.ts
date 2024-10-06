@@ -2,15 +2,16 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { PresetRequirement } from '../../preset-requirements/entities/preset-requirement.entity'
+import { Course } from '../../courses/entities/course.entity'
+import { Requirement } from '../../requirements/entities/requirement.entity'
 import { PresetRuleType } from './preset-rule.enum'
-import { CourseType } from '../../courses/entities/course-type.enum'
 
-@Entity('preset_rules')
+@Entity('preset-rules')
 export class PresetRule {
   @PrimaryGeneratedColumn()
   id: number
@@ -27,12 +28,15 @@ export class PresetRule {
   @Column('text')
   description: string
 
-  @Column({
-    type: 'enum',
-    enum: CourseType,
-  })
-  course_type: CourseType
+  @ManyToOne(() => Course, (course) => course.rules)
+  course: Course
 
-  @OneToMany(() => PresetRequirement, (presetRequirement) => presetRequirement.presetRule)
-  presetRequirements: PresetRequirement[]
+  @OneToMany(() => Requirement, (requirement) => requirement.rule)
+  requirements: Requirement[]
+
+  @CreateDateColumn()
+  created_at: Date
+
+  @UpdateDateColumn()
+  updated_at: Date
 }

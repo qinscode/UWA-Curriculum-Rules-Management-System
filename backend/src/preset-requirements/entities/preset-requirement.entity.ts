@@ -1,31 +1,35 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
+import { NumberingStyle } from './style.enum'
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
-import { CourseType } from '../../courses/entities/course-type.enum'
 
-@Entity('preset_requirements')
+@Entity('preset-requirements')
 export class PresetRequirement {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ default: 'content' })
+  @Column({ type: 'text' })
   content: string
 
-  @Column({ default: 'aa.ts' })
-  style: string
+  @Column({
+    type: 'enum',
+    enum: NumberingStyle,
+    default: NumberingStyle.Numeric,
+  })
+  style: NumberingStyle
 
-  @ManyToOne(() => PresetRequirement, (presetRequirement) => presetRequirement.children, {
+  @ManyToOne(() => PresetRequirement, (requirement) => requirement.children, {
     nullable: true,
-    onDelete: 'CASCADE',
+    onDelete: 'CASCADE', // Add this line to enable cascade delete
   })
   parent: PresetRequirement
 
-  @OneToMany(() => PresetRequirement, (presetRequirement) => presetRequirement.parent, {
-    cascade: true,
+  @OneToMany(() => PresetRequirement, (requirement) => requirement.parent, {
+    cascade: true, // Add this line to enable cascade operations
   })
   children: PresetRequirement[]
 
-  @ManyToOne(() => PresetRule, (presetRule) => presetRule.presetRequirements)
-  presetRule: PresetRule
+  @ManyToOne(() => PresetRule, (rule) => rule.requirements)
+  rule: PresetRule
 
   @Column({
     name: 'is_connector',

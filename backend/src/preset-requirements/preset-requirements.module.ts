@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { PresetRequirementsService } from './preset-requirements.service'
 import { PresetRequirementsController } from './preset-requirements.controller'
-import { PresetRequirement } from './entities/preset-requirement.entity'
 import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 
 @Module({

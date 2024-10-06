@@ -1,14 +1,9 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { PresetRule } from './entities/preset-rule.entity'
-import { CreatePresetRuleDto, UpdatePresetRuleDto } from './dto/preset-rule.dto'
-import { PresetRuleType } from './entities/preset-rule.enum'
-import { PresetRequirement } from '../preset-requirements/entities/preset-requirement.entity'
-import { CourseType } from '../courses/entities/course-type.enum'
-import { PresetRuleWithRequirementsDto } from './dto/preset-rule-with-requirements.dto'
-import { PresetRequirementDto } from '../preset-requirements/dto/preset-requirement.dto'
-import { NumberingStyle } from '../preset-requirements/entities/style.enum'
+
+import { DeepPartial } from 'typeorm'
+import { NumberingStyle } from '../requirements/entities/style.enum'
 
 @Injectable()
 export class PresetRulesService {
@@ -16,142 +11,78 @@ export class PresetRulesService {
 
   constructor(
     @InjectRepository(PresetRule)
-    private presetRulesRepository: Repository<PresetRule>,
-    @InjectRepository(PresetRequirement)
-    private presetRequirementsRepository: Repository<PresetRequirement>
+    private rulesRepository: Repository<PresetRule>,
+    @InjectRepository(Requirement)
+    private requirementsRepository: Repository<Requirement>
   ) {}
 
   async findAll(): Promise<PresetRule[]> {
-    return this.presetRulesRepository.find()
+    return this.rulesRepository.find({ relations: ['course'] })
   }
 
   async findOne(id: number): Promise<PresetRule> {
-    const presetRule = await this.presetRulesRepository.findOne({
+    const rule = await this.rulesRepository.findOne({
       where: { id },
-      relations: ['presetRequirements'],
+      relations: ['course', 'requirements'],
     })
-    if (!presetRule) {
-      this.logger.warn(`Preset Rule with ID "${id}" not found`)
-      throw new NotFoundException(`Preset Rule with ID "${id}" not found`)
+    if (!rule) {
+      this.logger.warn(`Rule with ID "${id}" not found`)
+      throw new NotFoundException(`Rule with ID "${id}" not found`)
     }
-    return presetRule
+    return rule
   }
 
   async findByType(type: PresetRuleType): Promise<PresetRule[]> {
-    return this.presetRulesRepository.find({ where: { type }, relations: ['presetRequirements'] })
+    return this.rulesRepository.find({ where: { type }, relations: ['course', 'requirements'] })
   }
 
-  async create(createPresetRuleDto: CreatePresetRuleDto): Promise<PresetRule> {
-    const presetRule = this.presetRulesRepository.create(createPresetRuleDto)
-    return this.presetRulesRepository.save(presetRule)
+  async create(createRuleDto: CreatePresetRuleDto): Promise<PresetRule> {
+    const rule = this.rulesRepository.create({
+      ...createRuleDto,
+      requirements: createRuleDto.requirements?.map((req) => ({
+        ...req,
+        style: req.style as NumberingStyle,
+      })),
+    } as DeepPartial<PresetRule>)
+    return this.rulesRepository.save(rule)
   }
 
-  async update(id: number, updatePresetRuleDto: UpdatePresetRuleDto): Promise<PresetRule> {
-    const presetRule = await this.findOne(id)
-    Object.assign(presetRule, updatePresetRuleDto)
-    return this.presetRulesRepository.save(presetRule)
+  async update(id: number, updateRuleDto: UpdatePresetRuleDto): Promise<PresetRule> {
+    const rule = await this.findOne(id)
+    Object.assign(rule, updateRuleDto)
+    return this.rulesRepository.save(rule)
   }
 
   async remove(id: number): Promise<void> {
-    const presetRule = await this.findOne(id)
-    await this.presetRulesRepository.remove(presetRule)
+    const rule = await this.findOne(id)
+    await this.rulesRepository.remove(rule)
   }
 
-  async findAllPresetRules(): Promise<PresetRule[]> {
-    return this.presetRulesRepository.find({
+  async findAllRules(courseId: number): Promise<PresetRule[]> {
+    return this.rulesRepository.find({
+      where: { course: { id: courseId } },
       order: { id: 'ASC' },
     })
   }
 
-  async findPresetRuleRequirementsHierarchy(presetRuleId: number): Promise<PresetRequirement[]> {
-    const presetRequirements = await this.presetRequirementsRepository.find({
-      where: { presetRule: { id: presetRuleId }, parent: null },
+  async findRuleRequirementsHierarchy(ruleId: number): Promise<PresetRequirement[]> {
+    const requirements = await this.requirementsRepository.find({
+      where: { rule: { id: ruleId }, parent: null },
       relations: ['children'],
       order: { order_index: 'ASC' },
     })
 
-    return this.loadChildrenRecursively(presetRequirements)
+    return this.loadChildrenRecursively(requirements)
   }
 
   private async loadChildrenRecursively(
-    presetRequirements: PresetRequirement[]
+    requirements: PresetRequirement[]
   ): Promise<PresetRequirement[]> {
-    for (const presetRequirement of presetRequirements) {
-      if (presetRequirement.children && presetRequirement.children.length > 0) {
-        presetRequirement.children = await this.loadChildrenRecursively(presetRequirement.children)
+    for (const requirement of requirements) {
+      if (requirement.children && requirement.children.length > 0) {
+        requirement.children = await this.loadChildrenRecursively(requirement.children)
       }
     }
-    return presetRequirements.sort((a, b) => a.order_index - b.order_index)
-  }
-
-  async getUniqueCourseTypes(): Promise<CourseType[]> {
-    const result = await this.presetRulesRepository
-      .createQueryBuilder('preset_rule')
-      .select('DISTINCT preset_rule.course_type', 'course_type')
-      .getRawMany()
-
-    return result.map((item) => item.course_type as CourseType)
-  }
-
-  async findPresetRulesByCourseType(
-    courseType: CourseType
-  ): Promise<PresetRuleWithRequirementsDto[]> {
-    this.logger.log(`Searching for preset rules with course type: ${courseType}`)
-
-    const presetRules = await this.presetRulesRepository.find({
-      where: { course_type: CourseType[courseType] },
-      relations: ['presetRequirements'],
-      order: { id: 'ASC' },
-    })
-
-    this.logger.log(`Found ${presetRules.length} preset rules`)
-
-    if (presetRules.length === 0) {
-      this.logger.warn(`No preset rules found for course type: ${courseType}`)
-      return []
-    }
-
-    return Promise.all(
-      presetRules.map(async (rule) => {
-        const requirementsHierarchy = await this.buildRequirementsHierarchy(rule.presetRequirements)
-        return {
-          id: rule.id,
-          name: rule.name,
-          type: rule.type,
-          description: rule.description,
-          course_type: rule.course_type,
-          requirements: requirementsHierarchy,
-        }
-      })
-    )
-  }
-
-  private async buildRequirementsHierarchy(
-    requirements: PresetRequirement[]
-  ): Promise<PresetRequirementDto[]> {
-    this.logger.log(`Building requirements hierarchy for ${requirements.length} requirements`)
-    const rootRequirements = requirements.filter((req) => !req.parentId)
-    return Promise.all(
-      rootRequirements.map(async (req) => this.mapRequirementToDto(req, requirements))
-    )
-  }
-
-  private async mapRequirementToDto(
-    requirement: PresetRequirement,
-    allRequirements: PresetRequirement[]
-  ): Promise<PresetRequirementDto> {
-    const children = allRequirements.filter((req) => req.parentId === requirement.id)
-    const childrenDtos = await Promise.all(
-      children.map((child) => this.mapRequirementToDto(child, allRequirements))
-    )
-
-    return {
-      id: requirement.id,
-      content: requirement.content,
-      style: requirement.style as NumberingStyle,
-      is_connector: requirement.is_connector,
-      order_index: requirement.order_index,
-      children: childrenDtos,
-    }
+    return requirements.sort((a, b) => a.order_index - b.order_index)
   }
 }
