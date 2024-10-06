@@ -30,7 +30,7 @@ const CourseStructure: React.FC<GeneralProps> = ({ data, updateData, initialPres
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[2].requirements as Requirement[])
+              ? (initialPresetRules[2].Requirements as Requirement[])
               : undefined
           }
         />

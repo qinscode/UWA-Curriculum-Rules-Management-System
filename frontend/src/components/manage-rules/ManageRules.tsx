@@ -107,10 +107,6 @@ const ManageRules: React.FC = () => {
   const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
 
   useEffect(() => {
-    console.log('DEBUG: allPresetRules', allPresetRules)
-  }, [allPresetRules])
-
-  useEffect(() => {
     fetchPresetRules()
   }, [])
 

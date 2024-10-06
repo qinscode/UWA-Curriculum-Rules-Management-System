@@ -99,7 +99,7 @@ const Deferrals: React.FC<DeferralsProps> = React.memo(
               showHelpPanel={true}
               presetRules={
                 initialPresetRules?.length
-                  ? (initialPresetRules[6].requirements as Requirement[])
+                  ? (initialPresetRules[6].Requirements as Requirement[])
                   : undefined
               }
             />

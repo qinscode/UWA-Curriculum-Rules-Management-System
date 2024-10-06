@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
@@ -29,6 +29,10 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     },
     [updateData]
   )
+
+  useEffect(() => {
+    console.log('initialPresetRules:', initialPresetRules)
+  }, [initialPresetRules])
 
   const handleAdmissionRequirementsChange = useCallback(
     (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
@@ -98,7 +102,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[9].requirements as Requirement[])
+              ? (initialPresetRules[9].Requirements as Requirement[])
               : undefined
           }
         />
@@ -132,7 +136,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
             showHelpPanel={true}
             presetRules={
               initialPresetRules?.length
-                ? (initialPresetRules[10].requirements as Requirement[])
+                ? (initialPresetRules[10].Requirements as Requirement[])
                 : undefined
             }
           />

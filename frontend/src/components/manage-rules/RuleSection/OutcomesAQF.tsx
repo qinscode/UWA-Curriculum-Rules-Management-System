@@ -48,7 +48,7 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
             showHelpPanel={true}
             presetRules={
               initialPresetRules?.length
-                ? (initialPresetRules[10].requirements as Requirement[])
+                ? (initialPresetRules[10].Requirements as Requirement[])
                 : undefined
             }
           />
@@ -68,7 +68,7 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
             showHelpPanel={true}
             presetRules={
               initialPresetRules?.length
-                ? (initialPresetRules[6].requirements as Requirement[])
+                ? (initialPresetRules[6].Requirements as Requirement[])
                 : undefined
             }
           />
@@ -90,7 +90,7 @@ const OutcomesAQF: React.FC<OutcomesAQFProps> = React.memo(
             showHelpPanel={true}
             presetRules={
               initialPresetRules?.length
-                ? (initialPresetRules[7].requirements as Requirement[])
+                ? (initialPresetRules[7].Requirements as Requirement[])
                 : undefined
             }
           />

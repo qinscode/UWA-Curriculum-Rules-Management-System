@@ -126,7 +126,7 @@ const ManageRules: React.FC = () => {
   function renamePresetRequirements(arr: ObjType[]) {
     return arr.map((obj) => {
       if ('presetRequirements' in obj) {
-        obj.requirements = obj.presetRequirements
+        obj.Requirements = obj.presetRequirements
         delete obj.presetRequirements
       }
       return obj
@@ -135,9 +135,7 @@ const ManageRules: React.FC = () => {
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
       const raw_rules = await presetRuleService.getAllRules(courseId)
-      console.log('All Raw rules:', raw_rules)
       const rules = renamePresetRequirements(raw_rules) as Rule[]
-      console.log('All rules:', rules)
       const categorized = categorizeRules(rules)
       console.log('Categorized rules:', categorized)
       setCategorizedRules(categorized)

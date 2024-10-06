@@ -91,7 +91,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[0].requirements as Requirement[])
+              ? (initialPresetRules[0].Requirements as Requirement[])
               : undefined
           }
         />
@@ -107,7 +107,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[8].requirements as Requirement[])
+              ? (initialPresetRules[8].Requirements as Requirement[])
               : undefined
           }
         />
@@ -141,7 +141,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
             showHelpPanel={true}
             presetRules={
               initialPresetRules?.length
-                ? (initialPresetRules[9].requirements as Requirement[])
+                ? (initialPresetRules[9].Requirements as Requirement[])
                 : undefined
             }
           />
