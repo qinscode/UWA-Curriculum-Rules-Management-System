@@ -26,7 +26,6 @@ export const presetRuleService = {
         Authorization: `Bearer ${getToken()}`,
       },
     })
-    console.log('PRESET !!! Response:', res)
     return handleResponse(res)
   },
 

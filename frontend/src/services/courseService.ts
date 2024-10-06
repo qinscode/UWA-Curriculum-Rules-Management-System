@@ -31,11 +31,6 @@ export const getCourseByCodeAndVersion = async (
     },
   })
 
-  console.log('token', token)
-  console.log('code', code)
-  console.log('version', version)
-  console.log('`${BASE_URL}/course/${code}/${version}`', `${BASE_URL}/course/${code}/${version}`)
-
   if (!response.ok) {
     throw new Error('Failed to fetch courses')
   }

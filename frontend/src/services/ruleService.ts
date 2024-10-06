@@ -70,7 +70,7 @@ export const ruleService = {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${getToken()}`,
         },
-        body: JSON.stringify(requirements), // 直接发送 requirements 数组
+        body: JSON.stringify(requirements),
       })
       const data = await handleResponse(res)
       console.log(`Update response for rule ${ruleId}:`, data)
