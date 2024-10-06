@@ -46,7 +46,7 @@ export class CoursesController {
     return this.coursesService.findByCodeAndVersion(code, version)
   }
   @Post()
-  async create(@Body(ValidationPipe) createCourseDto: CreateCourseDto): Promise<Course> {
+  async create(@Body() createCourseDto: CreateCourseDto) {
     return this.coursesService.create(createCourseDto)
   }
 

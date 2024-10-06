@@ -18,12 +18,10 @@ export class CoursesService {
   ) {}
 
   async findAll(): Promise<any[]> {
-    // 获取所有课程
     const allCourses = await this.coursesRepository.find({
       order: { code: 'ASC', version: 'DESC' },
     })
 
-    // 使用 Map 来存储每个课程代码的最新版本
     const latestVersions = new Map<string, Course>()
 
     allCourses.forEach((course) => {
@@ -32,7 +30,6 @@ export class CoursesService {
       }
     })
 
-    // 为每个最新版本的课程添加 versions 字段
     return await Promise.all(
       Array.from(latestVersions.values()).map(async (course) => {
         const versions = await this.coursesRepository
@@ -50,7 +47,6 @@ export class CoursesService {
     )
   }
 
-  // 根据 ID 查找单个课程，并动态生成 versions 字段
   async findOne(id: number): Promise<any> {
     const course = await this.coursesRepository.findOne({ where: { id } })
 
@@ -58,41 +54,52 @@ export class CoursesService {
       throw new NotFoundException(`Course with ID "${id}" not found`)
     }
 
-    // 查询与当前课程 code 相同的所有版本
     const relatedCourses = await this.coursesRepository.find({
       where: { code: course.code },
       order: { version: 'DESC' },
     })
 
-    // 动态生成 versions 数组
     const versions = relatedCourses.map((c) => c.version.toString())
 
-    // 返回课程信息，并附带生成的 versions 数组
     return {
       ...course,
-      versions, // 动态生成的版本数组
+      versions,
     }
   }
 
-  // 创建新课程
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
     const course = this.coursesRepository.create(createCourseDto)
-    return this.coursesRepository.save(course)
+    const savedCourse = await this.coursesRepository.save(course)
+
+    const ruleTypes = Object.values(RuleType)
+    const rules = ruleTypes.map((ruleType) => ({
+      name: ruleType,
+      type: ruleType,
+      description: `Default description for ${ruleType}`,
+      course: savedCourse,
+    }))
+
+    await this.rulesRepository.save(rules)
+
+    return this.coursesRepository.findOne({
+      where: { id: savedCourse.id },
+      relations: ['rules'],
+    })
   }
 
-  // 更新课程信息
   async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const course = await this.findOne(id)
     Object.assign(course, updateCourseDto)
     return this.coursesRepository.save(course)
   }
 
-  // 删除课程
   async remove(id: number): Promise<void> {
-    const course = await this.findOne(id)
+    const course = await this.coursesRepository.findOne({ where: { id } })
+    if (!course) {
+      throw new NotFoundException(`Course with ID "${id}" not found`)
+    }
     await this.coursesRepository.remove(course)
   }
-
   async findByCodeAndVersion(code: string, version: string): Promise<Course> {
     const course = await this.coursesRepository.findOne({
       where: { code, version: version.toString() },
