@@ -73,21 +73,13 @@ const CourseManage: React.FC = () => {
     fetchCourses()
   }, [token])
 
-  const filteredAndSortedCourses = courses
-    .filter(
-      (course) =>
-        (!selectedType || course.type === selectedType) &&
-        (course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          course.type.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    .sort((a, b) => {
-      if (sortBy === 'newest') {
-        return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-      } else {
-        return new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime()
-      }
-    })
+  const filteredAndSortedCourses = courses.filter(
+    (course) =>
+      (!selectedType || course.type === selectedType) &&
+      (course.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        course.type.toLowerCase().includes(searchTerm.toLowerCase()))
+  )
 
   const handleEdit = (course: Course) => {
     router.push(`/manage-preset-rules?code=${course.code}&version=${course.version}`)

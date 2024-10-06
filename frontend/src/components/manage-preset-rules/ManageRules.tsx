@@ -126,7 +126,7 @@ const ManageRules: React.FC = () => {
   function renamePresetRequirements(arr: ObjType[]) {
     return arr.map((obj) => {
       if ('presetRequirements' in obj) {
-        obj.Requirements = obj.presetRequirements
+        obj.requirements = obj.presetRequirements
         delete obj.presetRequirements
       }
       return obj
