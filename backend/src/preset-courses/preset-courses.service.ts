@@ -6,7 +6,7 @@ import { CreatePresetCourseDto, UpdatePresetCourseDto } from './dto'
 import { PresetRuleType } from '../preset-rules/entities/preset-rule.enum'
 import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
-import { NumberingStyle } from '../requirements/entities/style.enum'
+import { NumberingStyle } from '../preset-requirements/entities/style.enum'
 
 @Injectable()
 export class PresetCoursesService {
@@ -14,164 +14,171 @@ export class PresetCoursesService {
     @InjectRepository(PresetCourse)
     private presetCoursesRepository: Repository<PresetCourse>,
     @InjectRepository(PresetRule)
-    private rulesRepository: Repository<PresetRule>
+    private presetRulesRepository: Repository<PresetRule>
   ) {}
 
   async findAll(): Promise<any[]> {
-    // 获取所有课程
-    const allCourses = await this.presetCoursesRepository.find({
+    const allPresetCourses = await this.presetCoursesRepository.find({
       order: { code: 'ASC', version: 'DESC' },
     })
 
-    // 使用 Map 来存储每个课程代码的最新版本
     const latestVersions = new Map<string, PresetCourse>()
 
-    allCourses.forEach((course) => {
-      if (!latestVersions.has(course.code)) {
-        latestVersions.set(course.code, course)
+    allPresetCourses.forEach((presetCourse) => {
+      if (!latestVersions.has(presetCourse.code)) {
+        latestVersions.set(presetCourse.code, presetCourse)
       }
     })
 
-    // 为每个最新版本的课程添加 versions 字段
     return await Promise.all(
-      Array.from(latestVersions.values()).map(async (course) => {
+      Array.from(latestVersions.values()).map(async (presetCourse) => {
         const versions = await this.presetCoursesRepository
-          .createQueryBuilder('course')
-          .select('course.version', 'version')
-          .where('course.code = :code', { code: course.code })
-          .orderBy('course.version', 'DESC')
+          .createQueryBuilder('presetCourse')
+          .select('presetCourse.version', 'version')
+          .where('presetCourse.code = :code', { code: presetCourse.code })
+          .orderBy('presetCourse.version', 'DESC')
           .getRawMany()
 
         return {
-          ...course,
+          ...presetCourse,
           versions: versions.map((v) => v.version.toString()),
         }
       })
     )
   }
 
-  // 根据 ID 查找单个课程，并动态生成 versions 字段
   async findOne(id: number): Promise<any> {
-    const course = await this.presetCoursesRepository.findOne({ where: { id } })
+    const presetCourse = await this.presetCoursesRepository.findOne({ where: { id } })
 
-    if (!course) {
-      throw new NotFoundException(`Course with ID "${id}" not found`)
+    if (!presetCourse) {
+      throw new NotFoundException(`Preset course with ID "${id}" not found`)
     }
 
-    // 查询与当前课程 code 相同的所有版本
-    const relatedCourses = await this.presetCoursesRepository.find({
-      where: { code: course.code },
+    const relatedPresetCourses = await this.presetCoursesRepository.find({
+      where: { code: presetCourse.code },
       order: { version: 'DESC' },
     })
 
-    // 动态生成 versions 数组
-    const versions = relatedCourses.map((c) => c.version.toString())
+    const versions = relatedPresetCourses.map((c) => c.version.toString())
 
-    // 返回课程信息，并附带生成的 versions 数组
     return {
-      ...course,
-      versions, // 动态生成的版本数组
+      ...presetCourse,
+      versions,
     }
   }
 
-  // 创建新课程
-  async create(createCourseDto: CreatePresetCourseDto): Promise<PresetCourse> {
-    const course = this.presetCoursesRepository.create(createCourseDto)
-    return this.presetCoursesRepository.save(course)
+  async create(createPresetCourseDto: CreatePresetCourseDto): Promise<PresetCourse> {
+    const presetCourse = this.presetCoursesRepository.create(createPresetCourseDto)
+    return this.presetCoursesRepository.save(presetCourse)
   }
 
-  // 更新课程信息
-  async update(id: number, updateCourseDto: UpdatePresetCourseDto): Promise<PresetCourse> {
-    const course = await this.findOne(id)
-    Object.assign(course, updateCourseDto)
-    return this.presetCoursesRepository.save(course)
+  async update(id: number, updatePresetCourseDto: UpdatePresetCourseDto): Promise<PresetCourse> {
+    const presetCourse = await this.findOne(id)
+    Object.assign(presetCourse, updatePresetCourseDto)
+    return this.presetCoursesRepository.save(presetCourse)
   }
 
-  // 删除课程
   async remove(id: number): Promise<void> {
-    const course = await this.findOne(id)
-    await this.presetCoursesRepository.remove(course)
+    const presetCourse = await this.findOne(id)
+    await this.presetCoursesRepository.remove(presetCourse)
   }
 
   async findByCodeAndVersion(code: string, version: string): Promise<PresetCourse> {
-    const course = await this.presetCoursesRepository.findOne({
+    const presetCourse = await this.presetCoursesRepository.findOne({
       where: { code, version: version.toString() },
     })
 
-    if (!course) {
-      throw new NotFoundException(`Course with code "${code}" and version "${version}" not found`)
+    if (!presetCourse) {
+      throw new NotFoundException(
+        `Preset course with code "${code}" and version "${version}" not found`
+      )
     }
 
-    return course
+    return presetCourse
   }
 
-  async findAllRules(courseId: number): Promise<PresetRule[]> {
-    const course = await this.findOne(courseId)
-    return this.rulesRepository.find({ where: { course: { id: course.id } } })
+  async findAllPresetRules(presetCourseId: number): Promise<PresetRule[]> {
+    const presetCourse = await this.findOne(presetCourseId)
+    return this.presetRulesRepository.find({ where: { presetCourse: { id: presetCourse.id } } })
   }
 
-  async findOneRule(courseId: number, ruleId: number): Promise<PresetRule> {
-    const course = await this.findOne(courseId)
-    return this.rulesRepository.findOne({ where: { id: ruleId, course: { id: course.id } } })
+  async findOnePresetRule(presetCourseId: number, presetRuleId: number): Promise<PresetRule> {
+    const presetCourse = await this.findOne(presetCourseId)
+    return this.presetRulesRepository.findOne({
+      where: { id: presetRuleId, presetCourse: { id: presetCourse.id } },
+    })
   }
 
-  async findRuleByType(courseId: number, type: PresetRuleType): Promise<PresetRule> {
-    const course = await this.findOne(courseId)
-    return this.rulesRepository.findOne({ where: { type, course: { id: course.id } } })
+  async findPresetRuleByType(presetCourseId: number, type: PresetRuleType): Promise<PresetRule> {
+    const presetCourse = await this.findOne(presetCourseId)
+    return this.presetRulesRepository.findOne({
+      where: { type, presetCourse: { id: presetCourse.id } },
+    })
   }
 
-  async createRule(courseId: number, createRuleDto: CreatePresetRuleDto): Promise<PresetRule> {
-    const course = await this.findOne(courseId)
-    const rule = this.rulesRepository.create({
-      ...createRuleDto,
-      course,
-      requirements: createRuleDto.requirements?.map((req) => ({
+  async createPresetRule(
+    presetCourseId: number,
+    createPresetRuleDto: CreatePresetRuleDto
+  ): Promise<PresetRule> {
+    const presetCourse = await this.findOne(presetCourseId)
+    const presetRule = this.presetRulesRepository.create({
+      ...createPresetRuleDto,
+      presetCourse,
+      presetRequirements: createPresetRuleDto.presetRequirements?.map((req) => ({
         ...req,
         style: req.style as NumberingStyle,
       })),
     } as DeepPartial<PresetRule>)
-    return this.rulesRepository.save(rule as PresetRule)
+    return this.presetRulesRepository.save(presetRule as PresetRule)
   }
 
-  async updateRule(
-    courseId: number,
-    ruleId: number,
-    updateRuleDto: UpdatePresetRuleDto
+  async updatePresetRule(
+    presetCourseId: number,
+    presetRuleId: number,
+    updatePresetRuleDto: UpdatePresetRuleDto
   ): Promise<PresetRule> {
-    const rule = await this.findOneRule(courseId, ruleId)
-    if (!rule) {
-      throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${courseId}"`)
+    const presetRule = await this.findOnePresetRule(presetCourseId, presetRuleId)
+    if (!presetRule) {
+      throw new NotFoundException(
+        `Preset rule with ID "${presetRuleId}" not found in preset course "${presetCourseId}"`
+      )
     }
-    Object.assign(rule, updateRuleDto)
-    return this.rulesRepository.save(rule)
+    Object.assign(presetRule, updatePresetRuleDto)
+    return this.presetRulesRepository.save(presetRule)
   }
 
-  async updateRuleByType(
-    courseId: number,
+  async updatePresetRuleByType(
+    presetCourseId: number,
     type: PresetRuleType,
-    updateRuleDto: UpdatePresetRuleDto
+    updatePresetRuleDto: UpdatePresetRuleDto
   ): Promise<PresetRule> {
-    const rule = await this.findRuleByType(courseId, type)
-    if (!rule) {
-      throw new NotFoundException(`Rule with type "${type}" not found in course "${courseId}"`)
+    const presetRule = await this.findPresetRuleByType(presetCourseId, type)
+    if (!presetRule) {
+      throw new NotFoundException(
+        `Preset rule with type "${type}" not found in preset course "${presetCourseId}"`
+      )
     }
-    Object.assign(rule, updateRuleDto)
-    return this.rulesRepository.save(rule)
+    Object.assign(presetRule, updatePresetRuleDto)
+    return this.presetRulesRepository.save(presetRule)
   }
 
-  async removeRule(courseId: number, ruleId: number): Promise<void> {
-    const rule = await this.findOneRule(courseId, ruleId)
-    if (!rule) {
-      throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${courseId}"`)
+  async removePresetRule(presetCourseId: number, presetRuleId: number): Promise<void> {
+    const presetRule = await this.findOnePresetRule(presetCourseId, presetRuleId)
+    if (!presetRule) {
+      throw new NotFoundException(
+        `Preset rule with ID "${presetRuleId}" not found in preset course "${presetCourseId}"`
+      )
     }
-    await this.rulesRepository.remove(rule)
+    await this.presetRulesRepository.remove(presetRule)
   }
 
-  async removeRuleByType(courseId: number, type: PresetRuleType): Promise<void> {
-    const rule = await this.findRuleByType(courseId, type)
-    if (!rule) {
-      throw new NotFoundException(`Rule with type "${type}" not found in course "${courseId}"`)
+  async removePresetRuleByType(presetCourseId: number, type: PresetRuleType): Promise<void> {
+    const presetRule = await this.findPresetRuleByType(presetCourseId, type)
+    if (!presetRule) {
+      throw new NotFoundException(
+        `Preset rule with type "${type}" not found in preset course "${presetCourseId}"`
+      )
     }
-    await this.rulesRepository.remove(rule)
+    await this.presetRulesRepository.remove(presetRule)
   }
 }

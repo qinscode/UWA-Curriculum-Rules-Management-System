@@ -1,4 +1,4 @@
-export enum RuleType {
+export enum PresetRuleType {
   ASR = 'Applicability of the Student Rules policies and procedures',
   ACECRS = 'Academic Conduct Essentials and Communication and Research Skills modules',
   ENGLISH_ELIGIBILITY = 'English Eligibility',

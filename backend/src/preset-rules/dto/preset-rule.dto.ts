@@ -1,8 +1,8 @@
-import { RuleType } from '../entities/rule.enum'
+import { PresetRuleType } from '../entities/preset-rule.enum'
 
 export class CreatePresetRuleDto {
   name: string
-  type: RuleType
+  type: PresetRuleType
   description: string
   presetRequirements?: {
     content: string
@@ -14,7 +14,7 @@ export class CreatePresetRuleDto {
 
 export class UpdatePresetRuleDto {
   name?: string
-  type?: RuleType
+  type?: PresetRuleType
   description?: string
   presetRequirements?: {
     content: string

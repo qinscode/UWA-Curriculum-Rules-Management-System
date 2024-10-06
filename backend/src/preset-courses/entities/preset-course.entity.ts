@@ -6,10 +6,10 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm'
-import { Rule } from '../../rules/entities/rule.entity'
-import { PresetCourseType } from './preset-course-type.enum'
+import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
+import { PresetCourseType } from './preset-rule.enum'
 
-@Entity('preset-courses')
+@Entity('preset_courses')
 export class PresetCourse {
   @PrimaryGeneratedColumn()
   id: number
@@ -41,6 +41,6 @@ export class PresetCourse {
   @UpdateDateColumn()
   updated_at: Date
 
-  @OneToMany(() => Rule, (rule) => rule.course)
-  rules: Rule[]
+  @OneToMany(() => PresetRule, (presetRule) => presetRule.presetCourse)
+  presetRules: PresetRule[]
 }

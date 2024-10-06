@@ -13,140 +13,158 @@ import {
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { PresetCoursesService } from './preset-courses.service'
-import { Course } from './entities/preset-course.entity'
-import { CreatePresetCourseDto, UpdatePresetCourseDto } from './dto/'
-import { Rule } from '../rules/entities/rule.entity'
-import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto'
-import { RuleType } from '../rules/entities/rule.enum'
+import { PresetCourse } from './entities/preset-course.entity'
+import { CreatePresetCourseDto, UpdatePresetCourseDto } from './dto/preset-course.dto'
+import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
+import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
+import { PresetRuleType } from '../preset-rules/entities/preset-rule.enum'
 
 @Controller('preset-courses')
 @UseGuards(JwtAuthGuard)
 export class PresetCoursesController {
-  constructor(private readonly coursesService: PresetCoursesService) {}
+  constructor(private readonly presetCoursesService: PresetCoursesService) {}
 
   @Get()
-  async findAll(): Promise<Course[]> {
-    return this.coursesService.findAll()
+  async findAll(): Promise<PresetCourse[]> {
+    return this.presetCoursesService.findAll()
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Course> {
-    const course = await this.coursesService.findOne(id)
-    if (!course) {
-      throw new NotFoundException(`Course with ID "${id}" not found`)
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PresetCourse> {
+    const presetCourse = await this.presetCoursesService.findOne(id)
+    if (!presetCourse) {
+      throw new NotFoundException(`Preset course with ID "${id}" not found`)
     }
-    return course
+    return presetCourse
   }
 
   @Get('code/:code/version/:version')
   findByCodeAndVersion(
     @Param('code') code: string,
     @Param('version') version: string
-  ): Promise<Course> {
-    return this.coursesService.findByCodeAndVersion(code, version)
+  ): Promise<PresetCourse> {
+    return this.presetCoursesService.findByCodeAndVersion(code, version)
   }
+
   @Post()
-  async create(@Body(ValidationPipe) createCourseDto: CreatePresetCourseDto): Promise<Course> {
-    return this.coursesService.create(createCourseDto)
+  async create(
+    @Body(ValidationPipe) createPresetCourseDto: CreatePresetCourseDto
+  ): Promise<PresetCourse> {
+    return this.presetCoursesService.create(createPresetCourseDto)
   }
 
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) updateCourseDto: UpdatePresetCourseDto
-  ): Promise<Course> {
-    const updatedCourse = await this.coursesService.update(id, updateCourseDto)
-    if (!updatedCourse) {
-      throw new NotFoundException(`Course with ID "${id}" not found`)
+    @Body(ValidationPipe) updatePresetCourseDto: UpdatePresetCourseDto
+  ): Promise<PresetCourse> {
+    const updatedPresetCourse = await this.presetCoursesService.update(id, updatePresetCourseDto)
+    if (!updatedPresetCourse) {
+      throw new NotFoundException(`Preset course with ID "${id}" not found`)
     }
-    return updatedCourse
+    return updatedPresetCourse
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    await this.coursesService.remove(id)
+    await this.presetCoursesService.remove(id)
   }
 
-  // Rule-related endpoints
+  // PresetRule-related endpoints
 
-  @Get(':id/rules')
-  async findAllRules(@Param('id', ParseIntPipe) id: number): Promise<Rule[]> {
-    console.log('Fetching all rules')
-
-    return this.coursesService.findAllRules(id)
+  @Get(':id/preset-rules')
+  async findAllPresetRules(@Param('id', ParseIntPipe) id: number): Promise<PresetRule[]> {
+    console.log('Fetching all preset rules')
+    return this.presetCoursesService.findAllPresetRules(id)
   }
 
-  @Get(':id/rules/:ruleId')
-  async findOneRule(
+  @Get(':id/preset-rules/:presetRuleId')
+  async findOnePresetRule(
     @Param('id', ParseIntPipe) id: number,
-    @Param('ruleId', ParseIntPipe) ruleId: number
-  ): Promise<Rule> {
-    const rule = await this.coursesService.findOneRule(id, ruleId)
-    if (!rule) {
-      throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${id}"`)
+    @Param('presetRuleId', ParseIntPipe) presetRuleId: number
+  ): Promise<PresetRule> {
+    const presetRule = await this.presetCoursesService.findOnePresetRule(id, presetRuleId)
+    if (!presetRule) {
+      throw new NotFoundException(
+        `Preset rule with ID "${presetRuleId}" not found in preset course "${id}"`
+      )
     }
-    return rule
+    return presetRule
   }
 
-  @Get(':id/rules/by-type/:type')
-  async findRuleByType(
+  @Get(':id/preset-rules/by-type/:type')
+  async findPresetRuleByType(
     @Param('id', ParseIntPipe) id: number,
-    @Param('type') type: RuleType
-  ): Promise<Rule> {
-    const rule = await this.coursesService.findRuleByType(id, type)
-    if (!rule) {
-      throw new NotFoundException(`Rule with type "${type}" not found in course "${id}"`)
+    @Param('type') type: PresetRuleType
+  ): Promise<PresetRule> {
+    const presetRule = await this.presetCoursesService.findPresetRuleByType(id, type)
+    if (!presetRule) {
+      throw new NotFoundException(
+        `Preset rule with type "${type}" not found in preset course "${id}"`
+      )
     }
-    return rule
+    return presetRule
   }
 
-  @Post(':id/rules')
-  async createRule(
+  @Post(':id/preset-rules')
+  async createPresetRule(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) createRuleDto: CreateRuleDto
-  ): Promise<Rule> {
-    return this.coursesService.createRule(id, createRuleDto)
+    @Body(ValidationPipe) createPresetRuleDto: CreatePresetRuleDto
+  ): Promise<PresetRule> {
+    return this.presetCoursesService.createPresetRule(id, createPresetRuleDto)
   }
 
-  @Put(':id/rules/:ruleId')
-  async updateRule(
+  @Put(':id/preset-rules/:presetRuleId')
+  async updatePresetRule(
     @Param('id', ParseIntPipe) id: number,
-    @Param('ruleId', ParseIntPipe) ruleId: number,
-    @Body(ValidationPipe) updateRuleDto: UpdateRuleDto
-  ): Promise<Rule> {
-    const updatedRule = await this.coursesService.updateRule(id, ruleId, updateRuleDto)
-    if (!updatedRule) {
-      throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${id}"`)
+    @Param('presetRuleId', ParseIntPipe) presetRuleId: number,
+    @Body(ValidationPipe) updatePresetRuleDto: UpdatePresetRuleDto
+  ): Promise<PresetRule> {
+    const updatedPresetRule = await this.presetCoursesService.updatePresetRule(
+      id,
+      presetRuleId,
+      updatePresetRuleDto
+    )
+    if (!updatedPresetRule) {
+      throw new NotFoundException(
+        `Preset rule with ID "${presetRuleId}" not found in preset course "${id}"`
+      )
     }
-    return updatedRule
+    return updatedPresetRule
   }
 
-  @Put(':id/rules/by-type/:type')
-  async updateRuleByType(
+  @Put(':id/preset-rules/by-type/:type')
+  async updatePresetRuleByType(
     @Param('id', ParseIntPipe) id: number,
-    @Param('type') type: RuleType,
-    @Body(ValidationPipe) updateRuleDto: UpdateRuleDto
-  ): Promise<Rule> {
-    const updatedRule = await this.coursesService.updateRuleByType(id, type, updateRuleDto)
-    if (!updatedRule) {
-      throw new NotFoundException(`Rule with type "${type}" not found in course "${id}"`)
+    @Param('type') type: PresetRuleType,
+    @Body(ValidationPipe) updatePresetRuleDto: UpdatePresetRuleDto
+  ): Promise<PresetRule> {
+    const updatedPresetRule = await this.presetCoursesService.updatePresetRuleByType(
+      id,
+      type,
+      updatePresetRuleDto
+    )
+    if (!updatedPresetRule) {
+      throw new NotFoundException(
+        `Preset rule with type "${type}" not found in preset course "${id}"`
+      )
     }
-    return updatedRule
+    return updatedPresetRule
   }
 
-  @Delete(':id/rules/:ruleId')
-  async removeRule(
+  @Delete(':id/preset-rules/:presetRuleId')
+  async removePresetRule(
     @Param('id', ParseIntPipe) id: number,
-    @Param('ruleId', ParseIntPipe) ruleId: number
+    @Param('presetRuleId', ParseIntPipe) presetRuleId: number
   ): Promise<void> {
-    await this.coursesService.removeRule(id, ruleId)
+    await this.presetCoursesService.removePresetRule(id, presetRuleId)
   }
 
-  @Delete(':id/rules/by-type/:type')
-  async removeRuleByType(
+  @Delete(':id/preset-rules/by-type/:type')
+  async removePresetRuleByType(
     @Param('id', ParseIntPipe) id: number,
-    @Param('type') type: RuleType
+    @Param('type') type: PresetRuleType
   ): Promise<void> {
-    await this.coursesService.removeRuleByType(id, type)
+    await this.presetCoursesService.removePresetRuleByType(id, type)
   }
 }

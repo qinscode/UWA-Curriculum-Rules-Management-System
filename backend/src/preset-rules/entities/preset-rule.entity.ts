@@ -7,11 +7,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Course } from '../../courses/entities/course.entity'
-import { Requirement } from '../../requirements/entities/requirement.entity'
-import { RuleType } from './rule.enum'
+import { PresetCourse } from '../../preset-courses/entities/preset-course.entity'
+import { PresetRequirement } from '../../preset-requirements/entities/preset-requirement.entity'
+import { PresetRuleType } from './preset-rule.enum'
 
-@Entity('preset-rules')
+@Entity('preset_rules')
 export class PresetRule {
   @PrimaryGeneratedColumn()
   id: number
@@ -21,18 +21,18 @@ export class PresetRule {
 
   @Column({
     type: 'enum',
-    enum: RuleType,
+    enum: PresetRuleType,
   })
-  type: RuleType
+  type: PresetRuleType
 
   @Column('text')
   description: string
 
-  @ManyToOne(() => Course, (course) => course.rules)
-  course: Course
+  @ManyToOne(() => PresetCourse, (presetCourse) => presetCourse.presetRules)
+  presetCourse: PresetCourse
 
-  @OneToMany(() => Requirement, (requirement) => requirement.rule)
-  requirements: Requirement[]
+  @OneToMany(() => PresetRequirement, (presetRequirement) => presetRequirement.presetRule)
+  presetRequirements: PresetRequirement[]
 
   @CreateDateColumn()
   created_at: Date

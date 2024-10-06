@@ -15,87 +15,94 @@ import { PresetRulesService } from './preset-rules.service'
 import { PresetRule } from './entities/preset-rule.entity'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import {
-  CreateRuleDto,
-  UpdateRuleDto,
-  RuleWithHierarchyDto,
-  RequirementHierarchyDto,
+  CreatePresetRuleDto,
+  UpdatePresetRuleDto,
+  PresetRuleWithHierarchyDto,
+  PresetRequirementHierarchyDto,
 } from './dto/preset-rule.dto'
 import { PresetRuleType } from './entities/preset-rule.enum'
+import { PresetRequirement } from '../preset-requirements/entities/preset-requirement.entity'
 
-@Controller('preset-courses/:courseId/rules')
+@Controller('preset-courses/:presetCourseId/preset-rules')
 @UseGuards(JwtAuthGuard)
 export class PresetRulesController {
   private readonly logger = new Logger(PresetRulesController.name)
 
-  constructor(private readonly rulesService: PresetRulesService) {}
+  constructor(private readonly presetRulesService: PresetRulesService) {}
 
   @Get()
-  async findAllRules(
-    @Param('courseId', ParseIntPipe) courseId: number
-  ): Promise<RuleWithHierarchyDto[]> {
-    const rules = await this.rulesService.findAllRules(courseId)
-    const rulesWithHierarchy: RuleWithHierarchyDto[] = []
+  async findAllPresetRules(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number
+  ): Promise<PresetRuleWithHierarchyDto[]> {
+    const presetRules = await this.presetRulesService.findAllPresetRules(presetCourseId)
+    const presetRulesWithHierarchy: PresetRuleWithHierarchyDto[] = []
 
-    for (const rule of rules) {
-      const requirements = await this.rulesService.findRuleRequirementsHierarchy(rule.id)
-      rulesWithHierarchy.push({
-        ...rule,
-        requirements: this.mapRequirementsToDto(requirements.filter((req) => !req.parentId)),
+    for (const presetRule of presetRules) {
+      const presetRequirements = await this.presetRulesService.findPresetRuleRequirementsHierarchy(
+        presetRule.id
+      )
+      presetRulesWithHierarchy.push({
+        ...presetRule,
+        presetRequirements: this.mapPresetRequirementsToDto(
+          presetRequirements.filter((req) => !req.parentId)
+        ),
       })
     }
 
-    return rulesWithHierarchy
+    return presetRulesWithHierarchy
   }
 
-  private mapRequirementsToDto(requirements: PresetRequirement[]): RequirementHierarchyDto[] {
-    return requirements.map((req) => ({
+  private mapPresetRequirementsToDto(
+    presetRequirements: PresetRequirement[]
+  ): PresetRequirementHierarchyDto[] {
+    return presetRequirements.map((req) => ({
       id: req.id,
       content: req.content,
       style: req.style,
-      is_connector: req.is_connector, // Map is_connector to is_connector
+      is_connector: req.is_connector,
       order_index: req.order_index,
-      children: req.children ? this.mapRequirementsToDto(req.children) : [],
+      children: req.children ? this.mapPresetRequirementsToDto(req.children) : [],
     }))
   }
 
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<PresetRule> {
-    this.logger.log(`Fetching rule ${id}`)
-    const rule = await this.rulesService.findOne(id)
-    if (!rule) {
-      throw new NotFoundException(`Rule with ID "${id}" not found`)
+    this.logger.log(`Fetching preset rule ${id}`)
+    const presetRule = await this.presetRulesService.findOne(id)
+    if (!presetRule) {
+      throw new NotFoundException(`Preset rule with ID "${id}" not found`)
     }
-    return rule
+    return presetRule
   }
 
   @Get('by-type/:type')
   async findByType(@Param('type') type: PresetRuleType): Promise<PresetRule[]> {
-    this.logger.log(`Fetching rules with type ${type}`)
-    return this.rulesService.findByType(type)
+    this.logger.log(`Fetching preset rules with type ${type}`)
+    return this.presetRulesService.findByType(type)
   }
 
   @Post()
-  async create(@Body() createRuleDto: CreateRuleDto): Promise<PresetRule> {
-    this.logger.log('Creating new rule')
-    return this.rulesService.create(createRuleDto)
+  async create(@Body() createPresetRuleDto: CreatePresetRuleDto): Promise<PresetRule> {
+    this.logger.log('Creating new preset rule')
+    return this.presetRulesService.create(createPresetRuleDto)
   }
 
   @Put(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateRuleDto: UpdateRuleDto
+    @Body() updatePresetRuleDto: UpdatePresetRuleDto
   ): Promise<PresetRule> {
-    this.logger.log(`Updating rule ${id}`)
-    const updatedRule = await this.rulesService.update(id, updateRuleDto)
-    if (!updatedRule) {
-      throw new NotFoundException(`Rule with ID "${id}" not found`)
+    this.logger.log(`Updating preset rule ${id}`)
+    const updatedPresetRule = await this.presetRulesService.update(id, updatePresetRuleDto)
+    if (!updatedPresetRule) {
+      throw new NotFoundException(`Preset rule with ID "${id}" not found`)
     }
-    return updatedRule
+    return updatedPresetRule
   }
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    this.logger.log(`Removing rule ${id}`)
-    await this.rulesService.remove(id)
+    this.logger.log(`Removing preset rule ${id}`)
+    await this.presetRulesService.remove(id)
   }
 }

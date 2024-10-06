@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
-import { NumberingStyle } from './style.enum'
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
+import { NumberingStyle } from './style.enum'
 
-@Entity('preset-requirements')
+@Entity('preset_requirements')
 export class PresetRequirement {
   @PrimaryGeneratedColumn()
   id: number
@@ -17,19 +17,19 @@ export class PresetRequirement {
   })
   style: NumberingStyle
 
-  @ManyToOne(() => PresetRequirement, (requirement) => requirement.children, {
+  @ManyToOne(() => PresetRequirement, (presetRequirement) => presetRequirement.children, {
     nullable: true,
-    onDelete: 'CASCADE', // Add this line to enable cascade delete
+    onDelete: 'CASCADE',
   })
   parent: PresetRequirement
 
-  @OneToMany(() => PresetRequirement, (requirement) => requirement.parent, {
-    cascade: true, // Add this line to enable cascade operations
+  @OneToMany(() => PresetRequirement, (presetRequirement) => presetRequirement.parent, {
+    cascade: true,
   })
   children: PresetRequirement[]
 
-  @ManyToOne(() => PresetRule, (rule) => rule.requirements)
-  rule: PresetRule
+  @ManyToOne(() => PresetRule, (presetRule) => presetRule.presetRequirements)
+  presetRule: PresetRule
 
   @Column({
     name: 'is_connector',
