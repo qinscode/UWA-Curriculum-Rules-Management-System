@@ -246,11 +246,16 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.courseStructure, data: formData.courseStructure },
       ]
 
+      console.log('asdqweqwe')
+
       for (const { rule, data } of rulesToUpdate) {
         if (rule && data) {
           await ruleService.updateRequirementByRuleId(course!.id, rule.id, data as Requirement[])
+          console.log('QQQQQQ', course!.id, rule.id, data as Requirement[])
         }
       }
+
+      console.log('DEBUG: rulesToUpdate', rulesToUpdate)
 
       setHasUnsavedChanges(false)
       toast({ title: 'Rules saved', description: 'All rules have been successfully saved.' })

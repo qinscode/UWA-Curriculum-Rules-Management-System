@@ -68,15 +68,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     })
   }
 
-  // Remove these useEffect hooks
-  useEffect(() => {
-    console.log('AdmissionSelection: Data changed', data)
-  }, [data])
-
-  useEffect(() => {
-    console.log('AD: initialPresetRules: Data changed', initialPresetRules)
-  }, [initialPresetRules])
-
   return (
     <div className="space-y-6">
       <div>

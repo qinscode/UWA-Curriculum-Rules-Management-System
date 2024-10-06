@@ -11,17 +11,12 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 }) => {
   const handleUpdateRequirement = useCallback(
     (newRequirementsOrUpdater: Requirement[] | ((prevState: Requirement[]) => Requirement[])) => {
-      console.log('NestedRequirementsList: handleUpdateRequirement called')
       if (onUpdate) {
         onUpdate(newRequirementsOrUpdater)
       }
     },
     [onUpdate]
   )
-
-  useEffect(() => {
-    console.log('FFFFFFF', presetRules)
-  }, [presetRules])
 
   return (
     <div className="space-y-4">
