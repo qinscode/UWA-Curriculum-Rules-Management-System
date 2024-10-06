@@ -17,7 +17,7 @@ const handleResponse = async (response: Response) => {
   return response.json()
 }
 
-export const ruleService = {
+export const presetRuleService = {
   getAllRules: async (courseId: number): Promise<Rule[]> => {
     const res = await fetch(`${API_URL}/preset-courses/${courseId}/preset-rules`, {
       headers: {

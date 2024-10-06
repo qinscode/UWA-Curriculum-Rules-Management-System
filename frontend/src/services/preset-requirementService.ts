@@ -31,7 +31,7 @@ const fetchWithAuth = (url: string, options: RequestInit = {}) => {
   })
 }
 
-export const requirementService = {
+export const presetRequirementService = {
   getAllRequirements: async (courseId: number, ruleId: number): Promise<Requirement[]> => {
     const res = await fetchWithAuth(
       `${API_URL}/preset-courses/${courseId}/preset-rules/${ruleId}/preset-requirements`

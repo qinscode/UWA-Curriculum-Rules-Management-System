@@ -23,7 +23,7 @@ import CourseStructure from '@/components/manage-rules/RuleSection/CourseStructu
 import SaveButton from '@/components/manage-rules/common/SaveButton'
 import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
-import { ruleService } from '@/services/preset-ruleService'
+import { presetRuleService } from '@/services/preset-ruleService'
 import { BackendRule } from '@/lib/categorizeRules'
 
 interface CategorizedRules {
@@ -123,7 +123,7 @@ const ManageRules: React.FC = () => {
 
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
-      const rules = await ruleService.getAllRules(courseId)
+      const rules = await presetRuleService.getAllRules(courseId)
       const categorized = categorizeRules(rules)
       console.log('Preset Debugging: Categorized rules:', categorized)
       setCategorizedRules(categorized)
@@ -224,7 +224,11 @@ const ManageRules: React.FC = () => {
 
       for (const { rule, data } of rulesToUpdate) {
         if (rule && data) {
-          await ruleService.updateRequirementByRuleId(course!.id, rule.id, data as Requirement[])
+          await presetRuleService.updateRequirementByRuleId(
+            course!.id,
+            rule.id,
+            data as Requirement[]
+          )
         }
       }
 
