@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { Search, ArrowUpDown, Plus, Trash2 } from 'lucide-react'
+import { Search, Plus, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,

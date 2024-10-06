@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { getCourses } from '@/services/preset-courseService'
+import { getCourses, createCourse, deleteCourse } from '@/services/preset-courseService'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,18 +20,21 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { Search, ArrowUpDown, Plus, AlertCircle } from 'lucide-react'
+import { Search, ArrowUpDown, Plus, AlertCircle, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog'
-import { Course } from '@/types'
+import { Course, CreateCourseDto } from '@/types'
 import { getToken } from '@/services/authService'
 import { useUser } from '@/hooks/useUser'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { toast } from '@/hooks/use-toast'
 
 const courseTypes = [
   'Graduate Certificate',
@@ -43,7 +46,7 @@ const courseTypes = [
   "Professional Doctorate/Master's Coursework",
 ]
 
-const CourseManage: React.FC = () => {
+const PresetCourseManage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [courses, setCourses] = useState<Course[]>([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -55,6 +58,15 @@ const CourseManage: React.FC = () => {
   const [token, setToken] = useState<string | null>(null)
   const { user, loading: userLoading } = useUser()
   const [showAlert, setShowAlert] = useState(false)
+  const [isCreateCourseDialogOpen, setIsCreateCourseDialogOpen] = useState(false)
+  const [newCourse, setNewCourse] = useState({
+    code: '',
+    name: '',
+    type: '',
+    version: '',
+  })
+  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const router = useRouter()
 
@@ -128,6 +140,80 @@ const CourseManage: React.FC = () => {
     }
   }
 
+  const handleCreateCourse = async () => {
+    if (user?.role !== 'admin') {
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 3000)
+      return
+    }
+
+    try {
+      const courseData: CreateCourseDto = {
+        code: newCourse.code,
+        name: newCourse.name,
+        type: newCourse.type,
+        version: newCourse.version,
+      }
+
+      const createdCourse = await createCourse(courseData, token)
+
+      const courseWithVersions = {
+        ...createdCourse,
+        versions: createdCourse.versions || [createdCourse.version],
+      }
+
+      setCourses([...courses, courseWithVersions])
+      setIsCreateCourseDialogOpen(false)
+      setNewCourse({ code: '', name: '', type: '', version: '' })
+
+      toast({
+        title: 'Preset Course Created',
+        description: `Successfully created preset course: ${createdCourse.name}`,
+        duration: 3000,
+      })
+    } catch (error) {
+      console.error('Error creating preset course:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to create preset course. Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDeleteCourse = (course: Course) => {
+    if (user?.role !== 'admin') {
+      setShowAlert(true)
+      setTimeout(() => setShowAlert(false), 3000)
+      return
+    }
+    setCourseToDelete(course)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const confirmDeleteCourse = async () => {
+    if (courseToDelete && token) {
+      try {
+        await deleteCourse(courseToDelete.id, token)
+        setCourses(courses.filter((course) => course.id !== courseToDelete.id))
+        toast({
+          title: 'Preset Course deleted',
+          description: 'The preset course has been successfully deleted.',
+        })
+      } catch (error) {
+        console.error('Error deleting preset course:', error)
+        toast({
+          title: 'Error',
+          description: 'Failed to delete the preset course. Please try again.',
+          variant: 'destructive',
+        })
+      } finally {
+        setCourseToDelete(null)
+        setIsDeleteDialogOpen(false)
+      }
+    }
+  }
+
   if (userLoading) {
     return <div>Loading...</div>
   }
@@ -135,17 +221,79 @@ const CourseManage: React.FC = () => {
   return (
     <div className="flex-1 overflow-auto">
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-        <h1 className="mb-6 text-3xl font-bold">Choose a Standard Rule</h1>
+        <h1 className="mb-6 text-3xl font-bold">Manage Preset Courses</h1>
 
         {showAlert && (
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Permission Denied</AlertTitle>
-            <AlertDescription>Only administrators can edit courses.</AlertDescription>
+            <AlertDescription>Only administrators can modify preset courses.</AlertDescription>
           </Alert>
         )}
 
         <div className="mb-6 flex items-center justify-between">
+          <Dialog open={isCreateCourseDialogOpen} onOpenChange={setIsCreateCourseDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-indigo-600 text-white hover:bg-indigo-500">
+                <Plus className="mr-2 h-4 w-4" />
+                Create New Preset Course
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Preset Course</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="code">Course Code</label>
+                  <Input
+                    id="code"
+                    value={newCourse.code}
+                    onChange={(e) => setNewCourse({ ...newCourse, code: e.target.value })}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="name">Course Name</label>
+                  <Input
+                    id="name"
+                    value={newCourse.name}
+                    onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
+                    className="col-span-3"
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="type">Course Type</label>
+                  <Select
+                    value={newCourse.type}
+                    onValueChange={(value) => setNewCourse({ ...newCourse, type: value })}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select course type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courseTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <label htmlFor="version">Version</label>
+                  <Input
+                    id="version"
+                    value={newCourse.version}
+                    onChange={(e) => setNewCourse({ ...newCourse, version: e.target.value })}
+                    className="col-span-3"
+                  />
+                </div>
+              </div>
+              <Button onClick={handleCreateCourse}>Create Preset Course</Button>
+            </DialogContent>
+          </Dialog>
+
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -254,14 +402,24 @@ const CourseManage: React.FC = () => {
                     </TableCell>
                     {/*<TableCell>{course.lastUpdated}</TableCell>*/}
                     <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="transition-transform hover:bg-indigo-100 active:scale-95 active:bg-indigo-200"
-                        onClick={() => handleEdit(course)}
-                      >
-                        Edit
-                      </Button>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="transition-transform hover:bg-indigo-100 active:scale-95 active:bg-indigo-200"
+                          onClick={() => handleEdit(course)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="transition-transform hover:bg-red-100 active:scale-95 active:bg-red-200"
+                          onClick={() => handleDeleteCourse(course)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -269,9 +427,29 @@ const CourseManage: React.FC = () => {
             </Table>
           </div>
         </Card>
+
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete the preset course "{courseToDelete?.name}" (
+                {courseToDelete?.code})? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={confirmDeleteCourse}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
 }
 
-export default CourseManage
+export default PresetCourseManage
