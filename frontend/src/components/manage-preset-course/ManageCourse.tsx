@@ -127,7 +127,7 @@ const CourseManage: React.FC = () => {
   return (
     <div className="flex-1 overflow-auto">
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-        <h1 className="mb-6 text-3xl font-bold">Choose a Course</h1>
+        <h1 className="mb-6 text-3xl font-bold">Choose a Standard Rule</h1>
         <div className="mb-6 flex items-center justify-between">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -167,15 +167,15 @@ const CourseManage: React.FC = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[120px] bg-blue-100">Course Code</TableHead>
-                  <TableHead className="bg-blue-100">Course Name</TableHead>
+                  {/*<TableHead className="bg-blue-100">Course Name</TableHead>*/}
                   <TableHead className="w-[200px] bg-blue-100">Type</TableHead>
                   <TableHead className="w-[180px] bg-blue-100">Version</TableHead>
-                  <TableHead className="w-[200px] bg-blue-100">
-                    <div className="flex items-center">
-                      Last updated
-                      <ArrowUpDown className="ml-2 h-4 w-4" />
-                    </div>
-                  </TableHead>
+                  {/*<TableHead className="w-[200px] bg-blue-100">*/}
+                  {/*  <div className="flex items-center">*/}
+                  {/*    Last updated*/}
+                  {/*    <ArrowUpDown className="ml-2 h-4 w-4" />*/}
+                  {/*  </div>*/}
+                  {/*</TableHead>*/}
                   <TableHead className="w-[100px] bg-blue-100">Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -183,7 +183,7 @@ const CourseManage: React.FC = () => {
                 {filteredAndSortedCourses.map((course) => (
                   <TableRow key={course.id}>
                     <TableCell className="font-medium">{course.code}</TableCell>
-                    <TableCell>{course.name}</TableCell>
+                    {/*<TableCell>{course.name}</TableCell>*/}
                     <TableCell>{course.type}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">
@@ -235,7 +235,7 @@ const CourseManage: React.FC = () => {
                         </Dialog>
                       </div>
                     </TableCell>
-                    <TableCell>{course.lastUpdated}</TableCell>
+                    {/*<TableCell>{course.lastUpdated}</TableCell>*/}
                     <TableCell>
                       <Button
                         variant="outline"
