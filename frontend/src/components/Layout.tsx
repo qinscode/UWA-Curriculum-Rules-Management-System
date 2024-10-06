@@ -38,8 +38,8 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
     { name: 'Home', href: '/', current: pathname === '/' },
     {
       name: 'Manage Standard Rules',
-      href: '/manage-standard-rules',
-      current: pathname === '/manage-standard-rules',
+      href: '/manage-preset-course',
+      current: pathname === '/manage-preset-course',
     },
     {
       name: 'Manage Course',

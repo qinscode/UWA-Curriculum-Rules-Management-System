@@ -2,24 +2,24 @@
 
 import React, { Suspense, lazy, useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
+import { getCourseByCodeAndVersion } from '@/services/courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 import withAuth from '@/components/auth/withAuth'
-import { getStandardRuleByType } from '@/services/standardRuleService'
 
-const ManageStandardRules = lazy(() => import('@/components/manage-rules/ManageStandardRules'))
+const ManageRules = lazy(() => import('@/components/manage-rules/ManageRules'))
 
-function ManageStandardRulesPage({ searchParams }: { searchParams: { type?: string } }) {
-  const { type } = searchParams
+function ManageRulesPage({ searchParams }: { searchParams: { code?: string; version?: string } }) {
+  const { code, version } = searchParams
 
   const [courseData, setCourseData] = useState<Course | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchCourse = async () => {
-      if (!type) {
-        redirect('/manage-standard-rules')
+      if (!code || !version) {
+        redirect('/manage-course')
         return
       }
 
@@ -27,9 +27,12 @@ function ManageStandardRulesPage({ searchParams }: { searchParams: { type?: stri
         const token = await getToken()
         console.log('token', token)
 
-        const data = await getStandardRuleByType(type, token as string)
+        const data = await getCourseByCodeAndVersion(
+          code.toString(),
+          version.toString(),
+          token as string
+        )
         setCourseData(data)
-        console.log('manage-standard-rules', data)
       } catch (error) {
         console.error('Error fetching course data:', error)
       } finally {
@@ -38,7 +41,7 @@ function ManageStandardRulesPage({ searchParams }: { searchParams: { type?: stri
     }
 
     fetchCourse()
-  }, [type])
+  }, [code, version])
 
   if (loading) {
     return <div>Loading...</div>
@@ -51,10 +54,10 @@ function ManageStandardRulesPage({ searchParams }: { searchParams: { type?: stri
   return (
     <CourseProvider initialCourse={courseData}>
       <Suspense fallback={<div>Loading...</div>}>
-        <ManageStandardRules />
+        <ManageRules />
       </Suspense>
     </CourseProvider>
   )
 }
 
-export default withAuth(ManageStandardRulesPage)
+export default withAuth(ManageRulesPage)
