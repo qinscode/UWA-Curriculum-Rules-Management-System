@@ -27,6 +27,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
+  DialogDescription,
 } from '@/components/ui/dialog'
 import { Course, CreateCourseDto } from '@/types'
 import { getToken } from '@/services/authService'
@@ -59,6 +61,8 @@ const CourseManage: React.FC = () => {
     type: '',
     version: '',
   })
+  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const router = useRouter()
 
@@ -124,11 +128,16 @@ const CourseManage: React.FC = () => {
     }
   }
 
-  const handleDeleteCourse = async (courseId: number) => {
-    if (window.confirm('Are you sure you want to delete this course?')) {
+  const handleDeleteCourse = (course: Course) => {
+    setCourseToDelete(course)
+    setIsDeleteDialogOpen(true)
+  }
+
+  const confirmDeleteCourse = async () => {
+    if (courseToDelete && token) {
       try {
-        await deleteCourse(courseId, token)
-        setCourses(courses.filter((course) => course.id !== courseId))
+        await deleteCourse(courseToDelete.id, token)
+        setCourses(courses.filter((course) => course.id !== courseToDelete.id))
         toast({
           title: 'Course deleted',
           description: 'The course has been successfully deleted.',
@@ -140,6 +149,9 @@ const CourseManage: React.FC = () => {
           description: 'Failed to delete the course. Please try again.',
           variant: 'destructive',
         })
+      } finally {
+        setCourseToDelete(null)
+        setIsDeleteDialogOpen(false)
       }
     }
   }
@@ -356,7 +368,7 @@ const CourseManage: React.FC = () => {
                           variant="outline"
                           size="sm"
                           className="transition-transform hover:bg-red-100 active:scale-95 active:bg-red-200"
-                          onClick={() => handleDeleteCourse(course.id)}
+                          onClick={() => handleDeleteCourse(course)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -368,6 +380,25 @@ const CourseManage: React.FC = () => {
             </Table>
           </div>
         </Card>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete the course "{courseToDelete?.name}" (
+                {courseToDelete?.code})? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={confirmDeleteCourse}>
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
