@@ -19,11 +19,14 @@ const handleResponse = async (response: Response) => {
 
 export const presetRuleService = {
   getAllRules: async (courseId: number): Promise<Rule[]> => {
+    // const res = await fetch(`${API_URL}/preset-courses/${courseId}/preset-rules`, {
+
     const res = await fetch(`${API_URL}/preset-courses/${courseId}/preset-rules`, {
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
     })
+    console.log('PRESET !!! Response:', res)
     return handleResponse(res)
   },
 

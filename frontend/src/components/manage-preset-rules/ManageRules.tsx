@@ -121,11 +121,25 @@ const ManageRules: React.FC = () => {
     }
   }, [course])
 
+  type ObjType = { [key: string]: any }
+
+  function renamePresetRequirements(arr: ObjType[]) {
+    return arr.map((obj) => {
+      if ('presetRequirements' in obj) {
+        obj.requirements = obj.presetRequirements
+        delete obj.presetRequirements
+      }
+      return obj
+    })
+  }
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
-      const rules = await presetRuleService.getAllRules(courseId)
+      const raw_rules = await presetRuleService.getAllRules(courseId)
+      console.log('All Raw rules:', raw_rules)
+      const rules = renamePresetRequirements(raw_rules) as Rule[]
+      console.log('All rules:', rules)
       const categorized = categorizeRules(rules)
-      console.log('Preset Debugging: Categorized rules:', categorized)
+      console.log('Categorized rules:', categorized)
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
     } catch (error) {
@@ -185,7 +199,12 @@ const ManageRules: React.FC = () => {
     return categorized
   }
 
+  useEffect(() => {
+    console.log('formData:', formData)
+  }, [formData])
+
   const updateFormDataFromRules = (categorized: CategorizedRules) => {
+    console.log('Updating form data from rules:', categorized)
     setFormData((prevData) => ({
       ...prevData,
       englishRequirements: categorized.englishEligibility?.requirements || [],
