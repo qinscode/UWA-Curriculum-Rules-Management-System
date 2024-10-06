@@ -2,8 +2,8 @@ import { Course } from '@/types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
-export const getCourses = async (token: string | null): Promise<Course[]> => {
-  const response = await fetch(`${BASE_URL}/courses`, {
+export const getStandardRuleType = async (token: string | null): Promise<Course[]> => {
+  const response = await fetch(`${BASE_URL}/preset-rules/course-types`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,

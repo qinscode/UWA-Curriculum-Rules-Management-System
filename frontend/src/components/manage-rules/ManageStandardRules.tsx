@@ -71,7 +71,7 @@ const Sidebar = () => (
   </div>
 )
 
-const ManageRules: React.FC = () => {
+const ManageStandardRules: React.FC = () => {
   const { course, updateCourse } = useCourse()
   const courseCode = course?.code
   const version = course?.version
@@ -252,6 +252,17 @@ const ManageRules: React.FC = () => {
     }
   }
 
+  const handleSaveAsNewVersion = () => {
+    if (newVersion) {
+      toast({
+        title: 'New version created',
+        description: `Version ${newVersion} has been created successfully.`,
+      })
+      setIsNewVersionDialogOpen(false)
+      router.push(`/manage-rules?code=${courseCode}&version=${newVersion}`)
+    }
+  }
+
   return (
     <Layout>
       <div className="flex">
@@ -360,6 +371,12 @@ const ManageRules: React.FC = () => {
                       />
                     </div>
                   </div>
+                  <Button
+                    onClick={handleSaveAsNewVersion}
+                    className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
+                  >
+                    Save New Version
+                  </Button>
                 </DialogContent>
               </Dialog>
             </div>
@@ -373,4 +390,4 @@ const ManageRules: React.FC = () => {
   )
 }
 
-export default ManageRules
+export default ManageStandardRules

@@ -13,5 +13,4 @@ function CourseManagePage() {
   )
 }
 
-// 使用 withAuth 包裹组件
 export default withAuth(CourseManagePage)

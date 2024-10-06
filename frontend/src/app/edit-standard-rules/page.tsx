@@ -2,24 +2,28 @@
 
 import React, { Suspense, lazy, useState, useEffect } from 'react'
 import { redirect } from 'next/navigation'
-import {getCourseByCodeAndVersion, getCourseById} from '@/services/courseService'
+import { getCourseByCodeAndVersion } from '@/services/courseService'
 import { CourseProvider } from '@/context/CourseContext'
 import { getToken } from '@/services/authService'
 import { Course } from '@/types'
 import withAuth from '@/components/auth/withAuth'
 
-const ManageTemplate = lazy(() => import('@/components/template-management/ManageTemplate'))
+const ManageRules = lazy(() => import('@/components/manage-rules/ManageRules'))
 
-function ManageTemplatePage({ searchParams }: { searchParams: { id?: string } }) {
-  const { id } = searchParams
+function ManageStandardRulesPage({
+  searchParams,
+}: {
+  searchParams: { code?: string; version?: string }
+}) {
+  const { code, version } = searchParams
 
   const [courseData, setCourseData] = useState<Course | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchCourse = async () => {
-      if (!id) {
-        redirect('/choose-template')
+      if (!code || !version) {
+        redirect('/manage-standard-rules')
         return
       }
 
@@ -27,17 +31,21 @@ function ManageTemplatePage({ searchParams }: { searchParams: { id?: string } })
         const token = await getToken()
         console.log('token', token)
 
-        const data = await getCourseById(id.toString(), token as string) // Fetch course by id
+        const data = await getCourseByCodeAndVersion(
+          code.toString(),
+          version.toString(),
+          token as string
+        )
         setCourseData(data)
       } catch (error) {
-        console.error('Error fetching course data by id:', error)
+        console.error('Error fetching course data:', error)
       } finally {
         setLoading(false)
       }
     }
 
     fetchCourse()
-  }, [id])
+  }, [code, version])
 
   if (loading) {
     return <div>Loading...</div>
@@ -50,10 +58,10 @@ function ManageTemplatePage({ searchParams }: { searchParams: { id?: string } })
   return (
     <CourseProvider initialCourse={courseData}>
       <Suspense fallback={<div>Loading...</div>}>
-        <ManageTemplate />
+        <ManageRules />
       </Suspense>
     </CourseProvider>
   )
 }
 
-export default withAuth(ManageTemplatePage)
+export default withAuth(ManageStandardRulesPage)

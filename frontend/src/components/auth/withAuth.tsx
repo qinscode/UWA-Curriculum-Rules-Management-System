@@ -19,7 +19,7 @@ const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
     }, [router])
 
     if (isLoading) {
-      return <div>Loading...</div> // 或者您可以使用一个加载动画组件
+      return <div>Loading...</div>
     }
 
     return <WrappedComponent {...props} />
