@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'ty
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
 import { NumberingStyle } from './style.enum'
 
-@Entity('preset_requirements')
+@Entity('preset-requirements')
 export class PresetRequirement {
   @PrimaryGeneratedColumn()
   id: number

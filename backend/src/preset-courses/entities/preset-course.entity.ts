@@ -9,7 +9,7 @@ import {
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
 import { PresetCourseType } from './preset-course-type.enum'
 
-@Entity('preset_courses')
+@Entity('preset-courses')
 export class PresetCourse {
   @PrimaryGeneratedColumn()
   id: number

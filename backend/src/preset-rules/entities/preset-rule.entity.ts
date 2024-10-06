@@ -11,7 +11,7 @@ import { PresetCourse } from '../../preset-courses/entities/preset-course.entity
 import { PresetRequirement } from '../../preset-requirements/entities/preset-requirement.entity'
 import { PresetRuleType } from './preset-rule.enum'
 
-@Entity('preset_rules')
+@Entity('preset-rules')
 export class PresetRule {
   @PrimaryGeneratedColumn()
   id: number

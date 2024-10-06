@@ -13,6 +13,9 @@ import { UsersModule } from './users/users.module'
 import { CoursesModule } from './courses/courses.module'
 import { LoggerMiddleware } from './logger/logger.middleware'
 import { RequirementsModule } from './requirements/requirements.module'
+import { PresetCoursesModule } from './preset-courses/preset-courses.module'
+import { PresetRulesModule } from './preset-rules/preset-rules.module'
+import { PresetRequirementsModule } from './preset-requirements/preset-requirements.module'
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { RequirementsModule } from './requirements/requirements.module'
     UsersModule,
     CoursesModule,
     RequirementsModule,
+    PresetCoursesModule,
+    PresetRulesModule,
+    PresetRequirementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
