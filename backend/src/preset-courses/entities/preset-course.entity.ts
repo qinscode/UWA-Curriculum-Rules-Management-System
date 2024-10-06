@@ -41,6 +41,9 @@ export class PresetCourse {
   @UpdateDateColumn()
   updated_at: Date
 
-  @OneToMany(() => PresetRule, (presetRule) => presetRule.presetCourse)
+  @OneToMany(() => PresetRule, (presetRule) => presetRule.presetCourse, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   presetRules: PresetRule[]
 }

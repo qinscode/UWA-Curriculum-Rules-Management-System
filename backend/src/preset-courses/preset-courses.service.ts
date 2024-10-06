@@ -71,8 +71,8 @@ export class PresetCoursesService {
   }
 
   async create(createPresetCourseDto: CreatePresetCourseDto): Promise<PresetCourse> {
-    const presetCourse = this.presetCoursesRepository.create(createPresetCourseDto)
-    return this.presetCoursesRepository.save(presetCourse)
+    const newPresetCourse = this.presetCoursesRepository.create(createPresetCourseDto)
+    return await this.presetCoursesRepository.save(newPresetCourse)
   }
 
   async update(id: number, updatePresetCourseDto: UpdatePresetCourseDto): Promise<PresetCourse> {
@@ -82,8 +82,10 @@ export class PresetCoursesService {
   }
 
   async remove(id: number): Promise<void> {
-    const presetCourse = await this.findOne(id)
-    await this.presetCoursesRepository.remove(presetCourse)
+    const result = await this.presetCoursesRepository.delete(id)
+    if (result.affected === 0) {
+      throw new NotFoundException(`Preset course with ID "${id}" not found`)
+    }
   }
 
   async findByCodeAndVersion(code: string, version: string): Promise<PresetCourse> {

@@ -24,23 +24,26 @@ import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
 import { PresetRuleType } from '../preset-rules/entities/preset-rule.enum'
 import { PresetCourseType } from './entities/preset-course-type.enum'
+import { RolesGuard } from '../auth/guards/roles.guard'
+import { Roles } from '../auth/decorators/roles.decorator'
+import { UserType } from '../users/entities/user.enum'
 
 @Injectable()
 class ParsePresetCourseTypePipe implements PipeTransform<string, PresetCourseType> {
-  transform(value: string, metadata: ArgumentMetadata): PresetCourseType {
+  transform(value: string): PresetCourseType {
     const decodedValue = decodeURIComponent(value).replace(/^['"]|['"]$/g, '')
     const courseType = Object.values(PresetCourseType).find(
       (type) => type.toLowerCase() === decodedValue.toLowerCase()
     )
     if (!courseType) {
-      throw new BadRequestException(`"${decodedValue}" is not a valid PresetCourseType`)
+      throw new Error(`Invalid PresetCourseType: ${value}`)
     }
     return courseType
   }
 }
 
 @Controller('preset-courses')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PresetCoursesController {
   private readonly logger = new Logger(PresetCoursesController.name)
 
@@ -69,10 +72,9 @@ export class PresetCoursesController {
   }
 
   @Post()
-  async create(
-    @Body(ValidationPipe) createPresetCourseDto: CreatePresetCourseDto
-  ): Promise<PresetCourse> {
-    return this.presetCoursesService.create(createPresetCourseDto)
+  @Roles(UserType.ADMIN)
+  async create(@Body() createPresetCourseDto: CreatePresetCourseDto): Promise<PresetCourse> {
+    return await this.presetCoursesService.create(createPresetCourseDto)
   }
 
   @Put(':id')
@@ -88,6 +90,7 @@ export class PresetCoursesController {
   }
 
   @Delete(':id')
+  @Roles(UserType.ADMIN)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.presetCoursesService.remove(id)
   }

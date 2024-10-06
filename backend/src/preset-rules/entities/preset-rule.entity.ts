@@ -28,7 +28,9 @@ export class PresetRule {
   @Column('text')
   description: string
 
-  @ManyToOne(() => PresetCourse, (presetCourse) => presetCourse.presetRules)
+  @ManyToOne(() => PresetCourse, (presetCourse) => presetCourse.presetRules, {
+    onDelete: 'CASCADE',
+  })
   presetCourse: PresetCourse
 
   @OneToMany(() => PresetRequirement, (presetRequirement) => presetRequirement.presetRule)
