@@ -9,6 +9,7 @@ import {
   ResetPasswordDto,
   UserProfileDto,
 } from './dto'
+import { UpdateUserProfileDto } from '../users/dto/update-user-profile.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -27,13 +28,17 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getCurrentUser(@Request() req): Promise<UserProfileDto> {
+    console.log('req.user', req.user)
     return this.authService.getProfile(req.user.userId)
   }
 
   @UseGuards(JwtAuthGuard)
   @Put('me')
-  updateProfile(@Request() req, @Body() updateProfileDto: any) {
-    return this.authService.updateProfile(req.user.id, updateProfileDto)
+  async updateProfile(
+    @Request() req,
+    @Body() updateProfileDto: UpdateUserProfileDto
+  ): Promise<UserProfileDto> {
+    return this.authService.updateProfile(req.user.userId, updateProfileDto)
   }
 
   @UseGuards(JwtAuthGuard)

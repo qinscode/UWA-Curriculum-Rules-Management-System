@@ -16,6 +16,7 @@ import {
 } from './dto'
 import { UsersService } from '../users/users.service'
 import { User } from '../users/entities/user.entity'
+import { UpdateUserProfileDto } from '../users/dto/update-user-profile.dto'
 import { UserType } from '../users/entities/user.enum'
 
 @Injectable()
@@ -57,14 +58,22 @@ export class AuthService {
     return this.mapUserToProfileDto(user)
   }
 
-  private mapUserToProfileDto(user: User): UserProfileDto {
-    const { username, email, role } = user
-    console.log(user)
-    return { username, email, role }
+  private mapUserToProfileDto(user: User): {
+    role: UserType
+    id: number
+    email: string
+    username: string
+  } {
+    const { id, username, email, role } = user
+    return { id, username, email, role }
   }
 
-  async updateProfile(userId: number, updateProfileDto: Partial<User>) {
-    return this.usersService.update(userId, updateProfileDto)
+  async updateProfile(
+    userId: number,
+    updateProfileDto: UpdateUserProfileDto
+  ): Promise<UserProfileDto> {
+    const updatedUser = await this.usersService.updateProfile(userId, updateProfileDto)
+    return this.mapUserToProfileDto(updatedUser)
   }
 
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {

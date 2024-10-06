@@ -45,3 +45,32 @@ export const isAuthenticated = (): boolean => {
   const token = getToken()
   return !!token
 }
+
+export const updateUserProfile = async (userData: { username: string; email: string }) => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  if (!API_URL) {
+    throw new Error('API base URL is not defined in environment variables.')
+  }
+
+  const token = getToken()
+  if (!token) {
+    throw new Error('No authentication token found')
+  }
+
+  const response = await fetch(`${API_URL}/auth/me`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(userData),
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || 'Failed to update profile')
+  }
+
+  return response.json()
+}
