@@ -343,43 +343,6 @@ const ManageStandardRules: React.FC = () => {
                 />
               </RuleSection>
             </div>
-            <div className="mt-8 flex justify-end">
-              <Dialog open={isNewVersionDialogOpen} onOpenChange={setIsNewVersionDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="bg-blue-800 text-white shadow-sm hover:bg-black hover:text-white"
-                  >
-                    Save as New Version
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Save as New Version</DialogTitle>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <label htmlFor="new-version" className="text-right">
-                        New Version
-                      </label>
-                      <Input
-                        id="new-version"
-                        value={newVersion}
-                        onChange={(e) => setNewVersion(e.target.value)}
-                        className="col-span-3"
-                        placeholder="e.g., 2025"
-                      />
-                    </div>
-                  </div>
-                  <Button
-                    onClick={handleSaveAsNewVersion}
-                    className="bg-indigo-600 text-white shadow-sm hover:bg-indigo-500"
-                  >
-                    Save New Version
-                  </Button>
-                </DialogContent>
-              </Dialog>
-            </div>
 
             <SaveButton handleSaveButton={handleSave} disabled={!hasUnsavedChanges} />
           </form>

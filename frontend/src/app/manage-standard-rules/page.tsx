@@ -17,6 +17,7 @@ import {
 import { Card } from '@/components/ui/card'
 import { getToken } from '@/services/authService'
 import { getStandardRuleType } from '@/services/standardRuleService'
+import { CourseType } from '@/types'
 
 const CourseManage: React.FC = () => {
   const [courseTypes, setCourseTypes] = useState<string[]>([])
@@ -45,7 +46,7 @@ const CourseManage: React.FC = () => {
   }, [token])
 
   const handleEdit = (courseType: string) => {
-    router.push(`/edit-standard-rules?type=${encodeURIComponent(courseType)}`)
+    router.push(`/edit-standard-rules?type=${courseType.toString()}`)
   }
 
   return (
@@ -64,7 +65,9 @@ const CourseManage: React.FC = () => {
               <TableBody>
                 {courseTypes.map((courseType) => (
                   <TableRow key={courseType}>
-                    <TableCell>{courseType}</TableCell>
+                    <TableCell>
+                      {courseType} {CourseType[courseType]}
+                    </TableCell>
                     <TableCell>
                       <Button
                         variant="outline"

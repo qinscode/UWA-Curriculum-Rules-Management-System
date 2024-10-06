@@ -1,8 +1,8 @@
-import { Course } from '@/types'
+import { Course, CourseType } from '@/types'
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
-export const getStandardRuleType = async (token: string | null): Promise<Course[]> => {
+export const getStandardRuleType = async (token: string | null): Promise<CourseType[]> => {
   const response = await fetch(`${BASE_URL}/preset-rules/course-types`, {
     method: 'GET',
     headers: {
@@ -12,29 +12,23 @@ export const getStandardRuleType = async (token: string | null): Promise<Course[
 
   if (!response.ok) {
     console.log('token', token)
-
-    throw new Error('Failed to fetch courses')
+    throw new Error('Failed to fetch course types')
   }
 
-  return await response.json()
+  const data = await response.json()
+  return data.map((type: string) => type as CourseType)
 }
 
-export const getCourseByCodeAndVersion = async (
-  code: string,
-  version: string,
+export const getStandardRuleByType = async (
+  type: string,
   token: string | null
 ): Promise<Course> => {
-  const response = await fetch(`${BASE_URL}/courses/code/${code}/version/${version}`, {
+  const response = await fetch(`${BASE_URL}/preset-rules/by-course-type/${type}`, {
     method: 'GET',
     headers: {
-      Authorization: `Bearer ${token}`, // Include Bearer token here
+      Authorization: `Bearer ${token}`,
     },
   })
-
-  console.log('token', token)
-  console.log('code', code)
-  console.log('version', version)
-  console.log('`${BASE_URL}/course/${code}/${version}`', `${BASE_URL}/course/${code}/${version}`)
 
   if (!response.ok) {
     throw new Error('Failed to fetch courses')
