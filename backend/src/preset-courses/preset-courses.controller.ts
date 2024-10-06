@@ -10,6 +10,10 @@ import {
   ParseIntPipe,
   NotFoundException,
   ValidationPipe,
+  PipeTransform,
+  Injectable,
+  ArgumentMetadata,
+  BadRequestException,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { PresetCoursesService } from './preset-courses.service'
@@ -18,6 +22,21 @@ import { CreatePresetCourseDto, UpdatePresetCourseDto } from './dto/'
 import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
 import { PresetRuleType } from '../preset-rules/entities/preset-rule.enum'
+import { PresetCourseType } from './entities/preset-course-type.enum'
+
+@Injectable()
+class ParsePresetCourseTypePipe implements PipeTransform<string, PresetCourseType> {
+  transform(value: string, metadata: ArgumentMetadata): PresetCourseType {
+    const decodedValue = decodeURIComponent(value).replace(/^['"]|['"]$/g, '')
+    const courseType = Object.values(PresetCourseType).find(
+      (type) => type.toLowerCase() === decodedValue.toLowerCase()
+    )
+    if (!courseType) {
+      throw new BadRequestException(`"${decodedValue}" is not a valid PresetCourseType`)
+    }
+    return courseType
+  }
+}
 
 @Controller('preset-courses')
 @UseGuards(JwtAuthGuard)
@@ -160,5 +179,21 @@ export class PresetCoursesController {
     @Param('type') type: PresetRuleType
   ): Promise<void> {
     await this.presetCoursesService.removePresetRuleByType(id, type)
+  }
+
+  @Get('by-type/:type/preset-rules')
+  async findPresetRulesByType(
+    @Param('type', ParsePresetCourseTypePipe) type: PresetCourseType
+  ): Promise<{ presetRules: PresetRule[]; message?: string }> {
+    const presetRules = await this.presetCoursesService.findPresetRulesByType(type)
+
+    if (presetRules.length === 0) {
+      return {
+        presetRules: [],
+        message: `No preset rules found for course type: ${type}. This could be because no course of this type exists, or because the course has no associated rules.`,
+      }
+    }
+
+    return { presetRules }
   }
 }

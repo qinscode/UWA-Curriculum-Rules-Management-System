@@ -7,6 +7,7 @@ import { PresetRuleType } from '../preset-rules/entities/preset-rule.enum'
 import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
 import { NumberingStyle } from '../preset-requirements/entities/style.enum'
+import { PresetCourseType } from './entities/preset-course-type.enum'
 
 @Injectable()
 export class PresetCoursesService {
@@ -180,5 +181,38 @@ export class PresetCoursesService {
       )
     }
     await this.presetRulesRepository.remove(presetRule)
+  }
+
+  async findAllPresetRulesByType(type: PresetCourseType): Promise<PresetRule[]> {
+    const presetCourses = await this.presetCoursesRepository.find({
+      where: { type },
+      relations: ['presetRules', 'presetRules.presetRequirements'],
+    })
+
+    const allPresetRules = presetCourses.flatMap((course) => course.presetRules)
+
+    // Sort the preset rules by ID in ascending order
+    return allPresetRules.sort((a, b) => a.id - b.id)
+  }
+
+  async findPresetRulesByType(type: PresetCourseType): Promise<PresetRule[]> {
+    const presetCourse = await this.presetCoursesRepository.findOne({
+      where: { type },
+      relations: ['presetRules', 'presetRules.presetRequirements'],
+    })
+
+    if (!presetCourse) {
+      // 如果没有找到匹配的预设课程，我们返回一个空数组
+      console.log(`No preset course found for type: ${type}`)
+      return []
+    }
+
+    if (presetCourse.presetRules.length === 0) {
+      // 如果找到了预设课程，但没有关联的预设规则，我们记录这个情况
+      console.log(`Preset course found for type: ${type}, but it has no preset rules`)
+    }
+
+    // 返回排序后的预设规则数组
+    return presetCourse.presetRules.sort((a, b) => a.id - b.id)
   }
 }
