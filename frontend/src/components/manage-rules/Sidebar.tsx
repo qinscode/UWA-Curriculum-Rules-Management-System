@@ -153,7 +153,8 @@ export default function Example(): JSX.Element {
           <div className="flex-1 text-sm font-semibold leading-6 text-gray-900">Navigation</div>
         </div>
 
-        <main className="py-10 lg:pl-72">
+        {/* Main content area */}
+        <main className="py-10 lg:pl-0">
           <div className="px-4 sm:px-6 lg:px-8">{/* Your content */}</div>
         </main>
       </div>
