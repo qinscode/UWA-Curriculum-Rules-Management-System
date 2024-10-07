@@ -2,15 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import Footer from '@/components/Footer'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+
 import { toast } from '@/hooks/use-toast'
 import RuleSection from '@/components/manage-rules/common/RuleSection'
 import AdmissionSelection from '@/components/manage-rules/RuleSection/AdmissionSelection'
@@ -45,10 +37,9 @@ interface CategorizedRules {
 }
 
 const ManageRules: React.FC = () => {
-  const { course, updateCourse } = useCourse()
-  const courseCode = course?.code
-  const version = course?.version
-  const courseName = course?.name
+  const { course } = useCourse()
+
+  const type = course?.type
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [formData, setFormData] = useState<GeneralProps['data']>({
     englishRequirements: [],
@@ -83,13 +74,11 @@ const ManageRules: React.FC = () => {
     courseStructure: null,
   })
 
-  const [newVersion, setNewVersion] = useState<string>('')
-  const [isNewVersionDialogOpen, setIsNewVersionDialogOpen] = useState(false)
   const router = useRouter()
   const [showRankingRequirements, setShowRankingRequirements] = useState(false)
-  const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
+  const [allPresetRules] = useState<BackendRule[]>([])
 
-  const { user, loading } = useUser() // Use useUser hook
+  const { user, loading } = useUser()
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'admin')) {
@@ -265,9 +254,7 @@ const ManageRules: React.FC = () => {
     <Layout>
       <div className="mx-auto max-w-7xl flex-1 p-6 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-bold">
-            Manage Rules - {courseCode}: {courseName} (Version: {version})
-          </h1>
+          <h1 className="text-3xl font-bold">Manage Standard Rules - {type}</h1>
         </div>
         <div className="flex">
           <Sidebar items={sidebarItems} />
