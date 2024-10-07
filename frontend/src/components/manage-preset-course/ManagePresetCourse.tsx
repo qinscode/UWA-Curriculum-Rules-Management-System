@@ -185,7 +185,7 @@ const PresetCourseManage: React.FC = () => {
       setNewCourse({ code: '', name: '', type: '', version: '' })
 
       toast({
-        title: 'Preset Course Created',
+        title: 'Standard Rules Created',
         description: `Successfully created standard rules: ${courseWithVersions.name}`,
         duration: 3000,
       })
@@ -214,7 +214,7 @@ const PresetCourseManage: React.FC = () => {
         await deleteCourse(courseToDelete.id, token)
         setCourses(courses.filter((course) => course.id !== courseToDelete.id))
         toast({
-          title: 'Preset Course deleted',
+          title: 'Standard Rules deleted',
           description: 'The standard rules has been successfully deleted.',
         })
       } catch (error) {
@@ -265,12 +265,12 @@ const PresetCourseManage: React.FC = () => {
                   onClick={handleOpenCreateCourseDialog}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  Create New Preset Course
+                  Create New Standard Rules
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Create New Preset Course</DialogTitle>
+                  <DialogTitle>Create New Standard Rules</DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -319,7 +319,7 @@ const PresetCourseManage: React.FC = () => {
                     />
                   </div>
                 </div>
-                <Button onClick={handleCreateCourse}>Create Preset Course</Button>
+                <Button onClick={handleCreateCourse}>Create Standard Rules</Button>
               </DialogContent>
             </Dialog>
           ) : (
@@ -328,7 +328,7 @@ const PresetCourseManage: React.FC = () => {
               onClick={() => showAlert('Only administrators can create new standard rule.')}
             >
               <Plus className="mr-2 h-4 w-4" />
-              Create New Preset Course
+              Create New Standard Rules
             </Button>
           )}
 
