@@ -186,14 +186,14 @@ const PresetCourseManage: React.FC = () => {
 
       toast({
         title: 'Preset Course Created',
-        description: `Successfully created preset course: ${courseWithVersions.name}`,
+        description: `Successfully created standard rules: ${courseWithVersions.name}`,
         duration: 3000,
       })
     } catch (error) {
-      console.error('Error creating preset course:', error)
+      console.error('Error creating standard rules:', error)
       toast({
         title: 'Error',
-        description: 'Failed to create preset course. Please try again.',
+        description: 'Failed to create standard rules. Please try again.',
         variant: 'destructive',
       })
     }
@@ -215,13 +215,13 @@ const PresetCourseManage: React.FC = () => {
         setCourses(courses.filter((course) => course.id !== courseToDelete.id))
         toast({
           title: 'Preset Course deleted',
-          description: 'The preset course has been successfully deleted.',
+          description: 'The standard rules has been successfully deleted.',
         })
       } catch (error) {
-        console.error('Error deleting preset course:', error)
+        console.error('Error deleting standard rules:', error)
         toast({
           title: 'Error',
-          description: 'Failed to delete the preset course. Please try again.',
+          description: 'Failed to delete the standard rules. Please try again.',
           variant: 'destructive',
         })
       } finally {
@@ -246,7 +246,7 @@ const PresetCourseManage: React.FC = () => {
   return (
     <div className="flex-1 overflow-auto">
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
-        <h1 className="mb-6 text-3xl font-bold">Manage Preset Courses</h1>
+        <h1 className="mb-6 text-3xl font-bold">Manage Standard Rules</h1>
 
         {alertMessage && (
           <Alert variant="destructive" className="mb-6">
@@ -485,7 +485,7 @@ const PresetCourseManage: React.FC = () => {
             <DialogHeader>
               <DialogTitle>Confirm Deletion</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete the preset course "{courseToDelete?.name}" (
+                Are you sure you want to delete the standard rules "{courseToDelete?.name}" (
                 {courseToDelete?.code})? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
