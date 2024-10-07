@@ -294,7 +294,13 @@ export class PresetCoursesService {
       )
     }
 
-    // 返回排序后的预设规则数组
-    return presetCourse.presetRules.sort((a, b) => a.id - b.id)
+    const sortedPresetRules = presetCourse.presetRules.sort((a, b) => a.id - b.id)
+    sortedPresetRules.forEach((rule) => {
+      if (rule.presetRequirements) {
+        rule.presetRequirements.sort((a, b) => a.id - b.id) // 按照 presetRequirements 的 id 排序
+      }
+    })
+
+    return sortedPresetRules
   }
 }
