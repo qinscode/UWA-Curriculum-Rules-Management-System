@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Unique,
 } from 'typeorm'
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
 import { PresetCourseType } from './preset-course-type.enum'
 
 @Entity('preset-courses')
+@Unique(['code', 'type'])
 export class PresetCourse {
   @PrimaryGeneratedColumn()
   id: number
@@ -31,9 +33,6 @@ export class PresetCourse {
 
   @Column()
   version: string
-
-  @Column()
-  is_current: boolean
 
   @CreateDateColumn()
   created_at: Date

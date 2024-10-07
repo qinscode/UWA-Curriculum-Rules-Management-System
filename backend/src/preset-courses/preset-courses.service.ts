@@ -71,8 +71,33 @@ export class PresetCoursesService {
   }
 
   async create(createPresetCourseDto: CreatePresetCourseDto): Promise<PresetCourse> {
-    const newPresetCourse = this.presetCoursesRepository.create(createPresetCourseDto)
-    return await this.presetCoursesRepository.save(newPresetCourse)
+    this.logger.log(
+      `Creating new preset course with data: ${JSON.stringify(createPresetCourseDto)}`
+    )
+
+    try {
+      this.logger.log('Creating entity from DTO...')
+      const newPresetCourse = this.presetCoursesRepository.create(createPresetCourseDto)
+
+      this.logger.log('Entity created, attempting to save...')
+      this.logger.log(`Entity to be saved: ${JSON.stringify(newPresetCourse)}`)
+
+      const savedCourse = await this.presetCoursesRepository.save(newPresetCourse)
+
+      this.logger.log(`Successfully saved preset course with ID: ${savedCourse.id}`)
+      this.logger.log(`Saved course data: ${JSON.stringify(savedCourse)}`)
+
+      return savedCourse
+    } catch (error) {
+      this.logger.error(`Failed to create preset course: ${error.message}`, error.stack)
+      if (error.code) {
+        this.logger.error(`Database error code: ${error.code}`)
+      }
+      if (error.detail) {
+        this.logger.error(`Error detail: ${error.detail}`)
+      }
+      throw error
+    }
   }
 
   async update(id: number, updatePresetCourseDto: UpdatePresetCourseDto): Promise<PresetCourse> {

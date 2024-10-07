@@ -12,8 +12,6 @@ import {
   ValidationPipe,
   PipeTransform,
   Injectable,
-  ArgumentMetadata,
-  BadRequestException,
   Logger,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
@@ -72,9 +70,22 @@ export class PresetCoursesController {
   }
 
   @Post()
-  @Roles(UserType.ADMIN)
-  async create(@Body() createPresetCourseDto: CreatePresetCourseDto): Promise<PresetCourse> {
-    return await this.presetCoursesService.create(createPresetCourseDto)
+  async create(
+    @Body(ValidationPipe) createPresetCourseDto: CreatePresetCourseDto
+  ): Promise<PresetCourse> {
+    this.logger.log(`Received create request with data: ${JSON.stringify(createPresetCourseDto)}`)
+
+    try {
+      this.logger.log('Validating DTO...')
+      this.logger.log('Calling presetCoursesService.create...')
+      const createdCourse = await this.presetCoursesService.create(createPresetCourseDto)
+
+      this.logger.log(`Successfully created preset course with ID: ${createdCourse.id}`)
+      return createdCourse
+    } catch (error) {
+      this.logger.error(`Failed to create preset course: ${error.message}`, error.stack)
+      throw error
+    }
   }
 
   @Put(':id')
