@@ -57,7 +57,7 @@ const PresetCourseManage: React.FC = () => {
   )
   const [token, setToken] = useState<string | null>(null)
   const { user, loading: userLoading } = useUser()
-  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState<string | null>(null)
   const [isCreateCourseDialogOpen, setIsCreateCourseDialogOpen] = useState(false)
   const [newCourse, setNewCourse] = useState<CreateCourseDto>({
     code: '',
@@ -97,13 +97,14 @@ const PresetCourseManage: React.FC = () => {
         course.type.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
+  const showAlert = (message: string) => {
+    setAlertMessage(message)
+    setTimeout(() => setAlertMessage(null), 3000) // Hide alert after 3 seconds
+  }
+
   const handleEdit = (course: Course) => {
     if (user?.role !== 'admin') {
-      setShowAlert(true)
-      // 设置 3 秒后自动隐藏 Alert
-      setTimeout(() => {
-        setShowAlert(false)
-      }, 3000)
+      showAlert('Only administrators can edit standard rules.')
       return
     }
     router.push(`/manage-preset-rules?code=${course.code}&version=${course.version}`)
@@ -118,11 +119,19 @@ const PresetCourseManage: React.FC = () => {
   }
 
   const handleAddVersion = (course: Course) => {
+    if (user?.role !== 'admin') {
+      showAlert('Only administrators can add new versions to standard rules.')
+      return
+    }
     setSelectedCourseForNewVersion(course)
     setNewVersion('')
   }
 
   const handleSaveNewVersion = () => {
+    if (user?.role !== 'admin') {
+      showAlert('Only administrators can save new versions of standard rules.')
+      return
+    }
     if (selectedCourseForNewVersion && newVersion) {
       setCourses(
         courses.map((course) =>
@@ -137,13 +146,17 @@ const PresetCourseManage: React.FC = () => {
       )
       setSelectedCourseForNewVersion(null)
       setNewVersion('')
+      toast({
+        title: 'New Version Added',
+        description: `Successfully added new version ${newVersion} to course ${selectedCourseForNewVersion.code}`,
+        duration: 3000,
+      })
     }
   }
 
   const handleCreateCourse = async () => {
     if (user?.role !== 'admin') {
-      setShowAlert(true)
-      setTimeout(() => setShowAlert(false), 3000)
+      showAlert('Only administrators can create standard rules.')
       return
     }
 
@@ -177,8 +190,7 @@ const PresetCourseManage: React.FC = () => {
 
   const handleDeleteCourse = (course: Course) => {
     if (user?.role !== 'admin') {
-      setShowAlert(true)
-      setTimeout(() => setShowAlert(false), 3000)
+      showAlert('Only administrators can delete standard rules.')
       return
     }
     setCourseToDelete(course)
@@ -208,6 +220,14 @@ const PresetCourseManage: React.FC = () => {
     }
   }
 
+  const handleOpenCreateCourseDialog = () => {
+    if (user?.role !== 'admin') {
+      showAlert('Only administrators can create new standard rules.')
+      return
+    }
+    setIsCreateCourseDialogOpen(true)
+  }
+
   if (userLoading) {
     return <div>Loading...</div>
   }
@@ -217,76 +237,89 @@ const PresetCourseManage: React.FC = () => {
       <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
         <h1 className="mb-6 text-3xl font-bold">Manage Preset Courses</h1>
 
-        {showAlert && (
+        {alertMessage && (
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Permission Denied</AlertTitle>
-            <AlertDescription>Only administrators can modify preset courses.</AlertDescription>
+            <AlertDescription>{alertMessage}</AlertDescription>
           </Alert>
         )}
 
         <div className="mb-6 flex items-center justify-between">
-          <Dialog open={isCreateCourseDialogOpen} onOpenChange={setIsCreateCourseDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-indigo-600 text-white hover:bg-indigo-500">
-                <Plus className="mr-2 h-4 w-4" />
-                Create New Preset Course
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create New Preset Course</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="code">Course Code</label>
-                  <Input
-                    id="code"
-                    value={newCourse.code}
-                    onChange={(e) => setNewCourse({ ...newCourse, code: e.target.value })}
-                    className="col-span-3"
-                  />
+          {user?.role === 'admin' ? (
+            <Dialog open={isCreateCourseDialogOpen} onOpenChange={setIsCreateCourseDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  className="bg-indigo-600 text-white hover:bg-indigo-500"
+                  onClick={handleOpenCreateCourseDialog}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create New Preset Course
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create New Preset Course</DialogTitle>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <label htmlFor="code">Course Code</label>
+                    <Input
+                      id="code"
+                      value={newCourse.code}
+                      onChange={(e) => setNewCourse({ ...newCourse, code: e.target.value })}
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <label htmlFor="name">Course Name</label>
+                    <Input
+                      id="name"
+                      value={newCourse.name}
+                      onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <label htmlFor="type">Course Type</label>
+                    <Select
+                      value={newCourse.type}
+                      onValueChange={(value) => setNewCourse({ ...newCourse, type: value })}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select course type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {courseTypes.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <label htmlFor="version">Version</label>
+                    <Input
+                      id="version"
+                      value={newCourse.version}
+                      onChange={(e) => setNewCourse({ ...newCourse, version: e.target.value })}
+                      className="col-span-3"
+                    />
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="name">Course Name</label>
-                  <Input
-                    id="name"
-                    value={newCourse.name}
-                    onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="type">Course Type</label>
-                  <Select
-                    value={newCourse.type}
-                    onValueChange={(value) => setNewCourse({ ...newCourse, type: value })}
-                  >
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select course type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {courseTypes.map((type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <label htmlFor="version">Version</label>
-                  <Input
-                    id="version"
-                    value={newCourse.version}
-                    onChange={(e) => setNewCourse({ ...newCourse, version: e.target.value })}
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <Button onClick={handleCreateCourse}>Create Preset Course</Button>
-            </DialogContent>
-          </Dialog>
+                <Button onClick={handleCreateCourse}>Create Preset Course</Button>
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Button
+              className="bg-indigo-600 text-white hover:bg-indigo-500"
+              onClick={() => showAlert('Only administrators can create new standard rule.')}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Create New Preset Course
+            </Button>
+          )}
 
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -361,37 +394,51 @@ const PresetCourseManage: React.FC = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              onClick={() => handleAddVersion(course)}
-                            >
-                              <Plus className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Add New Version</DialogTitle>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <label htmlFor="new-version" className="text-right">
-                                  New Version
-                                </label>
-                                <Input
-                                  id="new-version"
-                                  value={newVersion}
-                                  onChange={(e) => setNewVersion(e.target.value)}
-                                  className="col-span-3"
-                                  placeholder="e.g., 2025"
-                                />
+                        {user?.role === 'admin' ? (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => handleAddVersion(course)}
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Add New Version</DialogTitle>
+                              </DialogHeader>
+                              <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <label htmlFor="new-version" className="text-right">
+                                    New Version
+                                  </label>
+                                  <Input
+                                    id="new-version"
+                                    value={newVersion}
+                                    onChange={(e) => setNewVersion(e.target.value)}
+                                    className="col-span-3"
+                                    placeholder="e.g., 2025"
+                                  />
+                                </div>
                               </div>
-                            </div>
-                            <Button onClick={handleSaveNewVersion}>Save</Button>
-                          </DialogContent>
-                        </Dialog>
+                              <Button onClick={handleSaveNewVersion}>Save</Button>
+                            </DialogContent>
+                          </Dialog>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() =>
+                              showAlert(
+                                'Only administrators can add new versions to standard rules.'
+                              )
+                            }
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                     {/*<TableCell>{course.lastUpdated}</TableCell>*/}
