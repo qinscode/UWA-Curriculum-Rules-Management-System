@@ -25,6 +25,7 @@ import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { presetRuleService } from '@/services/preset-ruleService'
 import { BackendRule } from '@/lib/categorizeRules'
+import { useUser } from '@/hooks/useUser' // Replace useAuth with useUser
 
 interface CategorizedRules {
   englishEligibility: Rule | null
@@ -115,11 +116,20 @@ const ManageRules: React.FC = () => {
   const [showRankingRequirements, setShowRankingRequirements] = useState(false)
   const [allPresetRules, setAllPresetRules] = useState<BackendRule[]>([])
 
+  const { user, loading } = useUser() // Use useUser hook
+
   useEffect(() => {
-    if (course?.id) {
+    if (!loading && (!user || user.role !== 'admin')) {
+      alert('Permission denied. You must be an admin to access this page.')
+      router.push('/')
+    }
+  }, [user, loading, router])
+
+  useEffect(() => {
+    if (course?.id && user?.role === 'admin') {
       fetchAndCategorizeRules(course.id)
     }
-  }, [course])
+  }, [course, user])
 
   type ObjType = { [key: string]: any }
 
@@ -258,6 +268,15 @@ const ManageRules: React.FC = () => {
         variant: 'destructive',
       })
     }
+  }
+
+  // Modify the return statement to handle loading state and user role check
+  if (loading) {
+    return <div>Loading...</div> // Or a more sophisticated loading component
+  }
+
+  if (!user || user.role !== 'admin') {
+    return null // Or you could return a loading spinner here
   }
 
   return (
