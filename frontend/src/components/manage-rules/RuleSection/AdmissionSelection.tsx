@@ -102,7 +102,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[9].Requirements as Requirement[])
+              ? (initialPresetRules[3].Requirements as Requirement[])
               : undefined
           }
         />

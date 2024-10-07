@@ -72,7 +72,7 @@ const SatisfactoryProgress: React.FC<SatisfactoryProgressProps> = React.memo(
               showHelpPanel={true}
               presetRules={
                 initialPresetRules?.length
-                  ? (initialPresetRules[3].Requirements as Requirement[])
+                  ? (initialPresetRules[4].Requirements as Requirement[])
                   : undefined
               }
             />

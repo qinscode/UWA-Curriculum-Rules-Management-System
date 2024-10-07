@@ -30,7 +30,7 @@ const ProgressStatus: React.FC<GeneralProps> = ({ data, updateData, initialPrese
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[4].Requirements as Requirement[])
+              ? (initialPresetRules[5].Requirements as Requirement[])
               : undefined
           }
         />

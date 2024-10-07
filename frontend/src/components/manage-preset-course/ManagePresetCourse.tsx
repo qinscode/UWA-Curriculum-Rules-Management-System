@@ -99,7 +99,7 @@ const PresetCourseManage: React.FC = () => {
 
   const showAlert = (message: string) => {
     setAlertMessage(message)
-    setTimeout(() => setAlertMessage(null), 3000) // Hide alert after 3 seconds
+    setTimeout(() => setAlertMessage(null), 4000) // Hide alert after 3 seconds
   }
 
   const handleEdit = (course: Course) => {
