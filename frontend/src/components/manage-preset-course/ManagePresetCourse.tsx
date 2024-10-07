@@ -160,6 +160,17 @@ const PresetCourseManage: React.FC = () => {
       return
     }
 
+    // Check if a course with the same type already exists
+    const existingCourse = courses.find((course) => course.type === newCourse.type)
+    if (existingCourse) {
+      toast({
+        title: 'Creation Failed',
+        description: `A course with type "${newCourse.type}" already exists. You cannot create duplicate course types.`,
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       const createdCourse = await createCourse(newCourse, token)
 
