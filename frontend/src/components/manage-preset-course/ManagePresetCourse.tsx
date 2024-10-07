@@ -150,13 +150,19 @@ const PresetCourseManage: React.FC = () => {
     try {
       const createdCourse = await createCourse(newCourse, token)
 
-      setCourses([...courses, createdCourse])
+      // Ensure the createdCourse has a versions array
+      const courseWithVersions = {
+        ...createdCourse,
+        versions: createdCourse.versions || [createdCourse.version],
+      }
+
+      setCourses([...courses, courseWithVersions])
       setIsCreateCourseDialogOpen(false)
       setNewCourse({ code: '', name: '', type: '', version: '' })
 
       toast({
         title: 'Preset Course Created',
-        description: `Successfully created preset course: ${createdCourse.name}`,
+        description: `Successfully created preset course: ${courseWithVersions.name}`,
         duration: 3000,
       })
     } catch (error) {
@@ -348,7 +354,7 @@ const PresetCourseManage: React.FC = () => {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {course.versions.map((version) => (
+                            {(course.versions || [course.version]).map((version) => (
                               <SelectItem key={version} value={version}>
                                 {version}
                               </SelectItem>

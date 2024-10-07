@@ -107,9 +107,34 @@ export class PresetCoursesService {
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.presetCoursesRepository.delete(id)
-    if (result.affected === 0) {
-      throw new NotFoundException(`Preset course with ID "${id}" not found`)
+    this.logger.log(`Attempting to remove preset course with ID: ${id}`)
+
+    try {
+      const presetCourse = await this.presetCoursesRepository.findOne({ where: { id } })
+
+      if (!presetCourse) {
+        this.logger.warn(`Preset course with ID "${id}" not found for deletion`)
+        throw new NotFoundException(`Preset course with ID "${id}" not found`)
+      }
+
+      this.logger.log(`Found preset course to delete: ${JSON.stringify(presetCourse)}`)
+
+      const result = await this.presetCoursesRepository.delete(id)
+
+      this.logger.log(`Delete operation result: ${JSON.stringify(result)}`)
+
+      if (result.affected === 0) {
+        this.logger.warn(`No preset course was deleted with ID "${id}"`)
+        throw new NotFoundException(`Preset course with ID "${id}" not found`)
+      }
+
+      this.logger.log(`Successfully deleted preset course with ID: ${id}`)
+    } catch (error) {
+      this.logger.error(
+        `Error while deleting preset course with ID ${id}: ${error.message}`,
+        error.stack
+      )
+      throw error
     }
   }
 

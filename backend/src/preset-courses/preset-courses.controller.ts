@@ -13,6 +13,7 @@ import {
   PipeTransform,
   Injectable,
   Logger,
+  InternalServerErrorException,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { PresetCoursesService } from './preset-courses.service'
@@ -101,9 +102,25 @@ export class PresetCoursesController {
   }
 
   @Delete(':id')
-  @Roles(UserType.ADMIN)
   async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    await this.presetCoursesService.remove(id)
+    this.logger.log(`Received request to delete preset course with ID: ${id}`)
+
+    try {
+      this.logger.log('Calling presetCoursesService.remove...')
+      await this.presetCoursesService.remove(id)
+      this.logger.log(`Successfully processed delete request for preset course with ID: ${id}`)
+    } catch (error) {
+      this.logger.error(
+        `Error while processing delete request for preset course with ID ${id}: ${error.message}`,
+        error.stack
+      )
+
+      if (error instanceof NotFoundException) {
+        throw error
+      }
+
+      throw new InternalServerErrorException('An error occurred while deleting the preset course')
+    }
   }
 
   // PresetRule-related endpoints
@@ -183,11 +200,29 @@ export class PresetCoursesController {
   }
 
   @Delete(':id/preset-rules/:presetRuleId')
+  @Roles(UserType.ADMIN)
+  @UseGuards(RolesGuard)
   async removePresetRule(
     @Param('id', ParseIntPipe) id: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number
   ): Promise<void> {
-    await this.presetCoursesService.removePresetRule(id, presetRuleId)
+    this.logger.log(
+      `Received request to delete preset rule with ID: ${presetRuleId} from preset course with ID: ${id}`
+    )
+
+    try {
+      this.logger.log('Calling presetCoursesService.removePresetRule...')
+      await this.presetCoursesService.removePresetRule(id, presetRuleId)
+      this.logger.log(
+        `Successfully processed delete request for preset rule with ID: ${presetRuleId} from preset course with ID: ${id}`
+      )
+    } catch (error) {
+      this.logger.error(
+        `Error while processing delete request for preset rule with ID ${presetRuleId} from preset course with ID ${id}: ${error.message}`,
+        error.stack
+      )
+      throw error
+    }
   }
 
   @Delete(':id/preset-rules/by-type/:type')
