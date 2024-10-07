@@ -87,6 +87,9 @@ export class PresetCoursesService {
       this.logger.log(`Successfully saved preset course with ID: ${savedCourse.id}`)
       this.logger.log(`Saved course data: ${JSON.stringify(savedCourse)}`)
 
+      // Add default rules
+      await this.addDefaultRules(savedCourse)
+
       return savedCourse
     } catch (error) {
       this.logger.error(`Failed to create preset course: ${error.message}`, error.stack)
@@ -96,6 +99,25 @@ export class PresetCoursesService {
       if (error.detail) {
         this.logger.error(`Error detail: ${error.detail}`)
       }
+      throw error
+    }
+  }
+
+  private async addDefaultRules(presetCourse: PresetCourse): Promise<void> {
+    const defaultRules: Partial<PresetRule>[] = Object.values(PresetRuleType).map((type) => ({
+      name: type,
+      type,
+      description: `Default description for ${type}`,
+      presetCourse,
+    }))
+
+    this.logger.log(`Adding default rules for preset course: ${presetCourse.id}`)
+
+    try {
+      await this.presetRulesRepository.save(defaultRules)
+      this.logger.log(`Successfully added default rules for preset course: ${presetCourse.id}`)
+    } catch (error) {
+      this.logger.error(`Failed to add default rules: ${error.message}`, error.stack)
       throw error
     }
   }
