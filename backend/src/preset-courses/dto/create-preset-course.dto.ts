@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator'
+import { IsString, IsNotEmpty, IsEnum, IsBoolean } from 'class-validator'
 import { PresetCourseType } from '../entities/preset-course-type.enum'
 
 export class CreatePresetCourseDto {
@@ -16,4 +16,7 @@ export class CreatePresetCourseDto {
   @IsString()
   @IsNotEmpty()
   version: string
+
+  @IsString()
+  description?: string
 }

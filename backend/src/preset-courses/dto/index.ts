@@ -13,9 +13,6 @@ export class CreatePresetCourseDto {
 
   @IsString()
   version: string
-
-  @IsBoolean()
-  is_current: boolean
 }
 
 export class UpdatePresetCourseDto {
