@@ -7,7 +7,6 @@ import TimeLine from '@/components/home/Timeline'
 import { SecondaryFeatures } from '@/components/home/Features'
 import { Faqs } from '@/components/home/Faqs'
 import { Tech } from '@/components/home/Tech'
-import { PrimaryFeatures } from '@/components/home/PrimaryFeatures'
 
 const Home: FC = () => {
   return (
@@ -17,8 +16,7 @@ const Home: FC = () => {
           <Example />
         </div>
       </Layout>
-      {/*<Split />*/}
-      <PrimaryFeatures />
+      <Split />
       <SecondaryFeatures />
       <TimeLine />
       <Tech />
