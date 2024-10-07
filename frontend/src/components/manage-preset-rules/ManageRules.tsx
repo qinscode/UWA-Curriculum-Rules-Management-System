@@ -25,7 +25,8 @@ import { GeneralProps, Rule, RuleType, Requirement } from '@/types'
 import { useCourse } from '@/context/CourseContext'
 import { presetRuleService } from '@/services/preset-ruleService'
 import { BackendRule } from '@/lib/categorizeRules'
-import { useUser } from '@/hooks/useUser' // Replace useAuth with useUser
+import { useUser } from '@/hooks/useUser'
+import Sidebar from '@/components/manage-rules/Sidebar'
 
 interface CategorizedRules {
   englishEligibility: Rule | null
@@ -42,34 +43,6 @@ interface CategorizedRules {
   articulationExitAward?: Rule | null
   courseStructure?: Rule | null
 }
-
-// Sidebar navigation items
-const sidebarItems = [
-  { name: 'Admission and selection', href: '#admission-selection' },
-  { name: 'English language eligibility requirements', href: '#english-language-eligibility' },
-  { name: 'Admission requirements', href: '#admission-requirements' },
-  { name: 'Articulation and Exit Award', href: '#articulation-exit-award' },
-  { name: 'Course Structure', href: '#course-structure' },
-  { name: 'Satisfactory Progress', href: '#satisfactory-progress' },
-  { name: 'Progress Status', href: '#progress-status' },
-  { name: 'Award with distinction', href: '#award-with-distinction' },
-  { name: 'Deferrals', href: '#deferrals' },
-]
-
-const Sidebar = () => (
-  <div className="h-screen w-64 bg-gray-200 p-4">
-    <h2 className="mb-4 text-xl font-bold">Navigation</h2>
-    <ul>
-      {sidebarItems.map((item) => (
-        <li key={item.name} className="mb-2">
-          <a href={item.href} className="text-blue-600 hover:underline">
-            {item.name}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-)
 
 const ManageRules: React.FC = () => {
   const { course, updateCourse } = useCourse()
@@ -270,98 +243,107 @@ const ManageRules: React.FC = () => {
     }
   }
 
-  // Modify the return statement to handle loading state and user role check
   if (loading) {
-    return <div>Loading...</div> // Or a more sophisticated loading component
+    return <div>Loading...</div>
   }
 
   if (!user || user.role !== 'admin') {
-    return null // Or you could return a loading spinner here
+    return null
   }
+
+  const sidebarItems = [
+    { id: 'admission', title: 'Admission and selection' },
+    { id: 'articulation', title: 'Articulation and Exit Award' },
+    { id: 'course-structure', title: 'Course Structure' },
+    { id: 'satisfactory-progress', title: 'Satisfactory Progress' },
+    { id: 'progress-status', title: 'Progress Status' },
+    { id: 'award-distinction', title: 'Award with distinction' },
+    { id: 'deferrals', title: 'Deferrals' },
+  ]
 
   return (
     <Layout>
-      <div className="flex">
-        {/* Sidebar */}
-        <Sidebar />
-        {/* Main content */}
-        <div className="mx-auto max-w-7xl flex-1 p-6 sm:px-6 lg:px-8">
-          <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-3xl font-bold">
-              Manage Rules - {courseCode}: {courseName} (Version: {version})
-            </h1>
+      <div className="mx-auto max-w-7xl flex-1 p-6 sm:px-6 lg:px-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-3xl font-bold">
+            Manage Rules - {courseCode}: {courseName} (Version: {version})
+          </h1>
+        </div>
+        <div className="flex">
+          <Sidebar items={sidebarItems} />
+          <div className="ml-6 flex-1">
+            <form onSubmit={(e) => e.preventDefault()}>
+              <div className="space-y-6">
+                <RuleSection title="Admission and selection" id="admission">
+                  <AdmissionSelection
+                    data={{
+                      englishRequirements: formData.englishRequirements || [],
+                      admissionRequirements: formData.admissionRequirements || [],
+                      rankingSelection: formData.rankingSelection || [],
+                    }}
+                    updateData={updateFormData}
+                    showRankingRequirements={showRankingRequirements}
+                    setShowRankingRequirements={setShowRankingRequirements}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+
+                <RuleSection title="Articulation and Exit Award" id="articulation">
+                  <ArticulationExitAward
+                    data={formData}
+                    updateData={updateFormData}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+
+                <RuleSection title="Course Structure" id="course-structure">
+                  <CourseStructure
+                    data={formData}
+                    updateData={updateFormData}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+
+                <RuleSection title="Satisfactory Progress" id="satisfactory-progress">
+                  <SatisfactoryProgress
+                    data={{ satisfactoryProgress: formData.satisfactoryProgress || [] }}
+                    updateData={updateFormData}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+
+                <RuleSection title="Progress Status" id="progress-status">
+                  <ProgressStatus
+                    data={formData}
+                    updateData={updateFormData}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+
+                <RuleSection title="Award with distinction" id="award-distinction">
+                  <AwardWithDistinction
+                    data={{ awardWithDistinction: formData.awardWithDistinction || [] }}
+                    updateData={updateFormData}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+
+                <RuleSection title="Deferrals" id="deferrals">
+                  <Deferrals
+                    anchorId="deferrals"
+                    data={{
+                      deferrals: formData.deferrals || [],
+                      deferralAllowed: formData.deferralAllowed || false,
+                    }}
+                    updateData={updateFormData}
+                    initialPresetRules={allPresetRules}
+                  />
+                </RuleSection>
+              </div>
+
+              <SaveButton handleSaveButton={handleSave} disabled={!hasUnsavedChanges} />
+            </form>
           </div>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div className="space-y-6">
-              <RuleSection title="Admission and selection">
-                <AdmissionSelection
-                  data={{
-                    englishRequirements: formData.englishRequirements || [],
-                    admissionRequirements: formData.admissionRequirements || [],
-                    rankingSelection: formData.rankingSelection || [],
-                  }}
-                  updateData={updateFormData}
-                  showRankingRequirements={showRankingRequirements}
-                  setShowRankingRequirements={setShowRankingRequirements}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-
-              <RuleSection title="Articulation and Exit Award">
-                <ArticulationExitAward
-                  data={formData}
-                  updateData={updateFormData}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-
-              <RuleSection title="Course Structure">
-                <CourseStructure
-                  data={formData}
-                  updateData={updateFormData}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-
-              <RuleSection title="Satisfactory Progress">
-                <SatisfactoryProgress
-                  data={{ satisfactoryProgress: formData.satisfactoryProgress || [] }}
-                  updateData={updateFormData}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-
-              <RuleSection title="Progress Status">
-                <ProgressStatus
-                  data={formData}
-                  updateData={updateFormData}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-
-              <RuleSection title="Award with distinction">
-                <AwardWithDistinction
-                  data={{ awardWithDistinction: formData.awardWithDistinction || [] }}
-                  updateData={updateFormData}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-
-              <RuleSection title="Deferrals">
-                <Deferrals
-                  anchorId="deferrals"
-                  data={{
-                    deferrals: formData.deferrals || [],
-                    deferralAllowed: formData.deferralAllowed || false,
-                  }}
-                  updateData={updateFormData}
-                  initialPresetRules={allPresetRules}
-                />
-              </RuleSection>
-            </div>
-
-            <SaveButton handleSaveButton={handleSave} disabled={!hasUnsavedChanges} />
-          </form>
         </div>
       </div>
       <Footer />

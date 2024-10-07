@@ -233,7 +233,6 @@ const ManageRules: React.FC = () => {
     }
   }
 
-  // 定义侧边栏项目
   const sidebarItems = [
     { id: 'admission', title: 'Admission and selection' },
     { id: 'articulation', title: 'Articulation and Exit Award' },
