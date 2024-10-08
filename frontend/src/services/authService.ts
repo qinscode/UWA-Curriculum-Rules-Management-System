@@ -74,3 +74,30 @@ export const updateUserProfile = async (userData: { username: string; email: str
 
   return response.json()
 }
+
+export const register = async (userData: {
+  username: string
+  email: string
+  password: string
+}): Promise<{ message: string; userId: number }> => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  if (!API_URL) {
+    throw new Error('API base URL is not defined in environment variables.')
+  }
+
+  const res = await fetch(`${API_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  })
+
+  if (!res.ok) {
+    const errorData = await res.json()
+    throw new Error(errorData.message || 'Registration failed')
+  }
+
+  return res.json()
+}
