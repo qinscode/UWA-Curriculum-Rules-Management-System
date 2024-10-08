@@ -1,5 +1,4 @@
 'use client'
-import { type Metadata } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -40,7 +39,9 @@ export default function Register() {
       <div className="mb-6 flex items-center">
         <button
           type="button"
-          onClick={() => router.back()}
+          onClick={() => {
+            router.push('/')
+          }}
           className="flex items-center text-blue-600 hover:text-black"
         >
           <svg
