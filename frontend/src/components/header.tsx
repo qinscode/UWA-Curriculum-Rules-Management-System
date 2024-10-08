@@ -1,9 +1,3 @@
-import {
-  ArrowDownTrayIcon,
-  CogIcon,
-  DocumentDuplicateIcon,
-  PaperClipIcon,
-} from '@heroicons/react/24/outline'
 import { FC } from 'react'
 
 const Example: FC = () => {
