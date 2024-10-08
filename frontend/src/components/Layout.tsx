@@ -58,7 +58,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <>
-      <div className="min-h-screen bg-white">
+      <div className="bg-white">
         <Disclosure as="nav" className="bg- white- h-18 shadow-lg">
           {({ open }) => (
             <>
