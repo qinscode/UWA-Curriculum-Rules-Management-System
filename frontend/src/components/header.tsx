@@ -1,40 +1,10 @@
 import {
-  PhoneIcon,
-  LifebuoyIcon,
-  NewspaperIcon,
   ArrowDownTrayIcon,
   CogIcon,
   DocumentDuplicateIcon,
   PaperClipIcon,
 } from '@heroicons/react/24/outline'
 import { FC } from 'react'
-
-const cards = [
-  {
-    name: 'Manage Rules',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin placerat hendrerit lacus sed semper. Nullam aliquam faucibus ipsum, sit amet elementum nunc gravida a',
-    icon: DocumentDuplicateIcon,
-  },
-  {
-    name: 'Generate Documents',
-    description:
-      'Phasellus maximus turpis vitae odio mollis, vel pellentesque felis vestibulum. Donec ante metus, efficitur a massa in, feugiat iaculis justo.',
-    icon: PaperClipIcon,
-  },
-  {
-    name: 'System Settings',
-    description:
-      'Ratione et porro eligendi est sed ratione rerum itaque. Placeat accusantium impedit eum odit.',
-    icon: CogIcon,
-  },
-  {
-    name: 'Data Export',
-    description:
-      'Quisque ac bibendum augue, eu tincidunt lorem. Quisque porta erat suscipit odio efficitur, nec iaculis metus ultricies. Sed vel vestibulum diam, quis suscipit dui. Integer eleifend non nunc a placerat.',
-    icon: ArrowDownTrayIcon,
-  },
-]
 
 const Example: FC = () => {
   return (

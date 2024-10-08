@@ -4,7 +4,7 @@ import React, { FC, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { isAuthenticated, logout } from '@/services/authService' // Import auth functions
+import { isAuthenticated, logout } from '@/services/authService'
 import { useRouter, usePathname } from 'next/navigation'
 
 interface NavigationItem {
@@ -54,6 +54,7 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   ]
 
   // Logo Component
+  // eslint-disable-next-line @next/next/no-img-element
   const Logo = () => <img src="/uwa-logo.svg" alt="UWA Logo" className="h-10 w-auto" />
 
   return (

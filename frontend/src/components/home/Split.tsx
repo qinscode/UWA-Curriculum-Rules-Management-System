@@ -41,7 +41,7 @@ const Split: FC = () => {
                 Feature
               </span>
               <span className="inline-flex items-center space-x-2 text-sm font-medium leading-6 text-gray-600">
-                <span>Just shipped v1.0</span>
+                <span>Checkout Now</span>
                 <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
               </span>
             </a>
