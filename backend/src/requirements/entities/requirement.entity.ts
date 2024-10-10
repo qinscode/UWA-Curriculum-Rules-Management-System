@@ -19,16 +19,18 @@ export class Requirement {
 
   @ManyToOne(() => Requirement, (requirement) => requirement.children, {
     nullable: true,
-    onDelete: 'CASCADE', // Add this line to enable cascade delete
+    onDelete: 'CASCADE',
   })
   parent: Requirement
 
   @OneToMany(() => Requirement, (requirement) => requirement.parent, {
-    cascade: true, // Add this line to enable cascade operations
+    cascade: true,
   })
   children: Requirement[]
 
-  @ManyToOne(() => Rule, (rule) => rule.requirements)
+  @ManyToOne(() => Rule, (rule) => rule.requirements, {
+    onDelete: 'CASCADE',
+  })
   rule: Rule
 
   @Column({

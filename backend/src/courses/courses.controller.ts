@@ -3,21 +3,22 @@ import {
   Get,
   Post,
   Body,
+  Patch,
   Param,
-  Put,
   Delete,
   UseGuards,
   ParseIntPipe,
   NotFoundException,
   ValidationPipe,
+  Put,
 } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CoursesService } from './courses.service'
 import { Course } from './entities/course.entity'
 import { CreateCourseDto, UpdateCourseDto } from './dto/'
 import { Rule } from '../rules/entities/rule.entity'
-import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto'
 import { RuleType } from '../rules/entities/rule.enum'
+import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto' // 导入从 rule.dto.ts
 
 @Controller('courses')
 @UseGuards(JwtAuthGuard)
