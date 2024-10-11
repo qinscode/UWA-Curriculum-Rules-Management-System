@@ -69,15 +69,18 @@ const GenerateDocuments: FC = () => {
         console.log('url :', url)
 
         if (url === undefined) {
+          console.log('url is undefined', url)
           setPdfUrl(url)
           setIsPdfReady(true)
           return
         }
 
         if (url.toLowerCase().startsWith('http')) {
+          console.log('url startsWith(http):', url)
           console.log('url :', url)
           setPdfUrl(url)
         } else {
+          console.log('url not startsWith(http):', url)
           setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
         }
 
