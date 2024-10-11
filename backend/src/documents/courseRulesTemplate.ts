@@ -54,6 +54,9 @@ const renderRequirement = (
 }
 
 export const courseRulesTemplate = (rules_list: Rule[]) => {
+  // Add debug log here
+  console.log('Debug: rules_list with requirements:', JSON.stringify(rules_list, null, 2))
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -201,42 +204,27 @@ export const courseRulesTemplate = (rules_list: Rule[]) => {
           .filter((rule) => rule.requirements.length > 0)
           .map((rule, ruleIndex) => {
             const ruleOrder = ruleIndex + 1
+            let levelZeroCounter = 0
             return `
         <tr>
             <td class="section-title">${rule.name}</td>
             <td class="section-content">
                 <span class="rule-order">${ruleOrder}.</span>
                 <div class="rule-content">
-                <!--  DO NOT REMOVE THIS CODE                               ${
-                  rule.requirements.length === 0
-                    ? '<p>TO BE IMPLEMENT</p>'
-                    : rule.requirements
-                        .map((req, index) =>
-                          renderRequirement(
-                            req,
-                            0,
-                            index === 0,
-                            ruleIndex + 1,
-                            index + 1,
-                            rule.requirements.length
-                          )
-                        )
-                        .join('')
-                } -->
-
-                
-                
                 ${rule.requirements
-                  .map((req, index) =>
-                    renderRequirement(
+                  .map((req, index) => {
+                    if (!req.is_connector) {
+                      levelZeroCounter++
+                    }
+                    return renderRequirement(
                       req,
                       0,
                       index === 0,
                       ruleIndex + 1,
-                      index + 1,
-                      rule.requirements.length
+                      levelZeroCounter,
+                      rule.requirements.filter((r) => !r.is_connector).length
                     )
-                  )
+                  })
                   .join('')}
                 </div>
             </td>
