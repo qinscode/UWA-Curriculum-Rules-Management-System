@@ -75,6 +75,7 @@ const GenerateDocuments: FC = () => {
         }
 
         if (url.toLowerCase().startsWith('http')) {
+          console.log('url :', url)
           setPdfUrl(url)
         } else {
           setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
