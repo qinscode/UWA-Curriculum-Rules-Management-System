@@ -66,8 +66,21 @@ const GenerateDocuments: FC = () => {
     if (selectedCourseId && selectedVersion) {
       try {
         const url = await generateCoursePDF(selectedCourseId)
-        console.log('Generated PDF:', process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
-        setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
+        console.log('url :', url)
+
+        if (url === undefined) {
+          setPdfUrl(url)
+          setIsPdfReady(true)
+          return
+        }
+
+        if (url.toLowerCase().startsWith('http')) {
+          setPdfUrl(url)
+        } else {
+          setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
+        }
+
+        console.log('Generated PDF:', pdfUrl)
         setIsPdfReady(true)
       } catch (error) {
         console.error('Failed to generate PDF:', error)
