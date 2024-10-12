@@ -8,6 +8,7 @@ import { PresetRule } from '../preset-rules/entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from '../preset-rules/dto/preset-rule.dto'
 import { NumberingStyle } from '../preset-requirements/entities/style.enum'
 import { PresetCourseType } from './entities/preset-course-type.enum'
+import { PresetRequirement } from '../preset-requirements/entities/preset-requirement.entity'
 
 @Injectable()
 export class PresetCoursesService {
@@ -17,7 +18,9 @@ export class PresetCoursesService {
     @InjectRepository(PresetCourse)
     private presetCoursesRepository: Repository<PresetCourse>,
     @InjectRepository(PresetRule)
-    private presetRulesRepository: Repository<PresetRule>
+    private presetRulesRepository: Repository<PresetRule>,
+    @InjectRepository(PresetRequirement)
+    private presetRequirementsRepository: Repository<PresetRequirement>
   ) {}
 
   async findAll(): Promise<any[]> {
@@ -89,6 +92,7 @@ export class PresetCoursesService {
 
       // Add default rules
       await this.addDefaultRules(savedCourse)
+      await this.addDefaultRequirements(savedCourse)
 
       return savedCourse
     } catch (error) {
@@ -111,15 +115,72 @@ export class PresetCoursesService {
       presetCourse,
     }))
 
-    this.logger.log(`Adding default rules for preset course: ${presetCourse.id}`)
+    this.logger.log(`Adding default rules for course: ${presetCourse.id}`)
 
     try {
       await this.presetRulesRepository.save(defaultRules)
-      this.logger.log(`Successfully added default rules for preset course: ${presetCourse.id}`)
+      this.logger.log(`Successfully added default rules for course: ${presetCourse.id}`)
     } catch (error) {
       this.logger.error(`Failed to add default rules: ${error.message}`, error.stack)
       throw error
     }
+  }
+
+  private async addDefaultRequirements(presetCourse: PresetCourse): Promise<void> {
+    const rules = await this.presetRulesRepository.find({
+      where: { presetCourse: { id: presetCourse.id } },
+    })
+    const asrRule = rules.find((rule) => rule.type === PresetRuleType.ASR)
+    const acecrsRule = rules.find((rule) => rule.type === PresetRuleType.ACECRS)
+
+    if (asrRule) {
+      const asrRequirements = [
+        {
+          content: 'The Student Rules apply to students in this course.',
+          style: NumberingStyle.None,
+        },
+        {
+          content:
+            'The policy, policy statements and guidance documents and student procedures apply, except as otherwise indicated in\n',
+          style: NumberingStyle.None,
+        },
+      ]
+
+      await this.createRequirements(asrRule, asrRequirements)
+    }
+
+    if (acecrsRule) {
+      const acecrsRequirements = [
+        {
+          content:
+            'A student who enrols in this course for the first time irrespective of whether they have previously been enrolled in another course of the University, must undertake the Academic Conduct Essentials module (the ACE module) and the Communication and Research Skills module (the CARS module).\n',
+          style: NumberingStyle.Numeric,
+        },
+        {
+          content:
+            'A student must successfully complete the ACE module within the first teaching period of their enrolment. Failure to complete the module within this timeframe will result in the student’s unit results from this teaching period being withheld. These results will continue to be withheld until students avail themselves of a subsequent opportunity to achieve a passing grade in the ACE module. In the event that students complete units in subsequent teaching periods without completing the ACE module, these results will similarly be withheld. Students will not be permitted to submit late review or appeal applications regarding results which have been withheld for this reason and which they were unable to access in the normally permitted review period.',
+          style: NumberingStyle.Numeric,
+        },
+      ]
+
+      await this.createRequirements(acecrsRule, acecrsRequirements)
+    }
+  }
+
+  private async createRequirements(
+    presetRule: PresetRule,
+    requirementsData: { content: string; style: NumberingStyle }[]
+  ): Promise<void> {
+    const requirements = requirementsData.map((data, index) =>
+      this.presetRequirementsRepository.create({
+        ...data,
+        presetRule,
+        order_index: index,
+        is_connector: false,
+      })
+    )
+
+    await this.presetRequirementsRepository.save(requirements)
   }
 
   async update(id: number, updatePresetCourseDto: UpdatePresetCourseDto): Promise<PresetCourse> {

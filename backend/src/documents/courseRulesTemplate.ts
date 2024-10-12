@@ -52,9 +52,6 @@ const renderRequirement = (
 }
 
 export const courseRulesTemplate = (rules_list: Rule[]) => {
-  // Add debug log here
-  console.log('Debug: rules_list with requirements:', JSON.stringify(rules_list, null, 2))
-
   return `
 <!DOCTYPE html>
 <html lang="en">

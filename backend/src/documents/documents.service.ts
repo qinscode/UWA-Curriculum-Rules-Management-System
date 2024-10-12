@@ -91,8 +91,6 @@ export class DocumentsService {
     const rules = await this.getCourseRules(courseId)
     const htmlContent = courseRulesTemplate(rules)
 
-    console.log(htmlContent)
-
     // Generate a unique filename using UUID
     const uniqueId = uuidv4()
     const pdfFileName = `course_${courseId}_rules_${uniqueId}.pdf`
