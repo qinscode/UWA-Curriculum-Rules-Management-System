@@ -114,6 +114,7 @@ const ManageRules: React.FC = () => {
   const fetchAndCategorizeRules = async (courseId: number) => {
     try {
       const rules = await ruleService.getAllRules(courseId)
+      console.log('DEBUG: rules', rules)
       const categorized = categorizeRules(rules)
       setCategorizedRules(categorized)
       updateFormDataFromRules(categorized)
@@ -170,6 +171,7 @@ const ManageRules: React.FC = () => {
           break
       }
     })
+    console.log('DEBUG: categorized', categorized)
 
     return categorized
   }

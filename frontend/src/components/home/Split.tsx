@@ -47,7 +47,7 @@ const Split: FC = () => {
             </a>
           </div>
           <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Manage Rules
+            Auto Sorted Rules
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Proin mattis metus ut odio cursus, in mollis ipsum lobortis. Etiam sollicitudin purus

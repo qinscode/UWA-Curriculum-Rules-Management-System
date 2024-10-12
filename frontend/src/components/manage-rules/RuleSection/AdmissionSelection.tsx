@@ -48,6 +48,10 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     [updateData]
   )
 
+  useEffect(() => {
+    console.log('data:', data)
+  }, [handleRankingSelectionChange])
+
   const handleToggleRankingRequirements = useCallback(
     (checked: boolean) => {
       setShowRankingRequirements(checked)
