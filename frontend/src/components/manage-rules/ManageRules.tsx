@@ -36,7 +36,7 @@ interface CategorizedRules {
 }
 
 const ManageRules: React.FC = () => {
-  const { course, updateCourse } = useCourse()
+  const { course } = useCourse()
   const courseCode = course?.code
   const version = course?.version
   const courseName = course?.name
