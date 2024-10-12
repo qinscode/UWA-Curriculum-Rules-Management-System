@@ -29,8 +29,6 @@ const renderRequirement = (
   levelZeroCounter: number,
   totalLevelZeroItems: number
 ): string => {
-  console.log(`Requirement ${req.id || 'unknown'} is_connector:`, req.is_connector)
-
   const styleClass = getStyleClass(req.style)
   const padding = level * 5
   let numberContent = ''

@@ -11,6 +11,7 @@ import { Rule } from '../rules/entities/rule.entity'
 import { Requirement } from '../requirements/entities/requirement.entity'
 import { NumberingStyle } from '../requirements/entities/style.enum'
 import { PDFRuleType } from './pdf-rule-type'
+import { v4 as uuidv4 } from 'uuid'
 
 config()
 
@@ -90,7 +91,11 @@ export class DocumentsService {
     const rules = await this.getCourseRules(courseId)
     const htmlContent = courseRulesTemplate(rules)
 
-    const pdfFileName = `course_${courseId}_rules.pdf`
+    console.log(htmlContent)
+
+    // Generate a unique filename using UUID
+    const uniqueId = uuidv4()
+    const pdfFileName = `course_${courseId}_rules_${uniqueId}.pdf`
     const pdfFilePath = path.join(this.pdfDirectory, pdfFileName)
 
     const browser = await puppeteer.launch({
@@ -107,10 +112,10 @@ export class DocumentsService {
       format: 'A4',
       printBackground: true,
       margin: {
-        top: '5mm', // 上边距
-        bottom: '5mm', // 下边距
-        left: '5mm', // 左边距
-        right: '5mm', // 右边距
+        top: '5mm', // Top margin
+        bottom: '5mm', // Bottom margin
+        left: '5mm', // Left margin
+        right: '5mm', // Right margin
       },
     })
 
@@ -123,7 +128,9 @@ export class DocumentsService {
     const rules = await this.getCourseRules(courseId)
     const htmlContent = courseRulesTemplate(rules)
 
-    const htmlFileName = `course_${courseId}_rules.html`
+    // Generate a unique filename using UUID
+    const uniqueId = uuidv4()
+    const htmlFileName = `course_${courseId}_rules_${uniqueId}.html`
     const htmlFilePath = path.join(this.htmlDirectory, htmlFileName)
     fs.writeFileSync(htmlFilePath, htmlContent)
 
