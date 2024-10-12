@@ -4,7 +4,6 @@ import Layout from '@/components/Layout'
 import { useDocuments } from '@/hooks/useDocuments'
 import Footer from '@/components/Footer'
 import HandbookGenerator from '@/components/generate-documents/HandbookGenerator'
-import RulesExporter from '@/components/generate-documents/RulesExporter'
 import LoadingOverlay from '@/components/generate-documents/LoadingOverlay'
 import CoursePDFGenerator from '@/components/generate-documents/CoursePDFGenerator'
 import { getCourses } from '@/services/courseService'
@@ -116,8 +115,6 @@ const GenerateDocuments: FC = () => {
           versions={versions}
         />
         <HandbookGenerator course={code} disabled={!selectedCourseId} />{' '}
-        {/* 根据是否选择了课程禁用按钮 */}
-        <RulesExporter exportRules={exportRules} isGenerating={isGenerating} />
       </div>
       {isGenerating && <LoadingOverlay />}
       <Footer />
