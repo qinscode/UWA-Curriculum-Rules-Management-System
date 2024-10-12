@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card } from '@/components/ui/card'
-import { Search, ArrowUpDown, Plus, AlertCircle, Trash2 } from 'lucide-react'
+import { Search, Plus, AlertCircle, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -61,7 +61,6 @@ const PresetCourseManage: React.FC = () => {
   const [isCreateCourseDialogOpen, setIsCreateCourseDialogOpen] = useState(false)
   const [newCourse, setNewCourse] = useState<CreateCourseDto>({
     code: '',
-    name: '',
     type: '',
     version: '',
   })
@@ -279,15 +278,6 @@ const PresetCourseManage: React.FC = () => {
                       id="code"
                       value={newCourse.code}
                       onChange={(e) => setNewCourse({ ...newCourse, code: e.target.value })}
-                      className="col-span-3"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <label htmlFor="name">Course Name</label>
-                    <Input
-                      id="name"
-                      value={newCourse.name}
-                      onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
                       className="col-span-3"
                     />
                   </div>

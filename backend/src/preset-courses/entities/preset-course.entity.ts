@@ -19,7 +19,7 @@ export class PresetCourse {
   @Column({ nullable: false })
   code: string
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   name: string
 
   @Column('text', { nullable: true })

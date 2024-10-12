@@ -5,9 +5,6 @@ export class CreatePresetCourseDto {
   code: string
 
   @IsString()
-  name: string
-
-  @IsString()
   @IsOptional()
   description?: string
 

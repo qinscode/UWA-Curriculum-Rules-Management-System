@@ -52,7 +52,7 @@ export interface Rule {
 
 export interface CreateCourseDto {
   code: string
-  name: string
+  name?: string
   type: string
   version: string
 }
