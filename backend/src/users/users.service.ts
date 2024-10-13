@@ -2,9 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CreateUserDto } from './dto/create-user.dto'
-import { UpdateUserDto } from './dto/update-user.dto'
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto'
 import { User } from './entities/user.entity'
 import { UserType } from './entities/user.enum'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
 export class UsersService {
@@ -46,5 +47,16 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<User | undefined> {
     return await this.usersRepository.findOne({ where: { email } })
+  }
+
+  async updateProfile(id: number, updateUserProfileDto: UpdateUserProfileDto): Promise<User> {
+    const user = await this.findOne(id)
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`)
+    }
+    // 只更新允许的字段
+    user.username = updateUserProfileDto.username
+    user.email = updateUserProfileDto.email
+    return await this.usersRepository.save(user)
   }
 }

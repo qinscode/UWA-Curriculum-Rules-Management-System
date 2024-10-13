@@ -4,7 +4,6 @@ import Layout from '@/components/Layout'
 import { useDocuments } from '@/hooks/useDocuments'
 import Footer from '@/components/Footer'
 import HandbookGenerator from '@/components/generate-documents/HandbookGenerator'
-import RulesExporter from '@/components/generate-documents/RulesExporter'
 import LoadingOverlay from '@/components/generate-documents/LoadingOverlay'
 import CoursePDFGenerator from '@/components/generate-documents/CoursePDFGenerator'
 import { getCourses } from '@/services/courseService'
@@ -66,8 +65,25 @@ const GenerateDocuments: FC = () => {
     if (selectedCourseId && selectedVersion) {
       try {
         const url = await generateCoursePDF(selectedCourseId)
-        console.log('Generated PDF:', process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
-        setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
+        console.log('url :', url)
+
+        if (url === undefined) {
+          console.log('url is undefined', url)
+          setPdfUrl(url)
+          setIsPdfReady(true)
+          return
+        }
+
+        if (url.toLowerCase().startsWith('http')) {
+          console.log('url startsWith(http):', url)
+          console.log('url :', url)
+          setPdfUrl(url)
+        } else {
+          console.log('url not startsWith(http):', url)
+          setPdfUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
+        }
+
+        console.log('Generated PDF:', pdfUrl)
         setIsPdfReady(true)
       } catch (error) {
         console.error('Failed to generate PDF:', error)
@@ -99,8 +115,6 @@ const GenerateDocuments: FC = () => {
           versions={versions}
         />
         <HandbookGenerator course={code} disabled={!selectedCourseId} />{' '}
-        {/* 根据是否选择了课程禁用按钮 */}
-        <RulesExporter exportRules={exportRules} isGenerating={isGenerating} />
       </div>
       {isGenerating && <LoadingOverlay />}
       <Footer />

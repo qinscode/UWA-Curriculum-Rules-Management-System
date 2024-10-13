@@ -18,7 +18,7 @@ const AdditionalRules: React.FC<GeneralProps> = ({ data, updateData, initialPres
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[8].requirements as Requirement[])
+              ? (initialPresetRules[7].Requirements as Requirement[])
               : undefined
           }
         />

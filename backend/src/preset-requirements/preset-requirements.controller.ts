@@ -9,6 +9,7 @@ import {
   UseGuards,
   ParseIntPipe,
   Logger,
+  ValidationPipe,
 } from '@nestjs/common'
 import { PresetRequirementsService } from './preset-requirements.service'
 import { PresetRequirement } from './entities/preset-requirement.entity'
@@ -18,7 +19,7 @@ import {
   UpdatePresetRequirementDto,
 } from './dto/preset-requirement.dto'
 
-@Controller('/preset-rules/:presetRuleId/preset-requirements')
+@Controller('preset-courses/:presetCourseId/preset-rules/:presetRuleId/preset-requirements')
 @UseGuards(JwtAuthGuard)
 export class PresetRequirementsController {
   private readonly logger = new Logger(PresetRequirementsController.name)
@@ -27,37 +28,46 @@ export class PresetRequirementsController {
 
   @Get()
   async findAllPresetRequirements(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number
   ): Promise<Omit<PresetRequirement, 'parentId'>[]> {
-    this.logger.log(`Fetching all preset requirements for preset rule ${presetRuleId}`)
-    return this.presetRequirementsService.findAllPresetRequirements(presetRuleId)
+    this.logger.log(
+      `Fetching all preset requirements for preset rule ${presetRuleId} in preset course ${presetCourseId}`
+    )
+    return this.presetRequirementsService.findAllPresetRequirements(presetCourseId, presetRuleId)
   }
 
   @Post()
   async createPresetRequirement(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number,
-    @Body() createPresetRequirementDtos: CreatePresetRequirementDto[]
+    @Body(new ValidationPipe({ whitelist: true }))
+    createPresetRequirementDtos: CreatePresetRequirementDto[]
   ): Promise<PresetRequirement[]> {
     this.logger.log(
-      `Receive createPresetRequirement request: ${JSON.stringify(createPresetRequirementDtos)}`
+      `Receive createPresetRequirement request：${JSON.stringify(createPresetRequirementDtos)}`
     )
     return Promise.all(
       createPresetRequirementDtos.map((dto) =>
-        this.presetRequirementsService.createPresetRequirement(presetRuleId, dto)
+        this.presetRequirementsService.createPresetRequirement(presetCourseId, presetRuleId, dto)
       )
     )
   }
 
   @Put()
   async updatePresetRequirements(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number,
     @Body() updatePresetRequirementData: UpdatePresetRequirementDto | UpdatePresetRequirementDto[]
   ): Promise<PresetRequirement[]> {
-    this.logger.log(`Updating preset requirements for preset rule ${presetRuleId}`)
+    this.logger.log(
+      `Updating preset requirements for preset rule ${presetRuleId} in preset course ${presetCourseId}`
+    )
     const updatePresetRequirementDtos = Array.isArray(updatePresetRequirementData)
       ? updatePresetRequirementData
       : [updatePresetRequirementData]
     return this.presetRequirementsService.updatePresetRequirements(
+      presetCourseId,
       presetRuleId,
       updatePresetRequirementDtos
     )
@@ -65,17 +75,23 @@ export class PresetRequirementsController {
 
   @Delete(':presetRequirementId')
   async removePresetRequirement(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number,
     @Param('presetRequirementId', ParseIntPipe) presetRequirementId: number
   ): Promise<void> {
     this.logger.log(
-      `Removing preset requirement ${presetRequirementId} from preset rule ${presetRuleId}`
+      `Removing preset requirement ${presetRequirementId} from preset rule ${presetRuleId} in preset course ${presetCourseId}`
     )
-    await this.presetRequirementsService.removePresetRequirement(presetRuleId, presetRequirementId)
+    await this.presetRequirementsService.removePresetRequirement(
+      presetCourseId,
+      presetRuleId,
+      presetRequirementId
+    )
   }
 
   @Post(':presetRequirementId/children')
   async addChildPresetRequirement(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number,
     @Param('presetRequirementId', ParseIntPipe) presetRequirementId: number,
     @Body() createPresetRequirementDto: CreatePresetRequirementDto
@@ -84,6 +100,7 @@ export class PresetRequirementsController {
       `Adding child preset requirement for preset requirement ${presetRequirementId} in preset rule ${presetRuleId}`
     )
     return this.presetRequirementsService.addChildPresetRequirement(
+      presetCourseId,
       presetRuleId,
       presetRequirementId,
       createPresetRequirementDto
@@ -91,13 +108,18 @@ export class PresetRequirementsController {
   }
 
   @Get(':presetRequirementId/children')
-  async findChildren(
+  async findChildrenPresetRequirements(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number,
     @Param('presetRuleId', ParseIntPipe) presetRuleId: number,
     @Param('presetRequirementId', ParseIntPipe) presetRequirementId: number
   ): Promise<PresetRequirement[]> {
     this.logger.log(
       `Fetching children of preset requirement ${presetRequirementId} in preset rule ${presetRuleId}`
     )
-    return this.presetRequirementsService.findChildren(presetRuleId, presetRequirementId)
+    return this.presetRequirementsService.findChildrenPresetRequirements(
+      presetCourseId,
+      presetRuleId,
+      presetRequirementId
+    )
   }
 }

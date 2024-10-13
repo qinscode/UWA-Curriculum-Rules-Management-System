@@ -4,7 +4,7 @@ import React, { FC, ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { isAuthenticated, logout } from '@/services/authService' // Import auth functions
+import { isAuthenticated, logout } from '@/services/authService'
 import { useRouter, usePathname } from 'next/navigation'
 
 interface NavigationItem {
@@ -37,9 +37,9 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   const navigation: NavigationItem[] = [
     { name: 'Home', href: '/', current: pathname === '/' },
     {
-      name: 'Manage Template',
-      href: '/choose-template',
-      current: pathname === '/choose-template',
+      name: 'Manage Standard Rules',
+      href: '/manage-preset-course',
+      current: pathname === '/manage-preset-course',
     },
     {
       name: 'Manage Course',
@@ -54,11 +54,12 @@ const Layout: FC<{ children: ReactNode }> = ({ children }) => {
   ]
 
   // Logo Component
+  // eslint-disable-next-line @next/next/no-img-element
   const Logo = () => <img src="/uwa-logo.svg" alt="UWA Logo" className="h-10 w-auto" />
 
   return (
     <>
-      <div className="min-h-screen bg-white">
+      <div className="bg-white">
         <Disclosure as="nav" className="bg- white- h-18 shadow-lg">
           {({ open }) => (
             <>

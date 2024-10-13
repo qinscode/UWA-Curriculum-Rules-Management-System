@@ -34,7 +34,7 @@ const ArticulationExitAward: React.FC<GeneralProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[2].requirements as Requirement[])
+              ? (initialPresetRules[13].Requirements as Requirement[])
               : undefined
           }
         />

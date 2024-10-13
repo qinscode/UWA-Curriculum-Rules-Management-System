@@ -19,7 +19,7 @@ export class User {
     type: 'enum',
     enum: UserType,
   })
-  role: UserType
+  readonly role: UserType
 
   @CreateDateColumn()
   created_at: Date

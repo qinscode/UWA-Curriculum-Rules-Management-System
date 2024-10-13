@@ -13,6 +13,8 @@ import {
   CreatePresetRequirementDto,
   UpdatePresetRequirementDto,
 } from './dto/preset-requirement.dto'
+import { NumberingStyle } from './entities/style.enum'
+import { DeepPartial } from 'typeorm'
 
 @Injectable()
 export class PresetRequirementsService {
@@ -27,14 +29,17 @@ export class PresetRequirementsService {
   ) {}
 
   async findAllPresetRequirements(
+    presetCourseId: number,
     presetRuleId: number
   ): Promise<Omit<PresetRequirement, 'parentId'>[]> {
     const presetRule = await this.presetRulesRepository.findOne({
-      where: { id: presetRuleId },
+      where: { id: presetRuleId, presetCourse: { id: presetCourseId } },
     })
 
     if (!presetRule) {
-      throw new NotFoundException(`PresetRule with ID ${presetRuleId} not found`)
+      throw new NotFoundException(
+        `Preset rule with ID ${presetRuleId} not found in preset course ${presetCourseId}`
+      )
     }
 
     const allPresetRequirements = await this.presetRequirementsRepository.find({
@@ -42,6 +47,7 @@ export class PresetRequirementsService {
       order: { order_index: 'ASC' },
     })
 
+    // Build a tree structure
     const presetRequirementMap = new Map<
       number,
       Omit<PresetRequirement, 'parentId'> & { children: Omit<PresetRequirement, 'parentId'>[] }
@@ -75,7 +81,19 @@ export class PresetRequirementsService {
     return rootPresetRequirements
   }
 
+  private async loadChildrenRecursively(
+    presetRequirements: PresetRequirement[]
+  ): Promise<PresetRequirement[]> {
+    for (const presetRequirement of presetRequirements) {
+      if (presetRequirement.children && presetRequirement.children.length > 0) {
+        presetRequirement.children = await this.loadChildrenRecursively(presetRequirement.children)
+      }
+    }
+    return presetRequirements.sort((a, b) => a.id - b.id)
+  }
+
   async createPresetRequirement(
+    presetCourseId: number,
     presetRuleId: number,
     createPresetRequirementDto: CreatePresetRequirementDto
   ): Promise<PresetRequirement> {
@@ -85,30 +103,27 @@ export class PresetRequirementsService {
 
     try {
       const presetRule = await this.presetRulesRepository.findOne({
-        where: { id: presetRuleId },
+        where: { id: presetRuleId, presetCourse: { id: presetCourseId } },
       })
       if (!presetRule) {
-        throw new NotFoundException(`PresetRule with ID "${presetRuleId}" not found`)
+        throw new NotFoundException(
+          `Preset rule with ID "${presetRuleId}" not found in preset course "${presetCourseId}"`
+        )
       }
 
+      const { children, ...presetRequirementData } = createPresetRequirementDto
       const presetRequirement = this.presetRequirementsRepository.create({
-        content: createPresetRequirementDto.content,
-        style: createPresetRequirementDto.style,
-        is_connector: Boolean(createPresetRequirementDto.is_connector),
-        order_index: createPresetRequirementDto.order_index,
+        ...presetRequirementData,
+        style: presetRequirementData.style as NumberingStyle,
         presetRule,
-      })
+      } as DeepPartial<PresetRequirement>)
 
       this.logger.log(`Creating preset requirement: ${JSON.stringify(presetRequirement)}`)
       const savedPresetRequirement = await queryRunner.manager.save(presetRequirement)
       this.logger.log(`Saved preset requirement: ${JSON.stringify(savedPresetRequirement)}`)
 
-      if (createPresetRequirementDto.children && createPresetRequirementDto.children.length > 0) {
-        await this.createChildren(
-          savedPresetRequirement,
-          createPresetRequirementDto.children,
-          queryRunner
-        )
+      if (children && children.length > 0) {
+        await this.createPresetChildren(savedPresetRequirement, children, queryRunner)
       }
 
       await queryRunner.commitTransaction()
@@ -132,20 +147,19 @@ export class PresetRequirementsService {
     }
   }
 
-  private async createChildren(
+  private async createPresetChildren(
     parentPresetRequirement: PresetRequirement,
     children: CreatePresetRequirementDto[],
     queryRunner: QueryRunner
   ): Promise<void> {
     for (const childDto of children) {
+      const { children: grandchildren, ...childData } = childDto
       const childPresetRequirement = this.presetRequirementsRepository.create({
-        content: childDto.content,
-        style: childDto.style,
-        is_connector: childDto.is_connector,
-        order_index: childDto.order_index,
+        ...childData,
+        style: childData.style as NumberingStyle,
         parentId: parentPresetRequirement.id,
         presetRule: parentPresetRequirement.presetRule,
-      })
+      } as DeepPartial<PresetRequirement>)
 
       this.logger.log(
         `Creating child preset requirement: ${JSON.stringify(childPresetRequirement)}`
@@ -153,15 +167,16 @@ export class PresetRequirementsService {
       const savedChild = await queryRunner.manager.save(childPresetRequirement)
       this.logger.log(`Saved child preset requirement: ${JSON.stringify(savedChild)}`)
 
-      if (childDto.children && childDto.children.length > 0) {
-        await this.createChildren(savedChild, childDto.children, queryRunner)
+      if (grandchildren && grandchildren.length > 0) {
+        await this.createPresetChildren(savedChild, grandchildren, queryRunner)
       }
     }
   }
 
   async updatePresetRequirements(
+    presetCourseId: number,
     presetRuleId: number,
-    updatePresetRequirementDtos: UpdatePresetRequirementDto[]
+    updatePresetRequirementDtos: UpdatePresetRequirementDto | UpdatePresetRequirementDto[]
   ): Promise<PresetRequirement[]> {
     const queryRunner = this.dataSource.createQueryRunner()
     await queryRunner.connect()
@@ -169,30 +184,36 @@ export class PresetRequirementsService {
 
     try {
       const presetRule = await this.presetRulesRepository.findOne({
-        where: { id: presetRuleId },
+        where: { id: presetRuleId, presetCourse: { id: presetCourseId } },
       })
       if (!presetRule) {
-        throw new NotFoundException(`PresetRule with ID "${presetRuleId}" not found`)
+        throw new NotFoundException(
+          `Preset rule with ID "${presetRuleId}" not found in preset course "${presetCourseId}"`
+        )
       }
 
+      // Ensure updatePresetRequirementDtos is an array
+      const dtos = Array.isArray(updatePresetRequirementDtos)
+        ? updatePresetRequirementDtos
+        : [updatePresetRequirementDtos]
+
+      // Fetch all existing preset requirements for this preset rule
       const existingPresetRequirements = await this.presetRequirementsRepository.find({
         where: { presetRule: { id: presetRuleId } },
         relations: ['children'],
       })
 
+      // Update or create preset requirements
       const updatedPresetRequirements = await this.updateOrCreatePresetRequirements(
         presetRule,
-        updatePresetRequirementDtos,
+        dtos,
         existingPresetRequirements,
         null,
         queryRunner
       )
 
-      await this.deleteUnusedPresetRequirements(
-        existingPresetRequirements,
-        updatePresetRequirementDtos,
-        queryRunner
-      )
+      // Delete preset requirements that are no longer needed
+      await this.deleteUnusedPresetRequirements(existingPresetRequirements, dtos, queryRunner)
 
       await queryRunner.commitTransaction()
       this.logger.log(`Updated preset requirements for preset rule ${presetRuleId}`)
@@ -220,6 +241,10 @@ export class PresetRequirementsService {
     parent: PresetRequirement | null,
     queryRunner: QueryRunner
   ): Promise<PresetRequirement[]> {
+    if (!Array.isArray(presetRequirementDtos)) {
+      throw new BadRequestException('Invalid input: presetRequirementDtos must be an array')
+    }
+
     const updatedPresetRequirements: PresetRequirement[] = []
 
     for (const dto of presetRequirementDtos) {
@@ -228,23 +253,27 @@ export class PresetRequirementsService {
         : null
 
       if (presetRequirement) {
+        // Update existing preset requirement
         presetRequirement.content = dto.content ?? presetRequirement.content
-        presetRequirement.style = dto.style ?? presetRequirement.style
-        presetRequirement.is_connector =
-          dto.is_connector !== undefined ? dto.is_connector : presetRequirement.is_connector
+        presetRequirement.style = (dto.style as NumberingStyle) ?? presetRequirement.style
+        presetRequirement.is_connector = dto.is_connector ?? presetRequirement.is_connector
         presetRequirement.order_index = dto.order_index ?? presetRequirement.order_index
       } else {
+        // Create new preset requirement
+        const { id, children, ...presetRequirementData } = dto
         presetRequirement = this.presetRequirementsRepository.create({
-          content: dto.content,
-          style: dto.style,
-          is_connector: dto.is_connector,
-          order_index: dto.order_index,
+          ...presetRequirementData,
+          style: presetRequirementData.style as NumberingStyle,
           presetRule,
           parent,
-        })
+        } as DeepPartial<PresetRequirement>)
       }
 
+      this.logger.log(
+        `Before saving, is_connector: ${presetRequirement.is_connector}, dto.is_connector: ${dto.is_connector}`
+      )
       const savedPresetRequirement = await queryRunner.manager.save(presetRequirement)
+      this.logger.log(`After saving, is_connector: ${savedPresetRequirement.is_connector}`)
 
       if (dto.children && dto.children.length > 0) {
         const children = await this.updateOrCreatePresetRequirements(
@@ -282,25 +311,48 @@ export class PresetRequirementsService {
     }
   }
 
-  async removePresetRequirement(presetRuleId: number, presetRequirementId: number): Promise<void> {
+  private async deletePresetRequirementRecursively(
+    presetRequirement: PresetRequirement,
+    queryRunner: QueryRunner
+  ): Promise<void> {
+    if (presetRequirement.children && presetRequirement.children.length > 0) {
+      for (const child of presetRequirement.children) {
+        await this.deletePresetRequirementRecursively(child, queryRunner)
+      }
+    }
+    await queryRunner.manager.remove(PresetRequirement, presetRequirement)
+  }
+
+  async removePresetRequirement(
+    presetCourseId: number,
+    presetRuleId: number,
+    presetRequirementId: number
+  ): Promise<void> {
     const presetRequirement = await this.presetRequirementsRepository.findOne({
-      where: { id: presetRequirementId, presetRule: { id: presetRuleId } },
+      where: {
+        id: presetRequirementId,
+        presetRule: { id: presetRuleId, presetCourse: { id: presetCourseId } },
+      },
     })
 
     if (!presetRequirement) {
-      throw new NotFoundException(`PresetRequirement with ID "${presetRequirementId}" not found`)
+      throw new NotFoundException(`Preset requirement with ID "${presetRequirementId}" not found`)
     }
 
     await this.presetRequirementsRepository.remove(presetRequirement)
   }
 
   async addChildPresetRequirement(
+    presetCourseId: number,
     presetRuleId: number,
     presetRequirementId: number,
     createPresetRequirementDto: CreatePresetRequirementDto
   ): Promise<PresetRequirement> {
     const parentPresetRequirement = await this.presetRequirementsRepository.findOne({
-      where: { id: presetRequirementId, presetRule: { id: presetRuleId } },
+      where: {
+        id: presetRequirementId,
+        presetRule: { id: presetRuleId, presetCourse: { id: presetCourseId } },
+      },
     })
 
     if (!parentPresetRequirement) {
@@ -311,19 +363,24 @@ export class PresetRequirementsService {
 
     const childPresetRequirement = this.presetRequirementsRepository.create({
       ...createPresetRequirementDto,
+      style: createPresetRequirementDto.style as NumberingStyle,
       parent: parentPresetRequirement,
       presetRule: parentPresetRequirement.presetRule,
-    })
+    } as DeepPartial<PresetRequirement>)
 
     return this.presetRequirementsRepository.save(childPresetRequirement)
   }
 
-  async findChildren(
+  async findChildrenPresetRequirements(
+    presetCourseId: number,
     presetRuleId: number,
     presetRequirementId: number
   ): Promise<PresetRequirement[]> {
     return this.presetRequirementsRepository.find({
-      where: { parent: { id: presetRequirementId }, presetRule: { id: presetRuleId } },
+      where: {
+        parent: { id: presetRequirementId },
+        presetRule: { id: presetRuleId, presetCourse: { id: presetCourseId } },
+      },
       order: { order_index: 'ASC' },
     })
   }

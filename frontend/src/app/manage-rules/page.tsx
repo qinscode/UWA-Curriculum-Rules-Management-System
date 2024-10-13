@@ -32,6 +32,7 @@ function ManageRulesPage({ searchParams }: { searchParams: { code?: string; vers
           version.toString(),
           token as string
         )
+        console.log('data', data)
         setCourseData(data)
       } catch (error) {
         console.error('Error fetching course data:', error)

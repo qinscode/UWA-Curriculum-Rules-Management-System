@@ -12,4 +12,6 @@ export enum PresetRuleType {
   KNOWLEDGE_APPLICATION = 'Knowledge Application',
   KNOWLEDGE = 'Knowledge',
   RANKING_AND_SELECTION = 'Ranking and selection for admission',
+  ARTICULATION_EXIT_AWARD = 'Articulation Exit Award',
+  COURSE_STRUCTURE = 'Course Structure',
 }

@@ -4,10 +4,11 @@ export class CreatePresetRuleDto {
   name: string
   type: PresetRuleType
   description: string
-  Requirements?: {
+  presetRequirements?: {
     content: string
     style: string
     is_connector: boolean
+    order_index: number
   }[]
 }
 
@@ -15,7 +16,7 @@ export class UpdatePresetRuleDto {
   name?: string
   type?: PresetRuleType
   description?: string
-  Requirements?: {
+  presetRequirements?: {
     content: string
     style: string
     is_connector: boolean
@@ -28,6 +29,7 @@ export class PresetRequirementHierarchyDto {
   content: string
   style: string
   is_connector: boolean
+  order_index: number
   children: PresetRequirementHierarchyDto[]
 }
 
@@ -35,5 +37,5 @@ export class PresetRuleWithHierarchyDto extends CreatePresetRuleDto {
   id: number
   created_at: Date
   updated_at: Date
-  Requirements: PresetRequirementHierarchyDto[]
+  presetRequirements: PresetRequirementHierarchyDto[]
 }

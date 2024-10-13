@@ -11,7 +11,6 @@ const NestedRequirementsList: React.FC<NestedRequirementsListProps> = ({
 }) => {
   const handleUpdateRequirement = useCallback(
     (newRequirementsOrUpdater: Requirement[] | ((prevState: Requirement[]) => Requirement[])) => {
-      console.log('NestedRequirementsList: handleUpdateRequirement called')
       if (onUpdate) {
         onUpdate(newRequirementsOrUpdater)
       }

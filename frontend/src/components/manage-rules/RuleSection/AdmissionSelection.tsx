@@ -1,9 +1,8 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import NestedRequirementsList from '@/components/manage-rules/common/NestedRequirementsList'
 import { GeneralProps, NumberingStyle, Requirement } from '@/types'
-import PresetRule from '@/components/manage-rules/RuleSection/CurrentPresetRules' // Import the new component
 
 interface AdmissionSelectionProps {
   data: {
@@ -31,6 +30,10 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     [updateData]
   )
 
+  useEffect(() => {
+    console.log('initialPresetRules:', initialPresetRules)
+  }, [initialPresetRules])
+
   const handleAdmissionRequirementsChange = useCallback(
     (requirements: Requirement[] | ((prevRequirements: Requirement[]) => Requirement[])) => {
       updateData({ admissionRequirements: requirements as Requirement[] })
@@ -44,6 +47,10 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     },
     [updateData]
   )
+
+  useEffect(() => {
+    console.log('data:', data)
+  }, [handleRankingSelectionChange])
 
   const handleToggleRankingRequirements = useCallback(
     (checked: boolean) => {
@@ -69,15 +76,6 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
     })
   }
 
-  // Remove these useEffect hooks
-  // useEffect(() => {
-  //   console.log('AdmissionSelection: Data changed', data)
-  // }, [data])
-
-  // useEffect(() => {
-  //   console.log('initialPresetRules: Data changed', initialPresetRules)
-  // }, [initialPresetRules])
-
   return (
     <div className="space-y-6">
       <div>
@@ -92,7 +90,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[0].requirements as Requirement[])
+              ? (initialPresetRules[2].Requirements as Requirement[])
               : undefined
           }
         />
@@ -108,7 +106,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
           showHelpPanel={true}
           presetRules={
             initialPresetRules?.length
-              ? (initialPresetRules[8].requirements as Requirement[])
+              ? (initialPresetRules[3].Requirements as Requirement[])
               : undefined
           }
         />
@@ -142,7 +140,7 @@ const AdmissionSelection: React.FC<AdmissionSelectionProps> = ({
             showHelpPanel={true}
             presetRules={
               initialPresetRules?.length
-                ? (initialPresetRules[9].requirements as Requirement[])
+                ? (initialPresetRules[10].Requirements as Requirement[])
                 : undefined
             }
           />

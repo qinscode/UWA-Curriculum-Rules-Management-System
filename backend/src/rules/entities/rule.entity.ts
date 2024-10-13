@@ -28,7 +28,7 @@ export class Rule {
   @Column('text')
   description: string
 
-  @ManyToOne(() => Course, (course) => course.rules)
+  @ManyToOne(() => Course, (course) => course.rules, { onDelete: 'CASCADE' })
   course: Course
 
   @OneToMany(() => Requirement, (requirement) => requirement.rule)

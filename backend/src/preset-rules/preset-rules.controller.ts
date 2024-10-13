@@ -23,11 +23,7 @@ import {
 import { PresetRuleType } from './entities/preset-rule.enum'
 import { PresetRequirement } from '../preset-requirements/entities/preset-requirement.entity'
 
-type PresetRuleWithLowercaseRequirements = Omit<PresetRuleWithHierarchyDto, 'Requirements'> & {
-  requirements: PresetRequirementHierarchyDto[]
-}
-
-@Controller('preset-rules')
+@Controller('preset-courses/:presetCourseId/preset-rules')
 @UseGuards(JwtAuthGuard)
 export class PresetRulesController {
   private readonly logger = new Logger(PresetRulesController.name)
@@ -35,9 +31,12 @@ export class PresetRulesController {
   constructor(private readonly presetRulesService: PresetRulesService) {}
 
   @Get()
-  async findAllPresetRules(): Promise<PresetRuleWithLowercaseRequirements[]> {
-    const presetRules = await this.presetRulesService.findAllPresetRules()
-    const presetRulesWithHierarchy: PresetRuleWithLowercaseRequirements[] = []
+  async findAllPresetRules(
+    @Param('presetCourseId', ParseIntPipe) presetCourseId: number
+  ): Promise<PresetRuleWithHierarchyDto[]> {
+    const presetRules = await this.presetRulesService.findAllPresetRules(presetCourseId)
+    console.log(presetRules)
+    const presetRulesWithHierarchy: PresetRuleWithHierarchyDto[] = []
 
     for (const presetRule of presetRules) {
       const presetRequirements = await this.presetRulesService.findPresetRuleRequirementsHierarchy(
@@ -45,7 +44,7 @@ export class PresetRulesController {
       )
       presetRulesWithHierarchy.push({
         ...presetRule,
-        requirements: this.mapPresetRequirementsToDto(
+        presetRequirements: this.mapPresetRequirementsToDto(
           presetRequirements.filter((req) => !req.parentId)
         ),
       })
@@ -53,23 +52,26 @@ export class PresetRulesController {
 
     return presetRulesWithHierarchy
   }
+
   private mapPresetRequirementsToDto(
     presetRequirements: PresetRequirement[]
   ): PresetRequirementHierarchyDto[] {
-    return presetRequirements.map(({ id, content, style, is_connector, children }) => ({
-      id,
-      content,
-      style,
-      is_connector: is_connector,
-      children: children ? this.mapPresetRequirementsToDto(children) : [],
+    return presetRequirements.map((req) => ({
+      id: req.id,
+      content: req.content,
+      style: req.style,
+      is_connector: req.is_connector,
+      order_index: req.order_index,
+      children: req.children ? this.mapPresetRequirementsToDto(req.children) : [],
     }))
   }
+
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<PresetRule> {
     this.logger.log(`Fetching preset rule ${id}`)
     const presetRule = await this.presetRulesService.findOne(id)
     if (!presetRule) {
-      throw new NotFoundException(`Preset Rule with ID "${id}" not found`)
+      throw new NotFoundException(`Preset rule with ID "${id}" not found`)
     }
     return presetRule
   }
@@ -94,7 +96,7 @@ export class PresetRulesController {
     this.logger.log(`Updating preset rule ${id}`)
     const updatedPresetRule = await this.presetRulesService.update(id, updatePresetRuleDto)
     if (!updatedPresetRule) {
-      throw new NotFoundException(`Preset Rule with ID "${id}" not found`)
+      throw new NotFoundException(`Preset rule with ID "${id}" not found`)
     }
     return updatedPresetRule
   }

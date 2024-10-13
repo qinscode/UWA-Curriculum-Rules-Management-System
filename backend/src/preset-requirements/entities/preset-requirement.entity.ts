@@ -1,16 +1,21 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
 import { PresetRule } from '../../preset-rules/entities/preset-rule.entity'
+import { NumberingStyle } from './style.enum'
 
-@Entity('preset_requirements')
+@Entity('preset-requirements')
 export class PresetRequirement {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ default: 'content' })
+  @Column({ type: 'text' })
   content: string
 
-  @Column({ default: 'aa.ts' })
-  style: string
+  @Column({
+    type: 'enum',
+    enum: NumberingStyle,
+    default: NumberingStyle.Numeric,
+  })
+  style: NumberingStyle
 
   @ManyToOne(() => PresetRequirement, (presetRequirement) => presetRequirement.children, {
     nullable: true,

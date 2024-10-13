@@ -173,18 +173,15 @@ export class RequirementsService {
         throw new NotFoundException(`Rule with ID "${ruleId}" not found in course "${courseId}"`)
       }
 
-      // Ensure updateRequirementDtos is an array
       const dtos = Array.isArray(updateRequirementDtos)
         ? updateRequirementDtos
         : [updateRequirementDtos]
 
-      // Fetch all existing requirements for this rule
       const existingRequirements = await this.requirementsRepository.find({
         where: { rule: { id: ruleId } },
         relations: ['children'],
       })
 
-      // Update or create requirements
       const updatedRequirements = await this.updateOrCreateRequirements(
         rule,
         dtos,
@@ -234,6 +231,7 @@ export class RequirementsService {
         requirement.style = (dto.style as NumberingStyle) ?? requirement.style
         requirement.is_connector = dto.is_connector ?? requirement.is_connector
         requirement.order_index = dto.order_index ?? requirement.order_index
+        requirement.parent = parent
       } else {
         // Create new requirement
         const { id, children, ...requirementData } = dto
@@ -245,11 +243,7 @@ export class RequirementsService {
         } as DeepPartial<Requirement>)
       }
 
-      this.logger.log(
-        `Before saving, is_connector: ${requirement.is_connector}, dto.is_connector: ${dto.is_connector}`
-      )
       const savedRequirement = await queryRunner.manager.save(requirement)
-      this.logger.log(`After saving, is_connector: ${savedRequirement.is_connector}`)
 
       if (dto.children && dto.children.length > 0) {
         const children = await this.updateOrCreateRequirements(
@@ -267,6 +261,7 @@ export class RequirementsService {
 
     return updatedRequirements
   }
+
   private async deleteUnusedRequirements(
     existingRequirements: Requirement[],
     updateRequirementDtos: UpdateRequirementDto[],
@@ -277,10 +272,8 @@ export class RequirementsService {
     )
     const requirementsToDelete = existingRequirements.filter((req) => !updatedIds.has(req.id))
 
-    if (requirementsToDelete.length > 0) {
-      const idsToDelete = requirementsToDelete.map((req) => req.id)
-      await queryRunner.manager.delete(Requirement, { id: In(idsToDelete) })
-      this.logger.log(`Deleted requirements with IDs: ${idsToDelete.join(', ')}`)
+    for (const requirement of requirementsToDelete) {
+      await queryRunner.manager.remove(Requirement, requirement)
     }
   }
 

@@ -5,6 +5,16 @@ export enum NumberingStyle {
   None = 'none',
 }
 
+export enum CourseType {
+  GraduateCertificate = 'Graduate Certificate',
+  GraduateDiploma = 'Graduate Diploma',
+  MastersCoursework = "Master's (Coursework)",
+  MastersExtended = "Master's Extended",
+  MastersResearch = "Master's Research",
+  DoctoralDegree = 'Doctoral Degree',
+  ProfessionalDoctorateMastersCoursework = "Professional Doctorate/Master's Coursework",
+}
+
 export enum RuleType {
   ENGLISH_ELIGIBILITY = 'English Eligibility',
   ADMISSIONS = 'Admissions',
@@ -21,7 +31,6 @@ export enum RuleType {
   COURSE_STRUCTURE = 'Course Structure',
 }
 
-// Interfaces
 export interface Course {
   id: number
   code: string
@@ -29,8 +38,6 @@ export interface Course {
   type: string
   versions: string[]
   version: string
-  category: string
-  lastUpdated: string
   rules: Rule[]
 }
 
@@ -41,6 +48,13 @@ export interface Rule {
   type: RuleType
   description: string
   requirements: Requirement[]
+}
+
+export interface CreateCourseDto {
+  code: string
+  name?: string
+  type: string
+  version: string
 }
 
 export interface Requirement {
@@ -113,13 +127,11 @@ export interface GeneralProps {
   initialPresetRules: any[]
 }
 
-// 在文件的开头添加新的枚举定义
 export enum UserRole {
   ADMIN = 'admin',
   NORMAL = 'normal',
 }
 
-// 修改或添加 User 接口
 export interface User {
   username: string
   email: string

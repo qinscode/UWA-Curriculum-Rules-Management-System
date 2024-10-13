@@ -3,7 +3,7 @@ import { RuleType } from '../rules/entities/rule.enum'
 export class PDFRuleType {
   static readonly mapping: {
     [RuleType.RANKING_AND_SELECTION]: string
-    [RuleType.ARTICULATION_AND_EXIT_AWARDS]: string
+    [RuleType.ARTICULATION_EXIT_AWARD]: string
     [RuleType.ENGLISH_ELIGIBILITY]: string
     [RuleType.KNOWLEDGE_APPLICATION]: string
     [RuleType.SATISFACTORY_PROGRESS]: string
@@ -24,7 +24,7 @@ export class PDFRuleType {
     [RuleType.RANKING_AND_SELECTION]: 'Admission rules - ranking and selection',
 
     // Articulation and Exit Awards
-    [RuleType.ARTICULATION_AND_EXIT_AWARDS]: 'Articulation and Exit Awards ',
+    [RuleType.ARTICULATION_EXIT_AWARD]: 'Articulation and Exit Awards ',
 
     // Course structure
     [RuleType.COURSE_STRUCTURE]: 'Course structure',

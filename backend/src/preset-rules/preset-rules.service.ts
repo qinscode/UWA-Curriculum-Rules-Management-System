@@ -5,6 +5,8 @@ import { PresetRule } from './entities/preset-rule.entity'
 import { CreatePresetRuleDto, UpdatePresetRuleDto } from './dto/preset-rule.dto'
 import { PresetRuleType } from './entities/preset-rule.enum'
 import { PresetRequirement } from '../preset-requirements/entities/preset-requirement.entity'
+import { DeepPartial } from 'typeorm'
+import { NumberingStyle } from '../preset-requirements/entities/style.enum'
 
 @Injectable()
 export class PresetRulesService {
@@ -18,27 +20,36 @@ export class PresetRulesService {
   ) {}
 
   async findAll(): Promise<PresetRule[]> {
-    return this.presetRulesRepository.find()
+    return this.presetRulesRepository.find({ relations: ['presetCourse'] })
   }
 
   async findOne(id: number): Promise<PresetRule> {
     const presetRule = await this.presetRulesRepository.findOne({
       where: { id },
-      relations: ['presetRequirements'],
+      relations: ['presetCourse', 'presetRequirements'],
     })
     if (!presetRule) {
-      this.logger.warn(`Preset Rule with ID "${id}" not found`)
-      throw new NotFoundException(`Preset Rule with ID "${id}" not found`)
+      this.logger.warn(`Preset rule with ID "${id}" not found`)
+      throw new NotFoundException(`Preset rule with ID "${id}" not found`)
     }
     return presetRule
   }
 
   async findByType(type: PresetRuleType): Promise<PresetRule[]> {
-    return this.presetRulesRepository.find({ where: { type }, relations: ['presetRequirements'] })
+    return this.presetRulesRepository.find({
+      where: { type },
+      relations: ['presetCourse', 'presetRequirements'],
+    })
   }
 
   async create(createPresetRuleDto: CreatePresetRuleDto): Promise<PresetRule> {
-    const presetRule = this.presetRulesRepository.create(createPresetRuleDto)
+    const presetRule = this.presetRulesRepository.create({
+      ...createPresetRuleDto,
+      presetRequirements: createPresetRuleDto.presetRequirements?.map((req) => ({
+        ...req,
+        style: req.style as NumberingStyle,
+      })),
+    } as DeepPartial<PresetRule>)
     return this.presetRulesRepository.save(presetRule)
   }
 
@@ -53,8 +64,9 @@ export class PresetRulesService {
     await this.presetRulesRepository.remove(presetRule)
   }
 
-  async findAllPresetRules(): Promise<PresetRule[]> {
+  async findAllPresetRules(presetCourseId: number): Promise<PresetRule[]> {
     return this.presetRulesRepository.find({
+      where: { presetCourse: { id: presetCourseId } },
       order: { id: 'ASC' },
     })
   }

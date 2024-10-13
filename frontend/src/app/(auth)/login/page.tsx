@@ -1,5 +1,4 @@
 'use client'
-import { type Metadata } from 'next'
 import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
@@ -8,7 +7,7 @@ import { Logo } from '@/components/ui/Logo'
 import { SlimLayout } from '@/components/ui/SlimLayout'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { login } from '@/services/authService' // Import the login service
+import { login } from '@/services/authService'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -35,7 +34,7 @@ export default function Login() {
       <div className="mb-6 flex items-center">
         <button
           type="button"
-          onClick={() => router.back()} // use router.back() to go back
+          onClick={() => router.push('/')} // use router.back() to go back
           className="flex items-center text-blue-600 hover:text-black"
         >
           <svg

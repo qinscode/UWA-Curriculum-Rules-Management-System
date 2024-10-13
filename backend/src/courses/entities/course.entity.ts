@@ -29,10 +29,10 @@ export class Course {
   })
   type: CourseType
 
-  @Column()
+  @Column({ nullable: true })
   version: string
 
-  @Column()
+  @Column({ nullable: true })
   is_current: boolean
 
   @CreateDateColumn()
@@ -41,6 +41,6 @@ export class Course {
   @UpdateDateColumn()
   updated_at: Date
 
-  @OneToMany(() => Rule, (rule) => rule.course)
+  @OneToMany(() => Rule, (rule) => rule.course, { cascade: true, onDelete: 'CASCADE' })
   rules: Rule[]
 }

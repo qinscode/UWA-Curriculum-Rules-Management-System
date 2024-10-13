@@ -38,7 +38,6 @@ interface SortedTree {
   showHelpPanel?: boolean
 }
 
-// 在文件顶部添加这个函数
 function generateMySQLCompatibleId(): number {
   return Math.floor(Math.random() * 2147483647) + 1
 }
@@ -81,12 +80,10 @@ export default function SortedTree({
     )
     setConnectorNodes(initialConnectorNodes)
 
-    // Set initial level styles based on initialData
     const initialLevelStyles = getInitialLevelStyles(flattenedData)
     setLevelStyles(initialLevelStyles)
   }, [initialData])
 
-  // 修改 handleAddRootNode 函数
   const handleAddRootNode = useCallback(() => {
     setData((prevData) => {
       const newNode = {
@@ -152,11 +149,9 @@ export default function SortedTree({
 
   const handleInputChange = useCallback(
     (id: number, value: string) => {
-      // 立即更新本地状态以保持输入响应
       setData((prevData) =>
         prevData.map((node) => (node.id === id ? { ...node, name: value } : node))
       )
-      // 延迟更新父组件状态
       debouncedHandleInputChange(id, value)
     },
     [debouncedHandleInputChange]

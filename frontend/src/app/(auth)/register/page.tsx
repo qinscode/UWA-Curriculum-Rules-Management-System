@@ -1,19 +1,37 @@
 'use client'
-import { type Metadata } from 'next'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation' // import useRouter hook
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { TextField } from '@/components/ui/Fields'
 import { Logo } from '@/components/ui/Logo'
 import { SlimLayout } from '@/components/ui/SlimLayout'
-
-/*export const metadata: Metadata = {
-  title: 'Sign Up',
-}*/
+import { register, login } from '@/services/authService'
 
 export default function Register() {
-  const router = useRouter() // initialise useRouter hook
+  const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setError(null)
+
+    const formData = new FormData(event.currentTarget)
+    const username = formData.get('username') as string
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+
+    try {
+      await register({ username, email, password })
+      // After successful registration, log the user in
+      await login(email, password)
+      // Redirect to the home page
+      router.push('/')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred during registration')
+    }
+  }
 
   return (
     <SlimLayout>
@@ -21,7 +39,9 @@ export default function Register() {
       <div className="mb-6 flex items-center">
         <button
           type="button"
-          onClick={() => router.back()} // use router.back() to go back
+          onClick={() => {
+            router.push('/')
+          }}
           className="flex items-center text-blue-600 hover:text-black"
         >
           <svg
@@ -54,19 +74,16 @@ export default function Register() {
         </Link>{' '}
         to your account.
       </p>
-      <form action="#" className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2"
+      >
         <TextField
-          label="First name"
-          name="first_name"
+          className="col-span-full"
+          label="Username"
+          name="username"
           type="text"
-          autoComplete="given-name"
-          required
-        />
-        <TextField
-          label="Last name"
-          name="last_name"
-          type="text"
-          autoComplete="family-name"
+          autoComplete="username"
           required
         />
         <TextField
@@ -85,6 +102,8 @@ export default function Register() {
           autoComplete="new-password"
           required
         />
+
+        {error && <div className="col-span-full text-sm text-red-500">{error}</div>}
 
         <div className="col-span-full">
           <Button type="submit" color="blue" className="w-full">

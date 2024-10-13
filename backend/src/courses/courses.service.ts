@@ -1,29 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DeepPartial, Repository } from 'typeorm'
 import { Course } from './entities/course.entity'
 import { CreateCourseDto, UpdateCourseDto } from './dto'
-import { RuleType } from '../rules/entities/rule.enum'
 import { Rule } from '../rules/entities/rule.entity'
-import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto'
+import { Requirement } from '../requirements/entities/requirement.entity'
+import { RuleType } from '../rules/entities/rule.enum'
 import { NumberingStyle } from '../requirements/entities/style.enum'
+import { CreateRuleDto, UpdateRuleDto } from '../rules/dto/rule.dto'
 
 @Injectable()
 export class CoursesService {
+  private readonly logger = new Logger(CoursesService.name)
+
   constructor(
     @InjectRepository(Course)
     private coursesRepository: Repository<Course>,
     @InjectRepository(Rule)
-    private rulesRepository: Repository<Rule>
+    private rulesRepository: Repository<Rule>,
+    @InjectRepository(Requirement)
+    private requirementsRepository: Repository<Requirement>
   ) {}
 
   async findAll(): Promise<any[]> {
-    // 获取所有课程
     const allCourses = await this.coursesRepository.find({
       order: { code: 'ASC', version: 'DESC' },
     })
 
-    // 使用 Map 来存储每个课程代码的最新版本
     const latestVersions = new Map<string, Course>()
 
     allCourses.forEach((course) => {
@@ -32,7 +35,6 @@ export class CoursesService {
       }
     })
 
-    // 为每个最新版本的课程添加 versions 字段
     return await Promise.all(
       Array.from(latestVersions.values()).map(async (course) => {
         const versions = await this.coursesRepository
@@ -50,7 +52,6 @@ export class CoursesService {
     )
   }
 
-  // 根据 ID 查找单个课程，并动态生成 versions 字段
   async findOne(id: number): Promise<any> {
     const course = await this.coursesRepository.findOne({ where: { id } })
 
@@ -58,38 +59,124 @@ export class CoursesService {
       throw new NotFoundException(`Course with ID "${id}" not found`)
     }
 
-    // 查询与当前课程 code 相同的所有版本
     const relatedCourses = await this.coursesRepository.find({
       where: { code: course.code },
       order: { version: 'DESC' },
     })
 
-    // 动态生成 versions 数组
     const versions = relatedCourses.map((c) => c.version.toString())
 
-    // 返回课程信息，并附带生成的 versions 数组
     return {
       ...course,
-      versions, // 动态生成的版本数组
+      versions,
     }
   }
 
-  // 创建新课程
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
-    const course = this.coursesRepository.create(createCourseDto)
-    return this.coursesRepository.save(course)
+    this.logger.log(`Creating new course with data: ${JSON.stringify(createCourseDto)}`)
+
+    try {
+      const newCourse = this.coursesRepository.create(createCourseDto)
+      const savedCourse = await this.coursesRepository.save(newCourse)
+
+      this.logger.log(`Successfully saved course with ID: ${savedCourse.id}`)
+
+      // Add default rules and requirements
+      await this.addDefaultRules(savedCourse)
+      await this.addDefaultRequirements(savedCourse)
+
+      return savedCourse
+    } catch (error) {
+      this.logger.error(`Failed to create course: ${error.message}`, error.stack)
+      throw error
+    }
   }
 
-  // 更新课程信息
+  private async addDefaultRules(course: Course): Promise<void> {
+    const defaultRules: Partial<Rule>[] = Object.values(RuleType).map((type) => ({
+      name: type,
+      type,
+      description: `Default description for ${type}`,
+      course,
+    }))
+
+    this.logger.log(`Adding default rules for course: ${course.id}`)
+
+    try {
+      await this.rulesRepository.save(defaultRules)
+      this.logger.log(`Successfully added default rules for course: ${course.id}`)
+    } catch (error) {
+      this.logger.error(`Failed to add default rules: ${error.message}`, error.stack)
+      throw error
+    }
+  }
+
+  private async addDefaultRequirements(course: Course): Promise<void> {
+    const rules = await this.rulesRepository.find({ where: { course: { id: course.id } } })
+    const asrRule = rules.find((rule) => rule.type === RuleType.ASR)
+    const acecrsRule = rules.find((rule) => rule.type === RuleType.ACECRS)
+
+    if (asrRule) {
+      const asrRequirements = [
+        {
+          content: 'The Student Rules apply to students in this course.',
+          style: NumberingStyle.None,
+        },
+        {
+          content:
+            'The policy, policy statements and guidance documents and student procedures apply, except as otherwise indicated in\n',
+          style: NumberingStyle.None,
+        },
+      ]
+
+      await this.createRequirements(asrRule, asrRequirements)
+    }
+
+    if (acecrsRule) {
+      const acecrsRequirements = [
+        {
+          content:
+            'A student who enrols in this course for the first time irrespective of whether they have previously been enrolled in another course of the University, must undertake the Academic Conduct Essentials module (the ACE module) and the Communication and Research Skills module (the CARS module).\n',
+          style: NumberingStyle.Numeric,
+        },
+        {
+          content:
+            'A student must successfully complete the ACE module within the first teaching period of their enrolment. Failure to complete the module within this timeframe will result in the student’s unit results from this teaching period being withheld. These results will continue to be withheld until students avail themselves of a subsequent opportunity to achieve a passing grade in the ACE module. In the event that students complete units in subsequent teaching periods without completing the ACE module, these results will similarly be withheld. Students will not be permitted to submit late review or appeal applications regarding results which have been withheld for this reason and which they were unable to access in the normally permitted review period.',
+          style: NumberingStyle.Numeric,
+        },
+      ]
+
+      await this.createRequirements(acecrsRule, acecrsRequirements)
+    }
+  }
+
+  private async createRequirements(
+    rule: Rule,
+    requirementsData: { content: string; style: NumberingStyle }[]
+  ): Promise<void> {
+    const requirements = requirementsData.map((data, index) =>
+      this.requirementsRepository.create({
+        ...data,
+        rule,
+        order_index: index,
+        is_connector: false,
+      })
+    )
+
+    await this.requirementsRepository.save(requirements)
+  }
+
   async update(id: number, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const course = await this.findOne(id)
     Object.assign(course, updateCourseDto)
     return this.coursesRepository.save(course)
   }
 
-  // 删除课程
   async remove(id: number): Promise<void> {
-    const course = await this.findOne(id)
+    const course = await this.coursesRepository.findOne({ where: { id } })
+    if (!course) {
+      throw new NotFoundException(`Course with ID "${id}" not found`)
+    }
     await this.coursesRepository.remove(course)
   }
 
