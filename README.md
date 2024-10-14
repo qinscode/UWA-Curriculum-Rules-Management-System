@@ -10,14 +10,42 @@
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Key Features](#Key-Features)
-3. [System Architecture](#system-architecture)
-4. [Frontend Implementation](#frontend-implementation)
-5. [Backend Implementation](#backend-implementation)
-6. [Database Structure](#database-structure)
-7. [API Endpoints](#api-endpoints)
-8. [Deployment](#deployment)
-9. [Future Enhancements](#future-enhancements)
+2. [Key Features](#key-features)
+3. [Problem Solving](#problem-solving)
+4. [Technology Stack](#technology-stack)
+5. [Frontend Implementation](#frontend-implementation)
+    - [Technology Stack](#technology-stack-1)
+    - [Key Components and Features](#key-components-and-features)
+    - [Performance Optimizations](#performance-optimizations)
+6. [Backend Implementation](#backend-implementation)
+    - [Technology Stack](#technology-stack-2)
+    - [Key Components and Features](#key-components-and-features-1)
+    - [Security Measures](#security-measures)
+    - [Scalability Considerations](#scalability-considerations)
+7. [Integration Points](#integration-points)
+8. [Deployment and CI/CD](#deployment-and-cicd)
+9. [Database Structure](#database-structure)
+    - [Key Entities and Relationships](#key-entities-and-relationships)
+    - [Key Features of the Database Structure](#key-features-of-the-database-structure)
+10. [URL Endpoints](#url-endpoints)
+    - [Authentication](#authentication)
+    - [Courses](#courses)
+    - [Rules](#rules)
+    - [Requirements](#requirements)
+    - [Preset Courses and Rules](#preset-courses-and-rules)
+    - [Document Generation](#document-generation)
+11. [API Features](#api-features)
+12. [Deployment](#deployment)
+    - [Prerequisites](#prerequisites)
+    - [1. Database Setup](#database-setup)
+    - [2. Installing Yarn](#installing-yarn)
+    - [3. Backend Setup](#backend-setup)
+    - [4. Frontend Setup](#frontend-setup)
+    - [5. Accessing the Application](#accessing-the-application)
+    - [6. Environment Variables Explanation](#environment-variables-explanation)
+    - [7. Production Deployment Considerations](#production-deployment-considerations)
+13. [Troubleshooting](#troubleshooting)
+14. [User Manual](#user-manual)
 
 ## Project Overview
 
@@ -317,7 +345,7 @@ The system provides a RESTful API with the following key endpoints:
 - MySQL (v8.0 or later)
 - Git
 
-### 1. Database Setup
+### Database Setup
 
 1. Install MySQL if not already installed.
 
@@ -336,7 +364,7 @@ The system provides a RESTful API with the following key endpoints:
    FLUSH PRIVILEGES;
    ```
 
-### 2. Installing Yarn
+### Installing Yarn
 
 1. First, ensure Node.js is installed. Then install Yarn globally:
    ```
@@ -347,7 +375,7 @@ The system provides a RESTful API with the following key endpoints:
    yarn --version
    ```
 
-### 3. Backend Setup
+### Backend Setup
 
 1. Clone the repository:
    ```
@@ -383,7 +411,7 @@ The system provides a RESTful API with the following key endpoints:
    yarn start
    ```
 
-### 4. Frontend Setup
+### Frontend Setup
 
 1. Navigate to the frontend directory:
    ```
@@ -412,12 +440,12 @@ The system provides a RESTful API with the following key endpoints:
    yarn start
    ```
 
-### 5. Accessing the Application
+### Accessing the Application
 
 - Frontend: Open a web browser and navigate to `http://localhost:6014`
 - Backend API: The API will be available at `http://localhost:6015/api`
 
-### 6. Environment Variables Explanation
+### Environment Variables Explanation
 
 #### Backend (.env)
 - `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`: MySQL connection details
@@ -430,7 +458,7 @@ The system provides a RESTful API with the following key endpoints:
 - `NEXT_PUBLIC_API_BASE_URL`: The URL of the backend API
 - `NEXT_PUBLIC_PDF_URL_PREFIX`: The URL prefix for accessing generated PDF documents
 
-### 7. Production Deployment Considerations
+### Production Deployment Considerations
 
 For production deployment:
 1. Use a process manager like PM2 to keep the application running.
