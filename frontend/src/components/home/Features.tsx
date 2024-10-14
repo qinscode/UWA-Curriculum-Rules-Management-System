@@ -4,6 +4,8 @@ import { CiLogin } from 'react-icons/ci'
 import { CiUser } from 'react-icons/ci'
 import { CiEdit } from 'react-icons/ci'
 import { CiRead } from 'react-icons/ci'
+import { IoDocumentOutline } from 'react-icons/io5'
+import { IoMdBook } from 'react-icons/io'
 import { Container } from '@/components/home/Container'
 
 const features = [
@@ -32,16 +34,16 @@ const features = [
     icon: CiRead,
   },
   {
-    name: 'Sed ut perspiciatis unde',
+    name: 'PDF & HTML Generation',
     description:
-      'Omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.',
-    icon: DeviceLockIcon,
+      'Users can generate outputs in both HTML and PDF formats, with the ability to review edits live before finalizing.',
+    icon: IoDocumentOutline,
   },
   {
-    name: 'Nemo enim ipsam voluptatem',
+    name: 'Link to Full Handbook',
     description:
-      'Quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos.',
-    icon: DeviceChartIcon,
+      'Links directly to the UWA official handbook website for the selected course, providing up-to-date course details and rules.',
+    icon: IoMdBook,
   },
 ]
 
