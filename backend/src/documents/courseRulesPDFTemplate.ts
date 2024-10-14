@@ -51,7 +51,7 @@ const renderRequirement = (
   `
 }
 
-export const courseRulesTemplate = (rules_list: Rule[]) => {
+export const courseRulesPDFTemplate = (rules_list: Rule[]) => {
   return `
 <!DOCTYPE html>
 <html lang="en">
