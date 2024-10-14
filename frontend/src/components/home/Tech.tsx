@@ -19,7 +19,7 @@ const tech = [
   { name: 'Jenkins (CI/CD)', icon: cibJenkins },
   { name: 'Puppeteer (Testing)', Icon: SiPuppeteer },
   { name: 'Oracle Cloud', Icon: GrOracle },
-  { name: 'Cloudflare ( Hosting)', Icon: FaCloudflare },
+  { name: 'Cloudflare (Hosting)', Icon: FaCloudflare },
 ]
 
 export function Tech() {
