@@ -1,4 +1,4 @@
-# Course Rules Management System
+# UWA Curriculum Management System
 
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <img alt="Static Badge" src="https://img.shields.io/badge/Next.js-v14.2-blue">
@@ -7,12 +7,10 @@
 <img alt="Static Badge" src="https://img.shields.io/badge/React.js-v18.0-077ea4">
 
 
-This document provides a comprehensive overview of the Course Rules Management System, detailing its requirements, frontend and backend implementations, and database structure.
-
 ## Table of Contents
 
 1. [Project Overview](#project-overview)
-2. [Requirements](#requirements)
+2. [Key Features](#Key-Features)
 3. [System Architecture](#system-architecture)
 4. [Frontend Implementation](#frontend-implementation)
 5. [Backend Implementation](#backend-implementation)
@@ -23,130 +21,431 @@ This document provides a comprehensive overview of the Course Rules Management S
 
 ## Project Overview
 
-The Course Rules Management System is a web-based application designed to streamline the process of managing and updating course rules across various university courses. It provides an intuitive interface for administrators to handle course rules, generate documentation, and manage system settings.
+The UWA Curriculum Management System is a sophisticated web-based platform designed to streamline and enhance the process of managing course rules across various academic programs at the University of Western Australia. 
 
-The application uses Next.js with Tailwind CSS, Tailwind UI, and Headless UI for the frontend, while the backend is built with NestJS and utilizes MySQL for database management.
+By digitalizing and automating many aspects of course rule management, the system aims to reduce administrative burden, minimize errors, and improve the overall quality and consistency of course information.
+## Key Features
 
-## Requirements
+1. **Intuitive Rule Management**: 
+   - Drag-and-drop interface for easy rule ordering and structuring
+   - Support for nested rule hierarchies
+   - Real-time editing and updating of course rules
 
-### Functional Requirements
+2. **Flexible Course Handling**:
+   - Creation and management of various course types (e.g., Graduate Certificate, Master's, Doctoral programs)
+   - Version control for course rules, allowing historical tracking and future planning
 
-1. **Course Rule Management**
-   - Create, read, update, and delete course rules
-   - Categorize rules as standard or custom
-   - Associate rules with specific courses
+3. **Smart Numbering System**:
+   - Automatic numbering of rules and sub-rules
+   - Customizable numbering styles (Numeric, Alphabetic, Roman, None)
 
-2. **Document Generation**
-   - Generate PDF documents for specific courses
-   - Create a comprehensive handbook of all course rules
-   - Export rules in JSON format
+4. **Role-Based Access Control**:
+   - Distinct roles for administrators and regular users
+   - Tailored permissions ensuring appropriate access and editing rights
 
-3. **Settings Management**
-   - Configure university name and academic year
-   - Set PDF template and handbook format preferences
-   - Manage default user roles
+5. **Standard Rules Library**:
+   - Pre-defined set of standard rules for different course types
+   - Easy application and customization of standard rules to specific courses
 
-### Non-Functional Requirements
+6. **Document Generation**:
+   - Automated generation of course rule documents in PDF and HTML formats
+   - Consistent formatting adhering to university standards
 
-1. User-friendly interface
-2. Responsive design for various devices
-3. Secure data handling and storage
-4. Efficient performance for rule management and document generation
-5. Scalability to handle a growing number of courses and rules
+7. **User-Friendly Interface**:
+   - Responsive design for desktop and mobile access
+   - Intuitive navigation and search functionality
 
-## System Architecture
+## Problem Solving
 
-The system follows a client-server architecture:
+This system addresses several key challenges faced by the university:
 
-- **Frontend:** Next.js with TypeScript
-- **Backend:** NestJS with TypeScript
-- **Database:** MySQL
-- **API:** RESTful API
+1. **Consistency**: Ensures uniformity in rule structure and presentation across all courses.
+2. **Efficiency**: Reduces the time and effort required to update and manage course rules.
+3. **Accuracy**: Minimizes human error through automated processes and standardized templates.
+4. **Accessibility**: Provides easy access to up-to-date course information for all stakeholders.
+5. **Compliance**: Helps maintain adherence to university and regulatory standards.
+6. **Version Control**: Facilitates tracking of rule changes over time and across different course versions.
+
+## Technology Stack
+
+The system leverages a modern, robust technology stack:
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **Backend**: NestJS, TypeORM
+- **Database**: MySQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **Deployment**: Docker, Jenkins
+- **Cloud Services**: Oracle Cloud, Cloudflare
+
 
 ## Frontend Implementation
 
-### Technologies Used
+The frontend of the UWA Curriculum Management System is built using modern web technologies to create a responsive, efficient, and user-friendly interface.
 
-- Next.js 14
-- TypeScript
-- React Hooks for state management
-- NextUI for UI components
-- Tailwind CSS for styling
+### Technology Stack
+- **Next.js**: React framework for server-side rendering and routing
+- **React**: JavaScript library for building user interfaces
+- **TypeScript**: Adds static typing to JavaScript for improved code quality
+- **Tailwind CSS**: Utility-first CSS framework for rapid UI development
+- **Shadcn UI**: Custom UI component library built on top of Tailwind
 
-### Key Components
+### Key Components and Features
 
-1. `app/page.tsx`: Main dashboard
-2. `app/manage-rules/page.tsx`: Course rule management interface
-3. `app/generate-documents/page.tsx`: Document generation interface
-4. `app/settings/page.tsx`: System settings management
+1. **Course Management Interface**
+   - Implemented in `ManageCourse.tsx`
+   - Provides CRUD operations for courses
+   - Uses React hooks for state management
+   - Integrates with backend API for data persistence
 
-### Custom Hooks
+2. **Rule Editor**
+   - Core component: `SortedTree.tsx`
+   - Implements drag-and-drop functionality for rule ordering
+   - Supports nested rule structures
+   - Real-time updates and validation
 
-- `useRules`: Manages rule-related operations
-- `useDocuments`: Handles document generation
-- `useSettings`: Manages system settings
+3. **Document Generation**
+   - `CoursePDFGenerator.tsx` handles PDF generation requests
+   - Integrates with backend API to trigger document creation
+   - Provides download links for generated documents
+
+4. **Authentication and Authorization**
+   - Implemented using JWT (JSON Web Tokens)
+   - `withAuth.tsx` higher-order component for route protection
+   - Role-based access control (Admin vs Normal User)
+
+5. **State Management**
+   - Utilizes React Context API for global state management
+   - Custom hooks like `useUser`, `useRules` for specific functionality
+
+6. **Responsive Design**
+   - Tailwind CSS classes for responsive layouts
+   - Mobile-friendly interface components
+
+7. **Form Handling and Validation**
+   - Custom form components with built-in validation
+   - Integration with backend for server-side validation
+
+### Performance Optimizations
+- Code splitting and lazy loading for improved initial load times
+- Memoization of expensive computations
+- Efficient re-rendering strategies using React's useCallback and useMemo
 
 ## Backend Implementation
 
-### Technologies Used
+The backend of the system is built to handle complex business logic, data persistence, and provide a robust API for the frontend.
 
-- NestJS
-- TypeORM for database interactions
-- MySQL as the database
+### Technology Stack
+- **NestJS**: Progressive Node.js framework for building efficient and scalable server-side applications
+- **TypeORM**: ORM for TypeScript and JavaScript
+- **MySQL**: Relational database for data storage
+- **JWT**: For secure authentication and authorization
 
-### Key Modules
+### Key Components and Features
 
-1. **Rules Module**
-   - Handles CRUD operations for course rules
-2. **Documents Module**
-   - Manages document generation (PDF, handbook, JSON export)
-3. **Settings Module**
-   - Handles system-wide settings
+1. **API Architecture**
+   - RESTful API design principles
+   - Modular structure following NestJS best practices
+   - Swagger documentation for API endpoints
+
+2. **Database Schema and ORM**
+   - Entities defined in TypeORM (e.g., `Course`, `Rule`, `Requirement`)
+   - Complex relationships between entities (e.g., one-to-many, many-to-many)
+   - Migration support for database schema changes
+
+3. **Authentication and Authorization**
+   - JWT-based authentication system
+   - Role-based access control implementation
+   - Middleware for route protection
+
+4. **Business Logic Implementation**
+   - Services for handling complex operations (e.g., `CoursesService`, `RulesService`)
+   - Implementation of rule management logic
+   - Version control for courses and rules
+
+5. **Document Generation**
+   - Integration with Puppeteer for PDF generation
+   - HTML template rendering for document structure
+   - Asynchronous processing for large documents
+
+6. **Data Validation and Error Handling**
+   - DTO (Data Transfer Object) validation using class-validator
+   - Global exception filters for consistent error responses
+
+7. **Caching and Performance**
+   - Implementation of caching strategies for frequently accessed data
+   - Query optimization for database operations
+
+### Security Measures
+- Input sanitization to prevent SQL injection
+- CORS configuration
+- Rate limiting to prevent abuse
+- Secure password hashing using bcrypt
+
+### Scalability Considerations
+- Stateless architecture for horizontal scaling
+- Database indexing for query performance
+- Potential for implementing message queues for heavy processing tasks
+
+## Integration Points
+
+- API endpoints in the backend correspond to service calls in the frontend
+- Consistent data models between frontend and backend
+- Error handling and status codes are uniformly interpreted
+
+## Deployment and CI/CD
+- Docker containerization for both frontend and backend
+- Jenkins pipeline for automated testing and deployment
+- Staging and production environments with different configurations
 
 ## Database Structure
 
-### Tables
+The UWA Curriculum Management System utilizes a MySQL database with a structure designed to efficiently store and manage course-related data. The database schema is defined using TypeORM entities, which map directly to database tables.
 
-1. **rules**
-   - `id` (Primary Key)
-   - `code` (Unique)
-   - `name`
-   - `type` (Enum: 'Standard', 'Custom')
-   - `description`
-   - `created_at`
-   - `updated_at`
+### Key Entities and Relationships
 
-2. **settings**
-   - `id` (Primary Key)
-   - `university_name`
-   - `academic_year`
-   - `pdf_template`
-   - `handbook_format` (Enum: 'pdf', 'html', 'docx')
-   - `default_user_role` (Enum: 'admin', 'editor', 'viewer')
-   - `updated_at`
+1. **Course**
+   - Fields: id, code, name, type, version, created_at, updated_at
+   - Relationships: 
+     - One-to-Many with Rule
 
-## API Endpoints
+2. **Rule**
+   - Fields: id, name, type, description, created_at, updated_at
+   - Relationships: 
+     - Many-to-One with Course
+     - One-to-Many with Requirement
 
-1. **Rules**
-   - GET `/api/rules`: Fetch all rules
-   - POST `/api/rules`: Create a new rule
-   - PUT `/api/rules/:id`: Update a rule
-   - DELETE `/api/rules/:id`: Delete a rule
+3. **Requirement**
+   - Fields: id, content, style, is_connector, order_index, parentId
+   - Relationships: 
+     - Many-to-One with Rule
+     - Self-referencing One-to-Many (for nested requirements)
 
-2. **Documents**
-   - GET `/api/documents/course-pdf/:courseId`: Generate course PDF
-   - GET `/api/documents/handbook`: Generate handbook
-   - GET `/api/documents/export-rules`: Export rules as JSON
+4. **User**
+   - Fields: id, username, email, password, role, created_at, updated_at
 
-3. **Settings**
-   - GET `/api/settings`: Fetch system settings
-   - PUT `/api/settings`: Update system settings
+5. **PresetCourse**
+   - Fields: id, code, name, type, version, created_at, updated_at
+   - Relationships: 
+     - One-to-Many with PresetRule
+
+6. **PresetRule**
+   - Fields: id, name, type, description, created_at, updated_at
+   - Relationships: 
+     - Many-to-One with PresetCourse
+     - One-to-Many with PresetRequirement
+
+7. **PresetRequirement**
+   - Fields: id, content, style, is_connector, order_index, parentId
+   - Relationships: 
+     - Many-to-One with PresetRule
+     - Self-referencing One-to-Many (for nested requirements)
+
+### Key Features of the Database Structure
+
+- Use of foreign keys to maintain referential integrity
+- Indexes on frequently queried fields for improved performance
+- Timestamp fields (created_at, updated_at) for auditing purposes
+- Enum types for fields like rule types and numbering styles
+
+## URL Endpoints
+
+The system provides a RESTful API with the following key endpoints:
+
+### Authentication
+
+- POST `/api/auth/register`: User registration
+- POST `/api/auth/login`: User login
+- GET `/api/auth/me`: Get current user profile
+- PUT `/api/auth/me`: Update user profile
+- PUT `/api/auth/password`: Change password
+- POST `/api/auth/forgot-password`: Initiate password reset
+- POST `/api/auth/reset-password`: Complete password reset
+
+### Courses
+
+- GET `/api/courses`: Get all courses
+- GET `/api/courses/:id`: Get a specific course
+- POST `/api/courses`: Create a new course
+- PUT `/api/courses/:id`: Update a course
+- DELETE `/api/courses/:id`: Delete a course
+- GET `/api/courses/code/:code/version/:version`: Get course by code and version
+
+### Rules
+
+- GET `/api/courses/:courseId/rules`: Get all rules for a course
+- GET `/api/courses/:courseId/rules/:id`: Get a specific rule
+- POST `/api/courses/:courseId/rules`: Create a new rule
+- PUT `/api/courses/:courseId/rules/:id`: Update a rule
+- DELETE `/api/courses/:courseId/rules/:id`: Delete a rule
+- GET `/api/courses/:courseId/rules/by-type/:type`: Get rules by type
+
+### Requirements
+
+- GET `/api/courses/:courseId/rules/:ruleId/requirements`: Get all requirements for a rule
+- POST `/api/courses/:courseId/rules/:ruleId/requirements`: Create new requirements
+- PUT `/api/courses/:courseId/rules/:ruleId/requirements`: Update requirements
+- DELETE `/api/courses/:courseId/rules/:ruleId/requirements/:requirementId`: Delete a requirement
+
+### Preset Courses and Rules
+
+- GET `/api/preset-courses`: Get all preset courses
+- GET `/api/preset-courses/:id`: Get a specific preset course
+- POST `/api/preset-courses`: Create a new preset course
+- PUT `/api/preset-courses/:id`: Update a preset course
+- DELETE `/api/preset-courses/:id`: Delete a preset course
+- Similar endpoints exist for preset rules and requirements, following the pattern of regular courses
+
+### Document Generation
+
+- GET `/api/documents/course/:id/pdf`: Generate PDF for a course
+- GET `/api/documents/course/:id/html`: Generate HTML for a course
+
+
+## API Features
+
+- Consistent use of HTTP methods (GET, POST, PUT, DELETE) for CRUD operations
+- Query parameters for filtering, sorting, and pagination where applicable
+- Use of status codes to indicate success, client errors, and server errors
+- JWT token required in Authorization header for authenticated endpoints
+- Role-based access control implemented on certain endpoints
 
 ## Deployment
 
-- **Frontend:** Deployed using Vercel or similar platform
-- **Backend:** Deployed on a VPS using PM2 for process management
-- **Database:** Hosted MySQL instance
+### Prerequisites
+
+- Node.js (v14 or later)
+- MySQL (v8.0 or later)
+- Git
+
+### 1. Database Setup
+
+1. Install MySQL if not already installed.
+
+2. Log in to MySQL as root:
+   ```
+   mysql -u root -p
+   ```
+3. Create the database:
+   ```sql
+   CREATE DATABASE course_rules_db;
+   ```
+4. Create a user and grant privileges:
+   ```sql
+   CREATE USER 'your_username'@'localhost' IDENTIFIED BY 'your_password';
+   GRANT ALL PRIVILEGES ON course_rules_db.* TO 'your_username'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
+
+### 2. Installing Yarn
+
+1. First, ensure Node.js is installed. Then install Yarn globally:
+   ```
+   npm install -g yarn
+   ```
+2. Verify the installation:
+   ```
+   yarn --version
+   ```
+
+### 3. Backend Setup
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-repo/uwa-curriculum-management-system.git
+   cd uwa-curriculum-management-system/backend
+   ```
+
+2. Install dependencies:
+   ```
+   yarn install
+   ```
+
+3. Create a `.env` file in the backend root directory with the following content:
+   ```
+   DB_HOST=your_host
+   DB_PORT=3306
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   DB_DATABASE=course_rules_db
+   PDF_URL_PREFIX=/public/pdf
+   HTML_URL_PREFIX=/public/html
+   JWT_SECRET=your_secret_key
+   PORT=6015
+   ```
+
+4. Run database migrations:
+   ```
+   yarn typeorm migration:run
+   ```
+
+5. Start the backend server:
+   ```
+   yarn start
+   ```
+
+### 4. Frontend Setup
+
+1. Navigate to the frontend directory:
+   ```
+   cd ../frontend
+   ```
+
+2. Install dependencies:
+   ```
+   yarn install
+   ```
+
+3. Create a `.env` file in the frontend root directory with the following content:
+   ```
+   PORT=6014
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:6015/api
+   NEXT_PUBLIC_PDF_URL_PREFIX=http://localhost:6015
+   ```
+
+4. Build the frontend:
+   ```
+   yarn build
+   ```
+
+5. Start the frontend server:
+   ```
+   yarn start
+   ```
+
+### 5. Accessing the Application
+
+- Frontend: Open a web browser and navigate to `http://localhost:6014`
+- Backend API: The API will be available at `http://localhost:6015/api`
+
+### 6. Environment Variables Explanation
+
+#### Backend (.env)
+- `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`: MySQL connection details
+- `PDF_URL_PREFIX`, `HTML_URL_PREFIX`: URL prefixes for generated documents
+- `JWT_SECRET`: Secret key for JWT token generation
+- `PORT`: The port on which the backend server will run
+
+#### Frontend (.env)
+- `PORT`: The port on which the frontend server will run
+- `NEXT_PUBLIC_API_BASE_URL`: The URL of the backend API
+- `NEXT_PUBLIC_PDF_URL_PREFIX`: The URL prefix for accessing generated PDF documents
+
+### 7. Production Deployment Considerations
+
+For production deployment:
+1. Use a process manager like PM2 to keep the application running.
+2. Set up a reverse proxy (e.g., Nginx) to handle HTTPS and serve static files.
+3. Use environment-specific .env files and ensure sensitive data is properly secured.
+4. Set up monitoring and logging solutions.
+5. Configure regular database backups.
+
+### Troubleshooting
+
+- If you encounter any "module not found" errors, try running `yarn install` again.
+- Ensure all required ports are open and not in use by other applications.
+- Check the console and server logs for any error messages.
+
+By following these steps, you should have a working deployment of the UWA Curriculum Management System. Remember to replace placeholder values (like database credentials) with your actual production values when deploying to a live environment.
 
 ## User Manual
 - Feel free to reference it as needed
