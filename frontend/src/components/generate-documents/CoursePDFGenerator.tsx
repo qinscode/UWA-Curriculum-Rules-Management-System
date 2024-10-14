@@ -44,15 +44,16 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
   isGenerating,
   versions,
 }) => {
-  const handlePDFDownload = (htmlUrl) => {
-    if (htmlUrl) {
-      window.open(htmlUrl, '_blank')
+  const handlePDFDownload = () => {
+    if (pdfUrl) {
+      window.open(pdfUrl, '_blank')
     }
   }
 
-  const handleHTMLDownload = (pdfUrl) => {
-    if (pdfUrl) {
-      window.open(pdfUrl, '_blank')
+  const handleHTMLDownload = () => {
+    console.log('HTML URL:', htmlUrl)
+    if (htmlUrl) {
+      window.open(htmlUrl, '_blank')
     }
   }
 

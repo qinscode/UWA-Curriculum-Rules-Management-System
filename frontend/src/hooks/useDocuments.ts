@@ -25,7 +25,7 @@ export function useDocuments() {
       console.log('HTML  response :', response)
       return response.url // Return the URL instead of opening it
     } catch (err) {
-      setError('Failed to generate course PDF')
+      setError('Failed to generate course HTML')
       throw err
     } finally {
       setIsGenerating(false)
