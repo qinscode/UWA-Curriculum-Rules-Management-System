@@ -1,13 +1,14 @@
 import { useId } from 'react'
-
+import React from 'react'
+import { CiLogin } from 'react-icons/ci'
 import { Container } from '@/components/home/Container'
 
 const features = [
   {
-    name: 'Lorem ipsum dolor sit amet',
+    name: 'User Registration and Login',
     description:
-      'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    icon: DeviceArrowIcon,
+      'Enable two types of users, Admin and academic staff (normal users), to register and log in, with access to course rules across various disciplines.',
+    icon: CiLogin,
   },
   {
     name: 'Ut enim ad minim veniam',
