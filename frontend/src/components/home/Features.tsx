@@ -1,6 +1,9 @@
 import { useId } from 'react'
 import React from 'react'
 import { CiLogin } from 'react-icons/ci'
+import { CiUser } from 'react-icons/ci'
+import { CiEdit } from 'react-icons/ci'
+import { CiRead } from 'react-icons/ci'
 import { Container } from '@/components/home/Container'
 
 const features = [
@@ -11,21 +14,22 @@ const features = [
     icon: CiLogin,
   },
   {
-    name: 'Ut enim ad minim veniam',
+    name: 'User Profile Management',
     description:
-      'Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    icon: DeviceCardsIcon,
+      'Users have the ability to update their username and email address.Additionally, they can view their current role within the system. (Admin or normal user)',
+    icon: CiUser,
   },
   {
-    name: 'Duis aute irure dolor',
-    description: 'In reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    icon: DeviceClockIcon,
+    name: 'Manage Standard Rules',
+    description:
+      'Admins can easily navigate and edit courses using the search function and filters by course type. They can manage standard rules and adjust numbering through a simple drag-and-drop interface',
+    icon: CiEdit,
   },
   {
-    name: 'Excepteur sint occaecat',
+    name: 'Manage Course',
     description:
-      'Cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    icon: DeviceListIcon,
+      'Automate rule generation using predefined parameters to minimize manual input. Allow both normal users and admins to view and modify user-defined rules. ',
+    icon: CiRead,
   },
   {
     name: 'Sed ut perspiciatis unde',
