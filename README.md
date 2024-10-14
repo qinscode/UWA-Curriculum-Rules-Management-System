@@ -52,6 +52,9 @@
 The UWA Curriculum Management System is a sophisticated web-based platform designed to streamline and enhance the process of managing course rules across various academic programs at the University of Western Australia. 
 
 By digitalizing and automating many aspects of course rule management, the system aims to reduce administrative burden, minimize errors, and improve the overall quality and consistency of course information.
+
+The demo is hosted at [curriculum-app.fudong.dev](https://curriculum-app.fudong.dev)
+
 ## Key Features
 
 1. **Intuitive Rule Management**: 
