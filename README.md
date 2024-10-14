@@ -148,4 +148,8 @@ The system follows a client-server architecture:
 - **Backend:** Deployed on a VPS using PM2 for process management
 - **Database:** Hosted MySQL instance
 
+## User Manual
+- Feel free to reference it as needed
+https://docs.google.com/document/d/1QfREd0iH-s2IguowtiEAbd4mgEv8GEtP9CjHcbnXfGI/edit?usp=sharing
+
 
