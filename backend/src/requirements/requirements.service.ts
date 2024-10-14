@@ -6,7 +6,7 @@ import {
   BadRequestException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository, DataSource, QueryRunner, In } from 'typeorm'
+import { Repository, DataSource, QueryRunner } from 'typeorm'
 import { Requirement } from './entities/requirement.entity'
 import { Rule } from '../rules/entities/rule.entity'
 import { CreateRequirementDto, UpdateRequirementDto } from './dto/requirement.dto'
@@ -238,7 +238,7 @@ export class RequirementsService {
         // Don't set parent here
       } else {
         // Create new requirement
-        const { id, children, ...requirementData } = dto
+        const { ...requirementData } = dto
         requirement = this.requirementsRepository.create({
           ...requirementData,
           style: requirementData.style as NumberingStyle,
