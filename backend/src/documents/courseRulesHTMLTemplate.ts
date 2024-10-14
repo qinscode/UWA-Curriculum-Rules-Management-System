@@ -1,17 +1,75 @@
 import { Rule } from '../rules/entities/rule.entity'
 import { Requirement } from '../requirements/entities/requirement.entity'
+import { NumberingStyle } from '../requirements/entities/style.enum'
 
-const renderRequirements = (requirements: Requirement[], parentIndex: string = ''): string => {
-  return requirements
-    .map((req, index) => {
-      const currentIndex = parentIndex ? `${parentIndex}(${index + 1})` : `${index + 1}.`
-      let content = `<p${req.is_connector ? '' : ` class="indent"`}>${req.is_connector ? '' : currentIndex} ${req.content}</p>`
+const getStyleClass = (style: NumberingStyle): string => {
+  switch (style) {
+    case NumberingStyle.Alphabetic:
+      return 'alphabetic'
+    case NumberingStyle.Roman:
+      return 'roman'
+    case NumberingStyle.None:
+      return 'none'
+    default:
+      return 'numeric'
+  }
+}
 
-      if (req.children && req.children.length > 0) {
-        content += renderRequirements(req.children, currentIndex)
+const renderRequirement = (
+  req: Requirement,
+  level: number,
+  levelZeroCounter: number,
+  totalLevelZeroItems: number
+): string => {
+  console.log(
+    `Rendering requirement: ${req.content}, level: ${level}, is_connector: ${req.is_connector}`
+  )
+
+  const styleClass = getStyleClass(req.style)
+  const padding = level * 20
+  let numberContent = ''
+
+  if (!req.is_connector) {
+    if (level === 0) {
+      if (totalLevelZeroItems > 1) {
+        numberContent = `<span class="rule-number">${levelZeroCounter}.</span> `
       }
+    } else if (level > 0) {
+      numberContent = `<span class="number"></span>`
+    }
+  }
 
-      return content
+  console.log(`numberContent: ${numberContent}`)
+
+  let content = `<p class="${styleClass}${req.is_connector ? ' connector' : ''}" style="padding-left: ${padding}px;">
+    ${numberContent}${req.content}
+  </p>`
+
+  if (req.children && req.children.length > 0) {
+    console.log(`Rendering ${req.children.length} children for requirement: ${req.content}`)
+    content += req.children
+      .map((child, index) => renderRequirement(child, level + 1, index + 1, req.children.length))
+      .join('')
+  }
+
+  return content
+}
+
+const renderRequirements = (requirements: Requirement[]): string => {
+  console.log(`Rendering ${requirements.length} requirements`)
+  let levelZeroCounter = 0
+  const totalLevelZeroItems = requirements.filter((req) => !req.is_connector).length
+  console.log(`Total level zero items: ${totalLevelZeroItems}`)
+
+  return requirements
+    .map((req) => {
+      if (!req.is_connector) {
+        levelZeroCounter++
+        console.log(`Incrementing levelZeroCounter to ${levelZeroCounter}`)
+      } else {
+        console.log(`Skipping increment for connector: ${req.content}`)
+      }
+      return renderRequirement(req, 0, levelZeroCounter, totalLevelZeroItems)
     })
     .join('')
 }
@@ -21,7 +79,10 @@ export const courseRulesHTMLTemplate = (
   courseCode: string,
   rules: Rule[]
 ): string => {
-  return `
+  console.log(`Generating HTML template for course: ${courseName} [${courseCode}]`)
+  console.log(`Total rules: ${rules.length}`)
+
+  const htmlContent = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,11 +118,55 @@ export const courseRulesHTMLTemplate = (
             color: #000;
             font-size: 18px;
         }
-        p, li {
+        p {
             font-size: 14px;
+            margin: 0 0 10px 0;
         }
-        .indent {
-            margin-left: 20px;
+        .number {
+            font-weight: bold;
+        }
+        .numeric > .number::before {
+            content: "(" counter(numeric) ") ";
+            counter-increment: numeric;
+        }
+        .alphabetic > .number::before {
+            content: "(" counter(alphabetic, lower-alpha) ") ";
+            counter-increment: alphabetic;
+        }
+        .roman > .number::before {
+            content: "(" counter(roman, lower-roman) ") ";
+            counter-increment: roman;
+        }
+        .none > .number::before {
+            content: "";
+        }
+        .rule-number {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .rule-number::before {
+            content: "";
+        }
+        section {
+            counter-reset: numeric alphabetic roman;
+        }
+        .numeric {
+            counter-reset: alphabetic;
+        }
+        .alphabetic {
+            counter-reset: roman;
+        }
+        .roman {
+            counter-reset: numeric;
+        }
+        body {
+            counter-reset: rule;
+        }
+        .connector {
+            list-style-type: none;
+        }
+        .connector::before {
+            content: none;
         }
     </style>
 </head>
@@ -73,17 +178,21 @@ export const courseRulesHTMLTemplate = (
     <main>
         ${rules
           .filter((rule) => rule.requirements && rule.requirements.length > 0)
-          .map(
-            (rule) => `
+          .map((rule, ruleIndex) => {
+            console.log(`Rendering rule: ${rule.name}, index: ${ruleIndex}`)
+            return `
         <section>
-            <h2>${rule.name}</h2>
+            <h2>${ruleIndex + 1}. ${rule.name}</h2>
             ${renderRequirements(rule.requirements)}
         </section>
         `
-          )
+          })
           .join('')}
     </main>
 </body>
 </html>
   `
+
+  console.log('HTML template generation completed')
+  return htmlContent
 }

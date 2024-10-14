@@ -173,17 +173,6 @@ export const courseRulesPDFTemplate = (rules_list: Rule[]) => {
             counter-reset: rule;
         }
         
-        .rule-order {
-            font-weight: bold;
-            font-size: 12px;
-            margin: 0;
-            padding-right: 5px;
-        }
-        
-        .rule-content {
-            flex: 1;
-        }
-        
         .connector {
             list-style-type: none;
         }
