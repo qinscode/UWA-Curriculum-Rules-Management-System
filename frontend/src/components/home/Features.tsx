@@ -7,43 +7,44 @@ import { CiRead } from 'react-icons/ci'
 import { IoDocumentOutline } from 'react-icons/io5'
 import { IoMdBook } from 'react-icons/io'
 import { Container } from '@/components/home/Container'
+import { ListTree, ListOrdered, FileEdit, BookOpen, FileOutput, ShieldCheck } from 'lucide-react'
 
 const features = [
   {
-    name: 'User Registration and Login',
+    name: 'Automatic Sorted Rule Management',
     description:
-      'Enable two types of users, Admin and academic staff (normal users), to register and log in, with access to course rules across various disciplines.',
-    icon: CiLogin,
+      'A standout feature of this Course Rules Management System is its Automatic Sorted Rule Management. This innovative functionality intelligently organizes and structures course rules with minimal user input.',
+    icon: ListTree,
   },
   {
-    name: 'User Profile Management',
+    name: 'Auto numbering styles',
     description:
-      'Users have the ability to update their username and email address.Additionally, they can view their current role within the system. (Admin or normal user)',
-    icon: CiUser,
+      "The system's Auto numbering styles feature intelligently applies appropriate numbering formats (numeric, alphabetic, Roman numerals) to rules based on their hierarchical level. Users don't need to manually decide how to number each rule or sub-rule, reducing the mental effort required in managing complex rule structures.",
+    icon: ListOrdered,
   },
   {
     name: 'Manage Standard Rules',
     description:
       'Admins can easily navigate and edit courses using the search function and filters by course type. They can manage standard rules and adjust numbering through a simple drag-and-drop interface',
-    icon: CiEdit,
+    icon: FileEdit,
   },
   {
     name: 'Manage Course',
     description:
-      'Automate rule generation using predefined parameters to minimize manual input. Allow both normal users and admins to view and modify user-defined rules. ',
-    icon: CiRead,
+      'Automate rule generation using predefined parameters to minimize manual input. Allow both normal users and admins to view and modify user-defined rules.',
+    icon: BookOpen,
   },
   {
     name: 'PDF & HTML Generation',
     description:
       'Users can generate outputs in both HTML and PDF formats, with the ability to review edits live before finalizing.',
-    icon: IoDocumentOutline,
+    icon: FileOutput,
   },
   {
-    name: 'Link to Full Handbook',
+    name: 'Access control',
     description:
-      'Links directly to the UWA official handbook website for the selected course, providing up-to-date course details and rules.',
-    icon: IoMdBook,
+      'The system provides role-based access control, only allowing authorized users to view and edit the standard rules.',
+    icon: ShieldCheck,
   },
 ]
 

@@ -5,9 +5,14 @@ import { Container } from '@/components/home/Container'
 const faqs = [
   [
     {
-      question: 'How do I sign up for an account?',
+      question: 'What is UWA Curriculum Management System?',
       answer:
-        'To sign up, click on the "Sign Up" button on the login page, fill in your email, password, and username, and submit the form.',
+        'UWA Curriculum Management System is a centralized platform designed to efficiently manage and update course rules for various academic programs.',
+    },
+    {
+      question: 'Who can access the system?',
+      answer:
+        'The system is primarily designed for university administrators and faculty members responsible for managing course rules and regulations.',
     },
     {
       question: 'How can I know my access rights?',
@@ -22,9 +27,14 @@ const faqs = [
   ],
   [
     {
-      question: 'What are the course types supported for rule editing??',
+      question: 'What are the course types supported for rule editing?',
       answer:
-        'Currently, the system supports Postgraduate Coursework rules for editing and updating.',
+        "Currently, the system supports various course types, including Graduate Certificate, Graduate Diploma, Master's (Coursework), Master's Extended, Master's Research, Doctoral Degree, and Professional Doctorate/Master's Coursework.",
+    },
+    {
+      question: 'Can I edit the standard rules?',
+      answer:
+        'Only users with admin access can edit the standard rules. Normal users can view the standard rules but can edit user-defined rules.',
     },
     {
       question: 'How do I add a new rule to a course?',
