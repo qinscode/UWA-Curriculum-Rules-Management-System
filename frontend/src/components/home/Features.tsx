@@ -186,13 +186,10 @@ export function SecondaryFeatures() {
     >
       <Container>
         <div className="mx-auto max-w-2xl sm:text-center">
-          <h2 className="text-3xl font-medium tracking-tight text-gray-900">
-            t enim ad minim veniam
-          </h2>
+          <h2 className="text-5xl font-bold tracking-tight text-gray-900"> Key Features</h2>
           <p className="mt-2 text-lg text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea comm
+            Our platform offers a comprehensive solution for managing course rules and user
+            profiles, designed to streamline administrative tasks and enhance the user experience.
           </p>
         </div>
         <ul
