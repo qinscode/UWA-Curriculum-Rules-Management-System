@@ -42,6 +42,6 @@ export class PDFRuleType {
   }
 
   static getPrintRuleType(ruleType: RuleType): string {
-    return this.mapping[ruleType] || 'Other Rules'
+    return this.mapping[ruleType]
   }
 }
