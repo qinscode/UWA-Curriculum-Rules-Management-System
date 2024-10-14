@@ -9,32 +9,32 @@ interface TimelineItem {
 
 const timeline: TimelineItem[] = [
   {
-    name: 'Released v2.5',
+    name: 'Deliverable v1.0',
     description:
-      'Nihil aut nam. Dignissimos a pariatur et quos omnis. Aspernatur asperiores et dolorem dolorem optio voluptate repudiandae.',
-    date: '05 Aug 2024',
-    dateTime: '2024-08-05',
+      'In this phase, we gathered client requirements, confirmed the Minimum Viable Product (MVP), and designed the initial prototype. We also decided on the technology stack and initialized both the backend and frontend environments.',
+    date: '10 Aug 2024',
+    dateTime: '2024-08-10',
   },
   {
-    name: 'Released v2.0',
+    name: 'Deliverable v2.0',
     description:
-      'Provident quia ut esse. Vero vel eos repudiandae aspernatur. Cumque minima impedit sapiente a architecto nihil.',
-    date: '04 Aug 2024',
-    dateTime: '2024-08-04',
+      'For the frontend, we implemented draggable and nestable requirement tree nodes. On the backend, we focused on Authentication and Authorization implementation, along with data modeling. We also built the structure for generating PDF and HTML documents.',
+    date: '25 Aug 2024',
+    dateTime: '2024-08-25',
   },
   {
-    name: 'Released v1.0',
+    name: 'Deliverable v3.0',
     description:
-      'Sunt perspiciatis incidunt. Non necessitatibus aliquid. Consequatur ut officiis earum eum quia facilis. Hic deleniti dolorem quia et.',
-    date: '03 Aug 2024',
-    dateTime: '2024-08-03',
+      'This phase introduced the Manage Rules page, improvements to the numbering system, and optimizations to the database. Additionally, we developed the login and registration pages, ensuring a smooth user authentication process.',
+    date: '20 Sep 2024',
+    dateTime: '2024-09-20',
   },
   {
-    name: 'Released v0.1',
+    name: 'Deliverable v4.0',
     description:
-      'Ut ipsa sint distinctio quod itaque nam qui. Possimus aut unde id architecto voluptatem hic aut pariatur velit.',
-    date: '02 Aug 2024',
-    dateTime: '2024-08-02',
+      'In the final phase, we implemented the Manage Course feature for admin use, enabling both admin and normal user access. We also integrated document generation capabilities. Extensive testing was conducted to fix bugs and ensure system stability before final deployment.',
+    date: '15 Oct 2024',
+    dateTime: '2024-10-15',
   },
 ]
 

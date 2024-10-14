@@ -1,42 +1,49 @@
 import { useId } from 'react'
-
+import React from 'react'
+import { CiLogin } from 'react-icons/ci'
+import { CiUser } from 'react-icons/ci'
+import { CiEdit } from 'react-icons/ci'
+import { CiRead } from 'react-icons/ci'
+import { IoDocumentOutline } from 'react-icons/io5'
+import { IoMdBook } from 'react-icons/io'
 import { Container } from '@/components/home/Container'
 
 const features = [
   {
-    name: 'Lorem ipsum dolor sit amet',
+    name: 'User Registration and Login',
     description:
-      'Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    icon: DeviceArrowIcon,
+      'Enable two types of users, Admin and academic staff (normal users), to register and log in, with access to course rules across various disciplines.',
+    icon: CiLogin,
   },
   {
-    name: 'Ut enim ad minim veniam',
+    name: 'User Profile Management',
     description:
-      'Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    icon: DeviceCardsIcon,
+      'Users have the ability to update their username and email address.Additionally, they can view their current role within the system. (Admin or normal user)',
+    icon: CiUser,
   },
   {
-    name: 'Duis aute irure dolor',
-    description: 'In reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    icon: DeviceClockIcon,
+    name: 'Manage Standard Rules',
+    description:
+      'Admins can easily navigate and edit courses using the search function and filters by course type. They can manage standard rules and adjust numbering through a simple drag-and-drop interface',
+    icon: CiEdit,
   },
   {
-    name: 'Excepteur sint occaecat',
+    name: 'Manage Course',
     description:
-      'Cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    icon: DeviceListIcon,
+      'Automate rule generation using predefined parameters to minimize manual input. Allow both normal users and admins to view and modify user-defined rules. ',
+    icon: CiRead,
   },
   {
-    name: 'Sed ut perspiciatis unde',
+    name: 'PDF & HTML Generation',
     description:
-      'Omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.',
-    icon: DeviceLockIcon,
+      'Users can generate outputs in both HTML and PDF formats, with the ability to review edits live before finalizing.',
+    icon: IoDocumentOutline,
   },
   {
-    name: 'Nemo enim ipsam voluptatem',
+    name: 'Link to Full Handbook',
     description:
-      'Quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos.',
-    icon: DeviceChartIcon,
+      'Links directly to the UWA official handbook website for the selected course, providing up-to-date course details and rules.',
+    icon: IoMdBook,
   },
 ]
 
@@ -179,13 +186,10 @@ export function SecondaryFeatures() {
     >
       <Container>
         <div className="mx-auto max-w-2xl sm:text-center">
-          <h2 className="text-3xl font-medium tracking-tight text-gray-900">
-            t enim ad minim veniam
-          </h2>
+          <h2 className="text-5xl font-bold tracking-tight text-gray-900"> Key Features</h2>
           <p className="mt-2 text-lg text-gray-600">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea comm
+            Our platform offers a comprehensive solution for managing course rules and user
+            profiles, designed to streamline administrative tasks and enhance the user experience.
           </p>
         </div>
         <ul
