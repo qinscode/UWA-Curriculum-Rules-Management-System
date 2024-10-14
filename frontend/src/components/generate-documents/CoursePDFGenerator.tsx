@@ -20,9 +20,12 @@ interface CoursePDFGeneratorProps {
   handleVersionChange: (value: string) => void
   handleGenerateCoursePDF: () => void
   isPdfReady: boolean
+  isHTMLReady: boolean
   pdfUrl: string | null
+  htmlUrl: string | null
   isGenerating: boolean
   versions: string[]
+  handleGenerateCourseHTML?: any
 }
 
 const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
@@ -33,12 +36,21 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
   handleCourseChange,
   handleVersionChange,
   handleGenerateCoursePDF,
+  handleGenerateCourseHTML,
   isPdfReady,
+  isHTMLReady,
   pdfUrl,
+  htmlUrl,
   isGenerating,
   versions,
 }) => {
-  const handleDownloadPDF = () => {
+  const handlePDFDownload = (htmlUrl) => {
+    if (htmlUrl) {
+      window.open(htmlUrl, '_blank')
+    }
+  }
+
+  const handleHTMLDownload = (pdfUrl) => {
     if (pdfUrl) {
       window.open(pdfUrl, '_blank')
     }
@@ -114,7 +126,7 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
               Generate Course PDF
             </Button>
             <Button
-              onClick={handleGenerateCoursePDF}
+              onClick={handleGenerateCourseHTML}
               disabled={isGenerating || !selectedCourseId || !selectedVersion || isLoading}
               className="w-full bg-blue-800 hover:bg-black"
             >
@@ -122,9 +134,15 @@ const CoursePDFGenerator: FC<CoursePDFGeneratorProps> = ({
               Generate Course HTML
             </Button>
             {isPdfReady && (
-              <Button onClick={handleDownloadPDF} className="w-full bg-blue-800 hover:bg-black">
+              <Button onClick={handlePDFDownload} className="w-full bg-blue-800 hover:bg-black">
                 <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
                 Download PDF
+              </Button>
+            )}
+            {isHTMLReady && (
+              <Button onClick={handleHTMLDownload} className="w-full bg-blue-800 hover:bg-black">
+                <ArrowDownTrayIcon className="mr-2 h-5 w-5" />
+                Download HTML
               </Button>
             )}
           </div>

@@ -14,14 +14,16 @@ import { config } from 'dotenv'
 config()
 
 const GenerateDocuments: FC = () => {
-  const { isGenerating, error: docError, generateCoursePDF, exportRules } = useDocuments()
+  const { isGenerating, error: docError, generateCoursePDF, generateCourseHTML } = useDocuments()
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedCourseId, setSelectedCourseId] = useState<string>('')
   const [selectedVersion, setSelectedVersion] = useState<string>('')
   const [isPdfReady, setIsPdfReady] = useState(false)
+  const [isHTMLReady, setIsHTMLReady] = useState(false)
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
+  const [htmlUrl, setHtmlUrl] = useState<string | null>(null)
   const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
@@ -91,6 +93,36 @@ const GenerateDocuments: FC = () => {
     }
   }
 
+  const handleGenerateCourseHTML = async () => {
+    if (selectedCourseId && selectedVersion) {
+      try {
+        const url = await generateCourseHTML(selectedCourseId)
+        console.log('url :', url)
+
+        if (url === undefined) {
+          console.log('url is undefined', url)
+          setHtmlUrl(url)
+          setIsHTMLReady(true)
+          return
+        }
+
+        if (url.toLowerCase().startsWith('http')) {
+          console.log('url startsWith(http):', url)
+          console.log('url :', url)
+          setHtmlUrl(url)
+        } else {
+          console.log('url not startsWith(http):', url)
+          setHtmlUrl(process.env.NEXT_PUBLIC_PDF_URL_PREFIX + url)
+        }
+
+        console.log('Generated HTML:', pdfUrl)
+        setIsHTMLReady(true)
+      } catch (error) {
+        console.error('Failed to generate PDF:', error)
+      }
+    }
+  }
+
   const selectedCourse = courses.find((course) => course.id.toString() === selectedCourseId)
   const code = selectedCourse?.code || ''
   const versions = selectedCourse?.versions || []
@@ -109,10 +141,13 @@ const GenerateDocuments: FC = () => {
           handleCourseChange={handleCourseChange}
           handleVersionChange={handleVersionChange}
           handleGenerateCoursePDF={handleGenerateCoursePDF}
+          handleGenerateCourseHTML={handleGenerateCourseHTML}
           isPdfReady={isPdfReady}
+          isHTMLReady={isHTMLReady}
           pdfUrl={pdfUrl}
           isGenerating={isGenerating}
           versions={versions}
+          htmlUrl={htmlUrl}
         />
         <HandbookGenerator course={code} disabled={!selectedCourseId} />{' '}
       </div>

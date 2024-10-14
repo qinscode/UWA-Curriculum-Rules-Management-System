@@ -48,4 +48,6 @@ export const apiClient = {
   generateHandbook: () => fetchJson<{ url: string }>('handbook/generate'),
   generateCoursePDF: (courseId: string) =>
     fetchJson<{ url: string }>(`/documents/course/${courseId}/pdf`, { method: 'GET' }),
+  generateCourseHTML: (courseId: string) =>
+    fetchJson<{ url: string }>(`/documents/course/${courseId}/html`, { method: 'GET' }),
 }

@@ -18,6 +18,20 @@ export function useDocuments() {
     }
   }, [])
 
+  const generateCourseHTML = useCallback(async (courseId: string): Promise<string> => {
+    try {
+      setIsGenerating(true)
+      const response = await apiClient.generateCourseHTML(courseId)
+      console.log('HTML  response :', response)
+      return response.url // Return the URL instead of opening it
+    } catch (err) {
+      setError('Failed to generate course PDF')
+      throw err
+    } finally {
+      setIsGenerating(false)
+    }
+  }, [])
+
   const generateHandbook = useCallback(async () => {
     try {
       setIsGenerating(true)
@@ -44,5 +58,5 @@ export function useDocuments() {
     }
   }, [])
 
-  return { isGenerating, error, generateCoursePDF, generateHandbook, exportRules }
+  return { isGenerating, error, generateCoursePDF, generateHandbook, generateCourseHTML }
 }
