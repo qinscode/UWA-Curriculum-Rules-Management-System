@@ -182,6 +182,7 @@ export class RequirementsService {
         relations: ['children'],
       })
 
+      // First, create or update all requirements without setting parent relationships
       const updatedRequirements = await this.updateOrCreateRequirements(
         rule,
         dtos,
@@ -189,6 +190,9 @@ export class RequirementsService {
         null,
         queryRunner
       )
+
+      // Then, update parent relationships
+      await this.updateParentRelationships(updatedRequirements, dtos, queryRunner)
 
       // Delete requirements that are no longer needed
       await this.deleteUnusedRequirements(existingRequirements, dtos, queryRunner)
@@ -231,7 +235,7 @@ export class RequirementsService {
         requirement.style = (dto.style as NumberingStyle) ?? requirement.style
         requirement.is_connector = dto.is_connector ?? requirement.is_connector
         requirement.order_index = dto.order_index ?? requirement.order_index
-        requirement.parent = parent
+        // Don't set parent here
       } else {
         // Create new requirement
         const { id, children, ...requirementData } = dto
@@ -239,7 +243,7 @@ export class RequirementsService {
           ...requirementData,
           style: requirementData.style as NumberingStyle,
           rule,
-          parent,
+          // Don't set parent here
         } as DeepPartial<Requirement>)
       }
 
@@ -260,6 +264,56 @@ export class RequirementsService {
     }
 
     return updatedRequirements
+  }
+
+  private async updateParentRelationships(
+    updatedRequirements: Requirement[],
+    dtos: UpdateRequirementDto[],
+    queryRunner: QueryRunner
+  ): Promise<void> {
+    const requirementMap = new Map<number, Requirement>()
+    updatedRequirements.forEach((req) => requirementMap.set(req.id, req))
+
+    this.logger.log(`Updating parent relationships for ${dtos.length} requirements`)
+
+    for (const dto of dtos) {
+      this.logger.log(`Processing DTO: ${JSON.stringify(dto)}`)
+
+      if (dto.id) {
+        const requirement = requirementMap.get(dto.id)
+        if (requirement) {
+          this.logger.log(`Found requirement with id ${dto.id}`)
+
+          // Check if the DTO has a parent property instead of parentId
+          if ('parent' in dto && dto.parent) {
+            const parentId = typeof dto.parent === 'number' ? dto.parent : dto.parent.id
+            this.logger.log(`Attempting to set parent with id ${parentId}`)
+
+            const parent = requirementMap.get(parentId)
+            if (parent) {
+              requirement.parent = parent
+              this.logger.log(`Set parent for requirement ${dto.id} to ${parentId}`)
+              await queryRunner.manager.save(requirement)
+            } else {
+              this.logger.warn(`Parent with id ${parentId} not found`)
+            }
+          } else {
+            requirement.parent = null
+            this.logger.log(`Removed parent for requirement ${dto.id}`)
+            await queryRunner.manager.save(requirement)
+          }
+        } else {
+          this.logger.warn(`Requirement with id ${dto.id} not found in the map`)
+        }
+      } else {
+        this.logger.warn(`DTO does not have an id: ${JSON.stringify(dto)}`)
+      }
+
+      if (dto.children && dto.children.length > 0) {
+        this.logger.log(`Processing ${dto.children.length} children for requirement ${dto.id}`)
+        await this.updateParentRelationships(updatedRequirements, dto.children, queryRunner)
+      }
+    }
   }
 
   private async deleteUnusedRequirements(
