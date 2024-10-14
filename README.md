@@ -53,7 +53,7 @@ The UWA Curriculum Management System is a sophisticated web-based platform desig
 
 By digitalizing and automating many aspects of course rule management, the system aims to reduce administrative burden, minimize errors, and improve the overall quality and consistency of course information.
 
-The demo is hosted at [curriculum-app.fudong.dev](https://curriculum-app.fudong.dev)
+**The demo is hosted at** [curriculum-app.fudong.dev](https://curriculum-app.fudong.dev)
 
 ## Key Features
 
