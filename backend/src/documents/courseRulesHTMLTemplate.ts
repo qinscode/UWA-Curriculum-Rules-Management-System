@@ -72,8 +72,9 @@ export const courseRulesHTMLTemplate = (
     </header>
     <main>
         ${rules
+          .filter((rule) => rule.requirements && rule.requirements.length > 0)
           .map(
-            (rule, index) => `
+            (rule) => `
         <section>
             <h2>${rule.name}</h2>
             ${renderRequirements(rule.requirements)}

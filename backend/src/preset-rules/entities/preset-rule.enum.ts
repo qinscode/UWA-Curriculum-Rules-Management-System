@@ -1,6 +1,8 @@
 export enum PresetRuleType {
   ASR = 'Applicability of the Student Rules policies and procedures',
   ACECRS = 'Academic Conduct Essentials and Communication and Research Skills modules',
+  COURSE_STRUCTURE = 'Course Structure',
+
   ENGLISH_ELIGIBILITY = 'English Eligibility',
   ADMISSIONS = 'Admissions',
   SATISFACTORY_PROGRESS = 'Satisfactory Progress',
@@ -13,5 +15,4 @@ export enum PresetRuleType {
   KNOWLEDGE = 'Knowledge',
   RANKING_AND_SELECTION = 'Ranking and selection for admission',
   ARTICULATION_EXIT_AWARD = 'Articulation Exit Award',
-  COURSE_STRUCTURE = 'Course Structure',
 }
