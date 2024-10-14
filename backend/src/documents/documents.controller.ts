@@ -12,6 +12,7 @@ export class DocumentsController {
 
   @Get('course/:id/html')
   generateCourseHTML(@Param('id') id: string) {
+    console.log('Generating HTML for course with ID:', id)
     return this.documentsService.generateCourseHTML(id)
   }
 }

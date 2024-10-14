@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import * as puppeteer from 'puppeteer'
 import * as fs from 'fs'
 import * as path from 'path'
-import { courseRulesTemplate } from './courseRulesTemplate'
+import { courseRulesPDFTemplate } from './courseRulesPDFTemplate'
 import { config } from 'dotenv'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -12,6 +12,7 @@ import { Requirement } from '../requirements/entities/requirement.entity'
 import { NumberingStyle } from '../requirements/entities/style.enum'
 import { PDFRuleType } from './pdf-rule-type'
 import { v4 as uuidv4 } from 'uuid'
+import { courseRulesHTMLTemplate } from './courseRulesHTMLTemplate'
 
 config()
 
@@ -89,7 +90,7 @@ export class DocumentsService {
 
   async generateCoursePDF(courseId: string): Promise<{ url: string }> {
     const rules = await this.getCourseRules(courseId)
-    const htmlContent = courseRulesTemplate(rules)
+    const htmlContent = courseRulesPDFTemplate(rules)
 
     // Generate a unique filename using UUID
     const uniqueId = uuidv4()
@@ -124,9 +125,12 @@ export class DocumentsService {
 
   async generateCourseHTML(courseId: string): Promise<{ url: string }> {
     const rules = await this.getCourseRules(courseId)
-    const htmlContent = courseRulesTemplate(rules)
+    const course = await this.courseRepository.findOne({
+      where: { id: Number(courseId) },
+    })
 
-    // Generate a unique filename using UUID
+    const htmlContent = courseRulesHTMLTemplate(course.name, course.code, rules)
+
     const uniqueId = uuidv4()
     const htmlFileName = `course_${courseId}_rules_${uniqueId}.html`
     const htmlFilePath = path.join(this.htmlDirectory, htmlFileName)
