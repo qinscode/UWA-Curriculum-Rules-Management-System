@@ -47,20 +47,22 @@ const Split: FC = () => {
             </a>
           </div>
           <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Auto Sorted Rules
+            System Overview
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Proin mattis metus ut odio cursus, in mollis ipsum lobortis. Etiam sollicitudin purus
-            sollicitudin libero facilisis, laoreet tempor nibh cursus. In at enim quam. Duis non
-            eros nec urna tempus vulputate. Duis porttitor, ex a pretium interdum, justo urna
-            malesuada quam, eget pellentesque leo dui ut mauris. Donec non est maximus, eleifend
-            neque quis, congue augue. Pellentesque porttitor eleifend tellus quis euismod.
-            Pellentesque id dui vitae ante sollicitudin sodales. Proin vel mattis risus. Donec
-            sodales risus vel nisi consequat, id tempus diam hendrerit.{' '}
+            The system provides an intuitive, efficient, and secure user interface for managing
+            course rules across various university programs. It integrates both standard and custom
+            criteria, ensuring compliance with the university's governance requirements for
+            formatting and documentation. Featuring an optimized data structure and user interface,
+            the system guarantees data consistency for downstream processes like admissions,
+            streamlining administrative tasks. This enhances both the user and student experience by
+            maintaining the integrity of data flowing into admissions. Additionally, the system
+            supports an optimized database with version control, allowing for the generation of
+            formatted rules for the university's handbook and PDF outputs for courses.{' '}
           </p>
           <div className="mt-10 flex items-center gap-x-6">
             <a
-              href="/frontend/public"
+              href="/manage-course"
               className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Get started
