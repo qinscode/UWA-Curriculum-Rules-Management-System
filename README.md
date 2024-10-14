@@ -1,4 +1,4 @@
-# UWA Curriculum Management System
+# UWA Curriculum Rules Management System
 
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <img alt="Static Badge" src="https://img.shields.io/badge/Next.js-v14.2-blue">
@@ -49,7 +49,7 @@
 
 ## Project Overview
 
-The UWA Curriculum Management System is a sophisticated web-based platform designed to streamline and enhance the process of managing course rules across various academic programs at the University of Western Australia. 
+The UWA Curriculum Rules Management System is a sophisticated web-based platform designed to streamline and enhance the process of managing course rules across various academic programs at the University of Western Australia. 
 
 By digitalizing and automating many aspects of course rule management, the system aims to reduce administrative burden, minimize errors, and improve the overall quality and consistency of course information.
 ## Key Features
@@ -108,7 +108,7 @@ The system leverages a modern, robust technology stack:
 
 ## Frontend Implementation
 
-The frontend of the UWA Curriculum Management System is built using modern web technologies to create a responsive, efficient, and user-friendly interface.
+The frontend of the UWA Curriculum Rules Management System is built using modern web technologies to create a responsive, efficient, and user-friendly interface.
 
 ### Technology Stack
 - **Next.js**: React framework for server-side rendering and routing
@@ -227,7 +227,7 @@ The backend of the system is built to handle complex business logic, data persis
 
 ## Database Structure
 
-The UWA Curriculum Management System utilizes a MySQL database with a structure designed to efficiently store and manage course-related data. The database schema is defined using TypeORM entities, which map directly to database tables.
+The UWA Curriculum Rules Management System utilizes a MySQL database with a structure designed to efficiently store and manage course-related data. The database schema is defined using TypeORM entities, which map directly to database tables.
 
 ### Key Entities and Relationships
 
@@ -473,7 +473,7 @@ For production deployment:
 - Ensure all required ports are open and not in use by other applications.
 - Check the console and server logs for any error messages.
 
-By following these steps, you should have a working deployment of the UWA Curriculum Management System. Remember to replace placeholder values (like database credentials) with your actual production values when deploying to a live environment.
+By following these steps, you should have a working deployment of the UWA Curriculum Rules Management System. Remember to replace placeholder values (like database credentials) with your actual production values when deploying to a live environment.
 
 ## User Manual
 - Feel free to reference it as needed
