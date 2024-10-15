@@ -84,6 +84,7 @@ export class RequirementsService {
     }
     return requirements.sort((a, b) => a.id - b.id)
   }
+
   async createRequirement(
     courseId: number,
     ruleId: number,

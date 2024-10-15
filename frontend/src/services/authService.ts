@@ -101,3 +101,36 @@ export const register = async (userData: {
 
   return res.json()
 }
+
+export const createAdminUser = async (userData: {
+  username: string
+  email: string
+  password: string
+}): Promise<{ message: string; userId: number }> => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  if (!API_URL) {
+    throw new Error('API base URL is not defined in environment variables.')
+  }
+
+  const token = getToken()
+  if (!token) {
+    throw new Error('No authentication token found')
+  }
+
+  const res = await fetch(`${API_URL}/auth/create-admin`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(userData),
+  })
+
+  if (!res.ok) {
+    const errorData = await res.json()
+    throw new Error(errorData.message || 'Failed to create admin user')
+  }
+
+  return res.json()
+}

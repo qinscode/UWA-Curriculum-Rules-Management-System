@@ -14,10 +14,10 @@ export class UsersService {
     private usersRepository: Repository<User>
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto & { role?: UserType }): Promise<User> {
     const user = this.usersRepository.create({
       ...createUserDto,
-      role: UserType.NORMAL, // Always set role to NORMAL
+      role: createUserDto.role || UserType.NORMAL, // 如果没有提供角色，默认为普通用户
     })
     return await this.usersRepository.save(user)
   }

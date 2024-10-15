@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   NotFoundException,
   ConflictException,
+  ForbiddenException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
@@ -13,6 +14,7 @@ import {
   ForgotPasswordDto,
   ResetPasswordDto,
   UserProfileDto,
+  CreateAdminDto,
 } from './dto'
 import { UsersService } from '../users/users.service'
 import { User } from '../users/entities/user.entity'
@@ -107,5 +109,19 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(resetPasswordDto.newPassword, 10)
     await this.usersService.update(userId, { password: hashedPassword })
     return { message: 'Password reset successfully' }
+  }
+
+  async createAdmin(createAdminDto: CreateAdminDto) {
+    const existingUser = await this.usersService.findByEmail(createAdminDto.email)
+    if (existingUser) {
+      throw new ConflictException('User already exists')
+    }
+    const hashedPassword = await bcrypt.hash(createAdminDto.password, 10)
+    const user = await this.usersService.create({
+      ...createAdminDto,
+      password: hashedPassword,
+      role: UserType.ADMIN,
+    } as User) // 使用 User 类型来包含 role 属性
+    return { message: 'Admin user created successfully', userId: user.id }
   }
 }
