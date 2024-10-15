@@ -211,9 +211,9 @@ const ManageRules: React.FC = () => {
         { rule: categorizedRules.deferrals, data: formData.deferrals },
         { rule: categorizedRules.articulationExitAward, data: formData.articulationExitAward },
         { rule: categorizedRules.courseStructure, data: formData.courseStructure },
+        { rule: categorizedRules.progressStatus, data: formData.progressStatus },
+        { rule: categorizedRules.rankingSelection, data: formData.rankingSelection },
       ]
-
-      console.log('asdqweqwe')
 
       for (const { rule, data } of rulesToUpdate) {
         if (rule && data) {
