@@ -3,7 +3,6 @@ import {
   UnauthorizedException,
   NotFoundException,
   ConflictException,
-  ForbiddenException,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
@@ -52,22 +51,25 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials')
   }
 
+  private mapUserToProfileDto(user: User): UserProfileDto {
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      createdAt:
+        user.created_at instanceof Date
+          ? user.created_at.toISOString()
+          : new Date(user.created_at).toISOString(),
+    }
+  }
+
   async getProfile(userId: number): Promise<UserProfileDto> {
     const user = await this.usersService.findOne(userId)
     if (!user) {
       throw new NotFoundException('User not found')
     }
     return this.mapUserToProfileDto(user)
-  }
-
-  private mapUserToProfileDto(user: User): {
-    role: UserType
-    id: number
-    email: string
-    username: string
-  } {
-    const { id, username, email, role } = user
-    return { id, username, email, role }
   }
 
   async updateProfile(
@@ -123,5 +125,14 @@ export class AuthService {
       role: UserType.ADMIN,
     } as User) // 使用 User 类型来包含 role 属性
     return { message: 'Admin user created successfully', userId: user.id }
+  }
+
+  async getAllUsers(): Promise<UserProfileDto[]> {
+    const users = await this.usersService.findAll()
+    return users.map((user) => this.mapUserToProfileDto(user))
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    await this.usersService.remove(id)
   }
 }

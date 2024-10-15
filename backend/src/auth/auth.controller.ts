@@ -7,11 +7,12 @@ import {
   Request,
   Put,
   ForbiddenException,
+  Delete,
+  Param,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { JwtAuthGuard } from './jwt-auth.guard'
-import { RolesGuard } from './guards/roles.guard'
-import { Roles } from './decorators/roles.decorator'
+
 import {
   RegisterDto,
   LoginDto,
@@ -45,7 +46,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getCurrentUser(@Request() req): Promise<UserProfileDto> {
-    console.log('req.user', req.user)
     return this.authService.getProfile(req.user.userId)
   }
 
@@ -82,5 +82,25 @@ export class AuthController {
       throw new ForbiddenException('Only administrators can create new admin users')
     }
     return this.authService.createAdmin(createAdminDto)
+  }
+
+  @Get('users')
+  @UseGuards(JwtAuthGuard)
+  async getAllUsers(@Request() req): Promise<UserProfileDto[]> {
+    const user = await this.usersService.findOne(req.user.userId)
+    if (user.role !== UserType.ADMIN) {
+      throw new ForbiddenException('Only administrators can view all users')
+    }
+    return this.authService.getAllUsers()
+  }
+
+  @Delete('users/:id')
+  @UseGuards(JwtAuthGuard)
+  async deleteUser(@Request() req, @Param('id') id: string) {
+    const user = await this.usersService.findOne(req.user.userId)
+    if (user.role !== UserType.ADMIN) {
+      throw new ForbiddenException('Only administrators can delete users')
+    }
+    return this.authService.deleteUser(+id)
   }
 }

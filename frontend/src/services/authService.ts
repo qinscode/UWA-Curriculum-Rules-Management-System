@@ -134,3 +134,57 @@ export const createAdminUser = async (userData: {
 
   return res.json()
 }
+
+export const getAllUsers = async (): Promise<User[]> => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  if (!API_URL) {
+    throw new Error('API base URL is not defined in environment variables.')
+  }
+
+  const token = getToken()
+  if (!token) {
+    throw new Error('No authentication token found')
+  }
+
+  const res = await fetch(`${API_URL}/auth/users`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!res.ok) {
+    const errorData = await res.json()
+    throw new Error(errorData.message || 'Failed to fetch users')
+  }
+
+  return res.json()
+}
+
+export const deleteUser = async (userId: number): Promise<void> => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+
+  if (!API_URL) {
+    throw new Error('API base URL is not defined in environment variables.')
+  }
+
+  const token = getToken()
+  if (!token) {
+    throw new Error('No authentication token found')
+  }
+
+  const res = await fetch(`${API_URL}/auth/users/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (!res.ok) {
+    const errorData = await res.json()
+    throw new Error(errorData.message || 'Failed to delete user')
+  }
+}

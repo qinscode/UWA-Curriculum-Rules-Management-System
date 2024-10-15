@@ -1,12 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import Layout from '@/components/Layout'
 import { useUser } from '@/hooks/useUser'
-import { UserRole } from '@/types'
-import { updateUserProfile, createAdminUser } from '@/services/authService'
+import { UserRole, User } from '@/types'
+import { updateUserProfile, createAdminUser, getAllUsers, deleteUser } from '@/services/authService'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 export default function Profile() {
   const { user, loading, error, mutate } = useUser()
@@ -16,13 +25,15 @@ export default function Profile() {
     email: '',
   })
 
-  // 添加新的状态来管理创建管理员用户的表单
   const [showCreateAdmin, setShowCreateAdmin] = useState(false)
   const [newAdminData, setNewAdminData] = useState({
     username: '',
     email: '',
     password: '',
   })
+
+  const [users, setUsers] = useState<User[]>([])
+  const [showUserList, setShowUserList] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -78,7 +89,7 @@ export default function Profile() {
     e.preventDefault()
     try {
       await updateUserProfile(editedUser)
-      await mutate() // 使用 mutate 函数重新获取用户数据
+      await mutate()
       setIsEditing(false)
       toast({
         title: 'Profile updated',
@@ -94,13 +105,11 @@ export default function Profile() {
     }
   }
 
-  // 处理创建管理员用户表单的变化
   const handleNewAdminChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setNewAdminData((prev) => ({ ...prev, [name]: value }))
   }
 
-  // 处理创建管理员用户的提交
   const handleCreateAdmin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
@@ -119,6 +128,53 @@ export default function Profile() {
         variant: 'destructive',
       })
     }
+  }
+
+  const handleFetchUsers = async () => {
+    try {
+      const fetchedUsers = await getAllUsers()
+      setUsers(fetchedUsers)
+      setShowUserList(true)
+    } catch (error) {
+      console.error('Failed to fetch users:', error)
+      toast({
+        title: 'Fetch failed',
+        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      await deleteUser(userId)
+      setUsers(users.filter((user) => user.id !== userId))
+      toast({
+        title: 'User deleted',
+        description: 'User has been successfully deleted.',
+      })
+    } catch (error) {
+      console.error('Failed to delete user:', error)
+      toast({
+        title: 'Deletion failed',
+        description: error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date'
+    }
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   }
 
   return (
@@ -204,12 +260,14 @@ export default function Profile() {
                 </div>
               </form>
 
-              {/* 添加创建管理员用户的部分 */}
               {user.role === UserRole.ADMIN && (
                 <div className="mt-10">
                   <h2 className="mb-4 text-2xl font-bold">Admin Actions</h2>
                   {!showCreateAdmin ? (
-                    <Button onClick={() => setShowCreateAdmin(true)}>Create Admin User</Button>
+                    <div className="space-y-4">
+                      <Button onClick={() => setShowCreateAdmin(true)}>Create Admin User</Button>
+                      <Button onClick={handleFetchUsers}>View All Users</Button>
+                    </div>
                   ) : (
                     <form onSubmit={handleCreateAdmin} className="space-y-4">
                       <Input
@@ -247,6 +305,43 @@ export default function Profile() {
                         <Button type="submit">Create Admin</Button>
                       </div>
                     </form>
+                  )}
+
+                  {showUserList && (
+                    <div className="mt-6">
+                      <h3 className="mb-2 text-xl font-semibold">User List</h3>
+                      <Table>
+                        <TableCaption>A list of all users</TableCaption>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Username</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Role</TableHead>
+                            <TableHead>Created At</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {users.map((user) => (
+                            <TableRow key={user.id}>
+                              <TableCell>{user.username}</TableCell>
+                              <TableCell>{user.email}</TableCell>
+                              <TableCell>{user.role}</TableCell>
+                              <TableCell>{formatDate(user.createdAt)}</TableCell>
+                              <TableCell>
+                                <Button
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  variant="destructive"
+                                  size="sm"
+                                >
+                                  Delete
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
                   )}
                 </div>
               )}
