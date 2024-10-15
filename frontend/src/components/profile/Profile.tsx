@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Layout from '@/components/Layout'
 import { useUser } from '@/hooks/useUser'
@@ -16,6 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 
 export default function Profile() {
   const { user, loading, error, mutate } = useUser()
@@ -163,29 +165,16 @@ export default function Profile() {
     }
   }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) {
-      return 'Invalid Date'
-    }
-    return date.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
-
   return (
     <Layout>
-      <div className="mx-auto max-w-7xl lg:gap-x-16 lg:px-8">
-        <h1 className="text-3xl font-bold">Profile</h1>
-        <main className="px-4 py-16 sm:px-6 lg:flex-auto lg:px-0 lg:py-20">
-          <div className="mx-auto max-w-2xl space-y-16 sm:space-y-20 lg:mx-0 lg:max-w-none">
-            <div>
-              {/* Profile Picture Frame */}
-              <div className="mt-8 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <Card className="col-span-1">
+            <CardHeader>
+              <CardTitle>Profile Picture</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
                 <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-gray-200">
                   <Image
                     src="/UWA.jpg"
@@ -196,58 +185,66 @@ export default function Profile() {
                   />
                 </div>
               </div>
+            </CardContent>
+          </Card>
 
+          <Card className="col-span-2">
+            <CardHeader>
+              <CardTitle>User Information</CardTitle>
+            </CardHeader>
+            <CardContent>
               <form onSubmit={handleSubmit}>
-                <dl className="mt-6 space-y-6 divide-y divide-gray-100 border-t border-gray-200 text-sm leading-6">
-                  <div className="pt-6 sm:flex">
-                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
                       Username
-                    </dt>
-                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                      {isEditing ? (
-                        <Input
-                          type="text"
-                          name="username"
-                          value={editedUser.username}
-                          onChange={handleChange}
-                          className="w-full"
-                        />
-                      ) : (
-                        <div className="text-gray-900">{user.username}</div>
-                      )}
-                    </dd>
+                    </label>
+                    {isEditing ? (
+                      <Input
+                        id="username"
+                        type="text"
+                        name="username"
+                        value={editedUser.username}
+                        onChange={handleChange}
+                        className="mt-1"
+                      />
+                    ) : (
+                      <div className="mt-1 text-gray-900">{user.username}</div>
+                    )}
                   </div>
-                  <div className="pt-6 sm:flex">
-                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                       Email address
-                    </dt>
-                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                      {isEditing ? (
-                        <Input
-                          type="email"
-                          name="email"
-                          value={editedUser.email}
-                          onChange={handleChange}
-                          className="w-full"
-                        />
-                      ) : (
-                        <div className="text-gray-900">{user.email}</div>
-                      )}
-                    </dd>
+                    </label>
+                    {isEditing ? (
+                      <Input
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={editedUser.email}
+                        onChange={handleChange}
+                        className="mt-1"
+                      />
+                    ) : (
+                      <div className="mt-1 text-gray-900">{user.email}</div>
+                    )}
                   </div>
-                  <div className="pt-6 sm:flex">
-                    <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Role</dt>
-                    <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-                      <div className="text-gray-900">
-                        {user.role === UserRole.ADMIN ? 'Administrator' : 'Normal User'}
-                      </div>
-                    </dd>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Role</label>
+                    <div className="mt-1 text-gray-900">
+                      {user.role === UserRole.ADMIN ? 'Administrator' : 'Normal User'}
+                    </div>
                   </div>
-                </dl>
-                <div className="mt-6 flex justify-end gap-x-6">
+                </div>
+                <div className="mt-6 flex justify-end">
                   {isEditing ? (
                     <>
-                      <Button type="button" variant="outline" onClick={handleCancel}>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleCancel}
+                        className="mr-4"
+                      >
                         Cancel
                       </Button>
                       <Button type="submit">Save</Button>
@@ -259,95 +256,98 @@ export default function Profile() {
                   )}
                 </div>
               </form>
+            </CardContent>
+          </Card>
 
-              {user.role === UserRole.ADMIN && (
-                <div className="mt-10">
-                  <h2 className="mb-4 text-2xl font-bold">Admin Actions</h2>
-                  {!showCreateAdmin ? (
-                    <div className="space-y-4">
-                      <Button onClick={() => setShowCreateAdmin(true)}>Create Admin User</Button>
-                      <Button onClick={handleFetchUsers}>View All Users</Button>
+          {user.role === UserRole.ADMIN && (
+            <Card className="col-span-3">
+              <CardHeader>
+                <CardTitle>Admin Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {!showCreateAdmin ? (
+                  <div className="space-x-4">
+                    <Button onClick={() => setShowCreateAdmin(true)}>Create Admin User</Button>
+                    <Button onClick={handleFetchUsers}>View All Users</Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleCreateAdmin} className="space-y-4">
+                    <Input
+                      type="text"
+                      name="username"
+                      placeholder="Username"
+                      value={newAdminData.username}
+                      onChange={handleNewAdminChange}
+                      required
+                    />
+                    <Input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={newAdminData.email}
+                      onChange={handleNewAdminChange}
+                      required
+                    />
+                    <Input
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                      value={newAdminData.password}
+                      onChange={handleNewAdminChange}
+                      required
+                    />
+                    <div className="flex justify-end space-x-4">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowCreateAdmin(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit">Create Admin</Button>
                     </div>
-                  ) : (
-                    <form onSubmit={handleCreateAdmin} className="space-y-4">
-                      <Input
-                        type="text"
-                        name="username"
-                        placeholder="Username"
-                        value={newAdminData.username}
-                        onChange={handleNewAdminChange}
-                        required
-                      />
-                      <Input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={newAdminData.email}
-                        onChange={handleNewAdminChange}
-                        required
-                      />
-                      <Input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={newAdminData.password}
-                        onChange={handleNewAdminChange}
-                        required
-                      />
-                      <div className="flex justify-end gap-x-4">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setShowCreateAdmin(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button type="submit">Create Admin</Button>
-                      </div>
-                    </form>
-                  )}
+                  </form>
+                )}
 
-                  {showUserList && (
-                    <div className="mt-6">
-                      <h3 className="mb-2 text-xl font-semibold">User List</h3>
-                      <Table>
-                        <TableCaption>A list of all users</TableCaption>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Username</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Role</TableHead>
-                            <TableHead>Created At</TableHead>
-                            <TableHead>Actions</TableHead>
+                {showUserList && (
+                  <div className="mt-8">
+                    <Separator className="my-4" />
+                    <h3 className="mb-4 text-xl font-semibold">User List</h3>
+                    <Table>
+                      <TableCaption>A list of all users</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Username</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {users.map((user) => (
+                          <TableRow key={user.id}>
+                            <TableCell>{user.username}</TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>{user.role}</TableCell>
+                            <TableCell>
+                              <Button
+                                onClick={() => handleDeleteUser(user.id)}
+                                variant="destructive"
+                                size="sm"
+                              >
+                                Delete
+                              </Button>
+                            </TableCell>
                           </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {users.map((user) => (
-                            <TableRow key={user.id}>
-                              <TableCell>{user.username}</TableCell>
-                              <TableCell>{user.email}</TableCell>
-                              <TableCell>{user.role}</TableCell>
-                              <TableCell>{formatDate(user.createdAt)}</TableCell>
-                              <TableCell>
-                                <Button
-                                  onClick={() => handleDeleteUser(user.id)}
-                                  variant="destructive"
-                                  size="sm"
-                                >
-                                  Delete
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </main>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </div>
     </Layout>
   )
