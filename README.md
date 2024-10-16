@@ -95,7 +95,6 @@ This system addresses several key challenges faced by the university:
 3. **Accuracy**: Minimizes human error through automated processes and standardized templates.
 4. **Accessibility**: Provides easy access to up-to-date course information for all stakeholders.
 5. **Compliance**: Helps maintain adherence to university and regulatory standards.
-6. **Version Control**: Facilitates tracking of rule changes over time and across different course versions.
 
 ## Technology Stack
 
