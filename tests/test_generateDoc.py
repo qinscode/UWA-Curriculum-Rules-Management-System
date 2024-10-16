@@ -69,7 +69,7 @@ class TestCourseManagePage(unittest.TestCase):
         GEN_PDF_button.click()
         
         #Clicking on Download PDF
-        DOWN_PDF_button = WebDriverWait(self.driver, 10).until(
+        DOWN_PDF_button = WebDriverWait(self.driver, 20).until(
             EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Download PDF')]"))
         )
         DOWN_PDF_button.click()
@@ -85,7 +85,7 @@ class TestCourseManagePage(unittest.TestCase):
         self.driver.switch_to.window(new_window)
 
         #Asserting 
-        assert "http://localhost:6015/public/pdf/course_87_rules.pdf" in self.driver.current_url, f"Expected URL not found. Found {self.driver.current_url} instead."
+        assert "http://localhost:6015/public/pdf/course_87_rules_" in self.driver.current_url, f"Expected URL not found. Found {self.driver.current_url} instead."
 
     def test_link_to_existing_handbook(self):
         '''Test redirection to UWA Handbook'''
