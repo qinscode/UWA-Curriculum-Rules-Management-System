@@ -1,3 +1,5 @@
+import { User } from '@/types'
+
 export const login = async (email: string, password: string): Promise<string> => {
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 
