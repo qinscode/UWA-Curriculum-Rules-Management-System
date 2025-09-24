@@ -52,7 +52,7 @@ build_image() {
     FULL_TAG="${IMAGE_NAME}:${IMAGE_TAG}"
     
     # 环境变量
-    API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-"http://localhost:6015/api"}
+    API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-"https://cab.fudong.dev/api"}
     
     print_info "构建镜像标签: ${FULL_TAG}"
     print_info "API Base URL: ${API_BASE_URL}"
@@ -80,7 +80,7 @@ run_container() {
     CONTAINER_NAME="uwa-curriculum-frontend-container"
     
     # 环境变量
-    API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-"http://localhost:6015/api"}
+    API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-"https://cab.fudong.dev/api"}
     
     print_info "启动容器: ${CONTAINER_NAME}"
     print_info "API Base URL: ${API_BASE_URL}"
@@ -202,7 +202,7 @@ show_help() {
     echo "  help            显示帮助信息"
     echo ""
     echo "环境变量:"
-    echo "  NEXT_PUBLIC_API_BASE_URL  后端API基础URL (默认: http://localhost:6015/api)"
+    echo "  NEXT_PUBLIC_API_BASE_URL  后端API基础URL (默认: https://cab.fudong.dev/api)"
     echo ""
     echo "示例:"
     echo "  $0 build                # 构建latest标签镜像"

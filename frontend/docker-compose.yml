@@ -4,14 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:6015/api}
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-https://cab.fudong.dev/api}
     container_name: uwa-curriculum-frontend
     ports:
       - "6014:6014"
     environment:
       - NODE_ENV=production
       - PORT=6014
-      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:6015/api}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-https://cab.fudong.dev/api}
     restart: unless-stopped
     networks:
       - curriculum-network

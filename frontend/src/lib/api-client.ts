@@ -1,7 +1,7 @@
 import { Rule, CreateRuleDTO, UpdateRuleDTO } from '@/types'
 import urljoin from 'url-join'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:6015/api/'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://cab.fudong.dev/api/'
 
 async function fetchJson<T>(url: string, options: RequestInit = {}): Promise<T> {
   const fullUrl = urljoin(API_BASE_URL, url)
