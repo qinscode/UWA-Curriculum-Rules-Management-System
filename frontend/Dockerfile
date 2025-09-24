@@ -15,8 +15,11 @@ RUN npm install
 COPY . .
 
 # 设置构建时环境变量
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:6015/api
+ARG NEXT_PUBLIC_API_BASE_URL=https://cab.fudong.dev/api
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
+ARG NEXT_PUBLIC_PDF_URL_PREFIX=https://cab.fudong.dev
+ENV NEXT_PUBLIC_PDF_URL_PREFIX=$NEXT_PUBLIC_PDF_URL_PREFIX
 
 # 构建应用
 RUN npm run build
