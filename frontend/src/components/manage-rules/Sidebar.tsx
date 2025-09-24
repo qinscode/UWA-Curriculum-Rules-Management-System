@@ -17,15 +17,18 @@ const Sidebar: React.FC<SidebarProps> = ({ items }) => {
         <ul className="space-y-2">
           {items.map((item) => (
             <li key={item.id}>
-              <Link
-                to={item.id}
-                smooth={true}
-                duration={500}
-                offset={-70}
-                className="block cursor-pointer rounded px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                {item.title}
-              </Link>
+              {React.createElement(
+                Link as any,
+                {
+                  to: item.id,
+                  smooth: true,
+                  duration: 500,
+                  offset: -70,
+                  className:
+                    'block cursor-pointer rounded px-4 py-2 text-sm text-gray-700 hover:bg-gray-100',
+                },
+                item.title
+              )}
             </li>
           ))}
         </ul>

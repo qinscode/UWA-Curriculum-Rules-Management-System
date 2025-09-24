@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "build:verbose": "echo '🏗️  开始构建...' && nest build && echo '✅ 构建成功完成!' && echo '📁 生成文件统计:' && find dist -name '*.js' | wc -l | xargs echo '  JavaScript文件:' && ls -la dist/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
