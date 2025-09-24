@@ -1,0 +1,46 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:6015/api}
+    container_name: uwa-curriculum-frontend
+    ports:
+      - "6014:6014"
+    environment:
+      - NODE_ENV=production
+      - PORT=6014
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:6015/api}
+    restart: unless-stopped
+    networks:
+      - curriculum-network
+
+  # Nginx 代理服务（可选，用于生产环境）
+  nginx:
+    image: nginx:alpine
+    container_name: uwa-curriculum-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro  # SSL证书目录（如需要）
+    depends_on:
+      - frontend
+    restart: unless-stopped
+    networks:
+      - curriculum-network
+    profiles:
+      - production  # 只在生产环境启动
+
+networks:
+  curriculum-network:
+    driver: bridge
+    external: false
+
+# 开发环境启动命令:
+# docker-compose up frontend
+
+# 生产环境启动命令（包含 nginx）:
+# docker-compose --profile production up

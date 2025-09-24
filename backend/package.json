@@ -46,8 +46,10 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "serve-static": "^1.15.0",
+    "start": "^5.1.0",
     "typeorm": "^0.3.20",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
